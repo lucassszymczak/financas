@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../lib/db/db';
 import { monthShort } from '../../lib/dates';
-import { formatBRL } from '../../lib/money';
+import { formatCompacto } from '../../lib/money';
 
 export function Evolucao() {
   const snaps = useLiveQuery(() => db.snapshots.orderBy('mes').reverse().limit(24).toArray(), []) ?? [];
@@ -24,15 +24,10 @@ export function Evolucao() {
             {snaps.map((s) => (
               <tr key={s.mes}>
                 <td>{monthShort(s.mes)}</td>
-                <td>{formatBRL(s.reserva, { semCentavos: true })}</td>
-                <td>{formatBRL(s.capital, { semCentavos: true })}</td>
-                <td>
-                  {formatBRL(
-                    s.dividas.reduce((a, d) => a + d.saldo, 0),
-                    { semCentavos: true },
-                  )}
-                </td>
-                <td>{formatBRL(s.jurosDoMes, { semCentavos: true })}</td>
+                <td>{formatCompacto(s.reserva)}</td>
+                <td>{formatCompacto(s.capital)}</td>
+                <td>{formatCompacto(s.dividas.reduce((a, d) => a + d.saldo, 0))}</td>
+                <td>{formatCompacto(s.jurosDoMes)}</td>
               </tr>
             ))}
           </tbody>

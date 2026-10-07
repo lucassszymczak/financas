@@ -49,7 +49,7 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.includes('/ocr/')) {
     event.respondWith(
       caches.open(OCR_CACHE).then(async (cache) => {
-        const hit = await cache.match(req);
+        const hit = await cache.match(req, { ignoreVary: true });
         if (hit) return hit;
         const res = await fetch(req);
         if (res.ok) cache.put(req, res.clone());
@@ -59,7 +59,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(caches.match(req).then((hit) => hit || fetch(req)));
+  // ignoreVary: scripts de módulo e fontes enviam Origin; a cópia em cache foi baixada sem ele.
+  event.respondWith(caches.match(req, { ignoreVary: true }).then((hit) => hit || fetch(req)));
 });
 `;
       this.emitFile({ type: 'asset', fileName: 'sw.js', source });

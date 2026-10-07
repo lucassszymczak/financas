@@ -30,6 +30,14 @@ export function formatBRLSigned(value: number, opts: { semCentavos?: boolean } =
   return value > 0 ? `+${abs}` : `−${abs}`;
 }
 
+const fmtInt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
+
+/** 1.235 / −250 (reais sem centavos e sem símbolo, para tabelas). */
+export function formatCompacto(value: number): string {
+  const s = fmtInt.format(Math.abs(Math.round(value / 100)));
+  return value < -50 ? `−${s}` : s;
+}
+
 /** 1234,56 (para CSV brasileiro). */
 export function formatDecimalBR(value: number): string {
   return fmtNum.format(value / 100).replace(/\./g, '');

@@ -381,7 +381,15 @@ textarea.input {
   margin-bottom: 12px;
 }
 .banner .btn {
-  min-height: 36px;
+  min-height: 40px;
+  white-space: nowrap;
+}
+.banner > span {
+  font-size: 0.92rem;
+}
+.table td,
+.table th {
+  white-space: nowrap;
 }
 
 /* ---------- Lists ---------- */
@@ -600,4 +608,11 @@ table.table {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--accent);
+}
+
+@media (min-width: 900px) {
+  .toast {
+    bottom: 24px;
+    left: calc(50% + 110px);
+  }
 }

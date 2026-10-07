@@ -10,6 +10,28 @@ A especificação completa está em [`SPEC.md`](SPEC.md).
 - Opcional: no iPhone, use **Compartilhar → Adicionar à Tela de Início** para abrir como se fosse um app. Isso também reduz o risco de o Safari apagar os dados.
 - **Faça backup com frequência** (Ajustes → Backup). O Safari pode apagar dados de sites que você não abre por cerca de 7 dias.
 
+## Telas
+
+| Aba | O que faz |
+|---|---|
+| **Capturar** | Foto, prints, extrato (OFX, CSV, PDF) e texto ou ditado. Tudo passa pela fila de revisão. Também tem lançamento manual e "Lançar fixos do mês". |
+| **Mês** | Resultado, régua de −3 mil a +3 mil, previsão (estimativa), veredito do Longevidade, reembolsos pendentes, barras por categoria e lista editável. |
+| **Controle** | Fechamento do mês, tetos com ritmo, calendário, recorrências e simulador "e se". |
+| **Plano** | Reserva, dívidas, aplicar parcelas, capital, assistente de extraordinários, projeção de 12 meses, evolução e regras. |
+| **Respostas** | Quatro perguntas rápidas, sempre separando fato de estimativa. |
+| **IR** | Totais de saúde e educação, comprovantes, anexos pendentes e exportação (CSV e ZIP). |
+| **Ajustes** | Backup e restauração, valores iniciais, dívidas, fixos, dicionário, importação do app anterior e tema. |
+
+### Primeiro uso
+
+1. **Se você usava o app anterior:** Ajustes → Importar do app anterior → escolha o JSON. Confira o resumo e toque em Importar. Os lançamentos que tinham foto ficam como "comprovante pendente" na aba IR, para anexar de novo.
+2. **Se está começando do zero:** Ajustes → Valores iniciais, Dívidas (indique o papel de cada uma: consignado, CDC, acordo) e Fixos.
+3. Faça o primeiro backup.
+
+### OCR
+
+A leitura de fotos usa o Tesseract no próprio navegador. Na primeira foto, o leitor (cerca de 6 MB) é baixado do próprio site. Depois, fica em cache. Funciona melhor com foto reta, bem iluminada e com o comprovante ocupando a tela. Se algo sair errado, abra "Texto reconhecido", corrija e toque em "Reler texto corrigido".
+
 ## Desenvolvimento
 
 ```bash
@@ -19,8 +41,17 @@ npm test           # testes unitários (Vitest)
 npm run e2e        # testes de ponta a ponta (Playwright, iPhone e computador)
 npm run lint
 npm run typecheck
+npm run check      # lint + typecheck + testes unitários
 npm run build      # gera dist/
 ```
+
+Estrutura:
+
+- `src/lib/finance/`: lógica financeira pura (resultado, previsão, Longevidade, dívidas, simulação, extraordinários, duplicados, recorrências, tetos, fechamento, calendário, respostas).
+- `src/lib/capture/`: parsers (texto, OFX, CSV, linhas de PDF, comprovantes de OCR) e fila de revisão.
+- `src/lib/db/`: esquema Dexie e validação zod.
+- `src/lib/backup/`, `src/lib/ir/`, `src/lib/importar/`, `src/lib/plano/`: backup, exportação do IR, importação do app anterior e ações do plano.
+- `src/screens/`: telas. `e2e/`: testes de ponta a ponta (incluem OCR real e uso sem internet).
 
 `npm run dev` e `npm run build` copiam antes os arquivos do OCR (Tesseract: worker, core WebAssembly e idioma `por`) de `node_modules` para `public/ocr/`. Assim, eles são servidos pelo próprio site, sem CDN. Essa pasta não vai para o git.
 
@@ -63,3 +94,7 @@ As dúvidas da especificação foram resolvidas assim. Mudar alguma delas é sim
 - **"Meses fechados"** são os meses com fechamento salvo (`closings`).
 - **Valores em centavos inteiros** no banco e no backup (`valor: 12345` = R$ 123,45). Isso evita erro de arredondamento.
 - **Backup sem senha.** O ZIP é guardado onde você escolher, por exemplo no iCloud Drive.
+- **Extraordinários têm o campo `alocado`.** Ele marca os que já passaram pelo assistente. Os importados do app anterior entram como já alocados.
+- **Restaurar com "Mesclar"** acrescenta só os registros cujo id ainda não existe e mantém a configuração local. "Substituir tudo" apaga o aparelho e grava o backup.
+- **Importação do app anterior:** valores em reais. Taxas abaixo de 0,1 são lidas como fração (0,0185 → 1,85% a.m.).
+- **PDF sem sinal nem D/C:** o valor é tratado como saída (fatura de cartão), exceto quando a descrição indica crédito ("recebido", "depósito", "salário"). Dá para trocar o tipo na revisão.

@@ -10,7 +10,7 @@ import { updateSettings } from '../../lib/db/settings';
 import { addMonths, currentMonth, monthLabel, monthShort } from '../../lib/dates';
 import { proximaJanela } from '../../lib/finance/longevidade';
 import { simular12Meses } from '../../lib/finance/simulacao';
-import { formatBRL, formatBRLSigned } from '../../lib/money';
+import { formatBRL, formatBRLSigned, formatCompacto } from '../../lib/money';
 import { resultadosFechados } from '../../lib/plano/acoes';
 
 export function Projecao() {
@@ -43,7 +43,7 @@ export function Projecao() {
   const j2 = proximaJanela(addMonths(j1, 1));
   const origem = {
     manual: 'valor manual',
-    media: `média de ${fechados!.meses.length} meses fechados`,
+    media: `média de ${fechados!.meses.length} ${fechados!.meses.length === 1 ? 'mês fechado' : 'meses fechados'}`,
     padrao: 'padrão, sem meses fechados',
   }[sim.origemFluxo];
 
@@ -113,16 +113,16 @@ export function Projecao() {
                   {monthShort(l.mes)}
                   {l.extraordinario > 0 ? ' ★' : ''}
                 </td>
-                <td className={l.fluxo < 0 ? 'neg' : 'pos'}>{formatBRL(l.fluxo, { semCentavos: true })}</td>
-                <td className={l.reserva < p.pisoReserva ? 'warn' : ''}>{formatBRL(l.reserva, { semCentavos: true })}</td>
-                <td>{formatBRL(l.consignado, { semCentavos: true })}</td>
-                <td>{formatBRL(l.capital, { semCentavos: true })}</td>
+                <td className={l.fluxo < 0 ? 'neg' : 'pos'}>{formatCompacto(l.fluxo)}</td>
+                <td className={l.reserva < p.pisoReserva ? 'warn' : ''}>{formatCompacto(l.reserva)}</td>
+                <td>{formatCompacto(l.consignado)}</td>
+                <td>{formatCompacto(l.capital)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="tiny muted">★ mês com extraordinário.</p>
+      <p className="tiny muted">Valores em reais. ★ mês com extraordinário.</p>
       <p className="small">
         {sim.mesQuitacaoConsignado
           ? `Consignado quitado em ${monthLabel(sim.mesQuitacaoConsignado)}.`
