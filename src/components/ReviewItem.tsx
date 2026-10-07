@@ -2,6 +2,7 @@ import { useId, useState } from 'react';
 import type { Candidato } from '../lib/capture/candidato';
 import { candidatoValido, guardarPorPadrao } from '../lib/capture/candidato';
 import { IGNORAVEL_LABEL } from '../lib/capture/categorizar';
+import { analisarRecibo } from '../lib/capture/recibo';
 import { CATEGORIAS, TIPO_LABEL } from '../lib/db/categories';
 import { FORMAS, TIPOS, type Dedutivel, type Tipo } from '../lib/db/schemas';
 import { formatDayMonth } from '../lib/dates';
@@ -19,6 +20,7 @@ type Props = {
 
 export function ReviewItem({ c, onChange, onRemove, inicialAberto }: Props) {
   const [aberto, setAberto] = useState(inicialAberto ?? false);
+  const [textoOcr, setTextoOcr] = useState(c.textoReconhecido ?? '');
   const id = useId();
   const valido = candidatoValido(c);
 
@@ -146,10 +148,28 @@ export function ReviewItem({ c, onChange, onRemove, inicialAberto }: Props) {
               <textarea
                 className="input"
                 aria-label="Texto reconhecido"
-                rows={6}
-                defaultValue={c.textoReconhecido}
+                rows={8}
+                value={textoOcr}
+                onChange={(e) => setTextoOcr(e.target.value)}
                 style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.8rem' }}
               />
+              <button
+                type="button"
+                className="btn"
+                onClick={() => {
+                  const a = analisarRecibo(textoOcr);
+                  onChange({
+                    textoReconhecido: textoOcr,
+                    valor: a.valor ?? c.valor,
+                    data: a.data ?? c.data,
+                    cnpj: a.cnpj ?? c.cnpj,
+                    estabelecimento: a.estabelecimento ?? c.estabelecimento,
+                    forma: a.forma ?? c.forma,
+                  });
+                }}
+              >
+                Reler texto corrigido
+              </button>
             </details>
           )}
           <button type="button" className="btn btn-ghost btn-danger" onClick={onRemove}>
