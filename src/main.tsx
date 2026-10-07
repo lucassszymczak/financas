@@ -8,6 +8,7 @@ import '@fontsource/source-sans-3/600.css';
 import './styles/tokens.css';
 import './styles/base.css';
 import { App } from './App';
+import { requestPersist } from './lib/storage';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -20,3 +21,5 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => undefined);
   });
 }
+
+void requestPersist();
