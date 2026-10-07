@@ -3,6 +3,7 @@ import { BackupSection } from './config/BackupSection';
 import { DicionarioEditor } from './config/DicionarioEditor';
 import { DividasEditor } from './config/DividasEditor';
 import { FixosEditor } from './config/FixosEditor';
+import { ImportarLegado } from './config/ImportarLegado';
 import { ValoresIniciais } from './config/ValoresIniciais';
 
 export function ConfigScreen() {
@@ -14,6 +15,7 @@ export function ConfigScreen() {
       <DividasEditor />
       <FixosEditor />
       <DicionarioEditor />
+      <ImportarLegado />
       <Aparencia />
     </div>
   );
