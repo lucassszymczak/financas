@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BackupBanner } from './components/BackupBanner';
 import { Icon, type IconName } from './components/Icon';
 import { ToastProvider } from './components/Toast';
+import { FilaProvider } from './hooks/FilaContext';
 import { useSettings } from './hooks/useData';
 import { useRoute, type Route } from './router';
 import { CapturarScreen } from './screens/CapturarScreen';
@@ -52,21 +53,23 @@ export function App() {
 
   return (
     <ToastProvider>
-      <div className="app">
-        <nav className="tabs" aria-label="Seções">
-          <div className="brand">Plano Patrimonial</div>
-          {TABS.map((t) => (
-            <a key={t.route} className="tab" href={`#/${t.route}`} aria-current={route === t.route ? 'page' : undefined}>
-              <Icon name={t.icon} />
-              <span>{t.label}</span>
-            </a>
-          ))}
-        </nav>
-        <main className="main">
-          <BackupBanner />
-          <Screen route={route} />
-        </main>
-      </div>
+      <FilaProvider>
+        <div className="app">
+          <nav className="tabs" aria-label="Seções">
+            <div className="brand">Plano Patrimonial</div>
+            {TABS.map((t) => (
+              <a key={t.route} className="tab" href={`#/${t.route}`} aria-current={route === t.route ? 'page' : undefined}>
+                <Icon name={t.icon} />
+                <span>{t.label}</span>
+              </a>
+            ))}
+          </nav>
+          <main className="main">
+            <BackupBanner />
+            <Screen route={route} />
+          </main>
+        </div>
+      </FilaProvider>
     </ToastProvider>
   );
 }
