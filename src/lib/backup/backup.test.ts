@@ -24,6 +24,7 @@ const tx = (id: string, valor = 1000): Transaction => ({
   comprovanteId: null,
   comprovantePendente: false,
   criadoEm: '2026-10-01T00:00:00Z',
+  alocado: false,
 });
 
 describe('backup', () => {

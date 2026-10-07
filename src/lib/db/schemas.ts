@@ -89,6 +89,8 @@ export const transactionSchema = z.object({
   comprovanteId: z.string().nullable(),
   comprovantePendente: z.boolean(),
   criadoEm: z.string(),
+  /** Só para extra_in: destino já definido pelo assistente. */
+  alocado: z.boolean().default(false),
 });
 
 export const receiptMetaSchema = z.object({

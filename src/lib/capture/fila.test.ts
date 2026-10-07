@@ -45,6 +45,7 @@ describe('fila de revisão', () => {
       comprovanteId: null,
       comprovantePendente: false,
       criadoEm: '',
+      alocado: false,
     });
     const novos = [
       criarCandidato({ valor: 5_000, data: '2026-10-05', descricao: 'a', origem: 'texto' }, ctx),

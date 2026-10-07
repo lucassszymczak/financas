@@ -85,6 +85,7 @@ export async function confirmarFila(
         comprovanteId,
         comprovantePendente: c.dedutivel !== null && comprovanteId === null,
         criadoEm,
+        alocado: false,
       };
       transacoes.push(t);
 
@@ -150,6 +151,7 @@ export async function lancarFixosDoMes(database: PlanoDB, mes: string, now = new
         comprovanteId: null,
         comprovantePendente: false,
         criadoEm,
+        alocado: false,
       }));
     await database.transactions.bulkAdd(novos);
     return novos.length;
