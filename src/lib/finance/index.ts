@@ -12,3 +12,4 @@ export * from './veredito';
 export * from './fechamento';
 export * from './calendario';
 export * from './simulador';
+export * from './respostas';
