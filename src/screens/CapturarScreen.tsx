@@ -13,6 +13,7 @@ import { pedirLembreteBackup } from '../lib/lembretes';
 import { go } from '../router';
 import { FixosEditor } from './config/FixosEditor';
 import { useProcessarArquivos } from './capturar/useProcessarArquivos';
+import { CsvMapeamentoSheet } from './capturar/CsvMapeamentoSheet';
 
 export function CapturarScreen() {
   const { fila, adicionar, atualizar, remover, limpar, confirmar } = useFila();
@@ -23,7 +24,7 @@ export function CapturarScreen() {
   const camRef = useRef<HTMLInputElement>(null);
   const fotosRef = useRef<HTMLInputElement>(null);
   const extratoRef = useRef<HTMLInputElement>(null);
-  const { processar, progresso } = useProcessarArquivos();
+  const { processar, progresso, csv, setCsv, adicionarCsv, ultimoCsv, setUltimoCsv } = useProcessarArquivos();
   const mes = currentMonth();
 
   const interpretar = async () => {
@@ -131,6 +132,23 @@ export function CapturarScreen() {
         </button>
       </section>
 
+      {ultimoCsv && fila.some((c) => ultimoCsv.tmpIds.includes(c.tmpId)) && (
+        <div className="row-between card" style={{ padding: 12 }}>
+          <span className="small">CSV lido automaticamente.</span>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              ultimoCsv.tmpIds.forEach(remover);
+              setCsv(ultimoCsv);
+              setUltimoCsv(null);
+            }}
+          >
+            Ajustar colunas
+          </button>
+        </div>
+      )}
+
       {fila.length > 0 && (
         <section className="stack-sm" aria-labelledby="fila-titulo">
           <div className="row-between">
@@ -201,6 +219,19 @@ export function CapturarScreen() {
           Editar fixos
         </button>
       </section>
+
+      {csv && (
+        <CsvMapeamentoSheet
+          pend={csv}
+          onClose={() => setCsv(null)}
+          onConfirm={async (m, banco) => {
+            if (banco) await db.csvMappings.put({ ...m, banco, assinatura: csv.assinatura });
+            const n = await adicionarCsv(csv, m);
+            setCsv(null);
+            toast.show(`${n} lançamentos para revisar`);
+          }}
+        />
+      )}
 
       <Sheet open={editarFixos} onClose={() => setEditarFixos(false)} title="Fixos">
         <FixosEditor titulo="Lista de fixos" />

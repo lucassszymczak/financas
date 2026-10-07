@@ -114,6 +114,8 @@ export const keywordEntrySchema = z.object({
 
 export const csvMappingSchema = z.object({
   banco: z.string().min(1),
+  /** Cabeçalho normalizado, para reconhecer o banco automaticamente. */
+  assinatura: z.string().default(''),
   separador: z.enum([';', ',', '\t']),
   temCabecalho: z.boolean(),
   colData: z.number().int().min(0),
