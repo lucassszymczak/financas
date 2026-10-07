@@ -4,7 +4,7 @@ test('abre na tela Capturar e navega pelas abas', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { level: 1, name: 'Capturar' })).toBeVisible();
   await page.getByRole('link', { name: 'Mês' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Mês' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: / de \d{4}/ })).toBeVisible();
   await page.getByRole('link', { name: 'Ajustes' }).click();
   await expect(page.getByRole('heading', { level: 1, name: /Configuração/ })).toBeVisible();
 });

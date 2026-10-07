@@ -8,3 +8,4 @@ export * from './chave';
 export * from './duplicados';
 export * from './recorrencias';
 export * from './tetos';
+export * from './veredito';

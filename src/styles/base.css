@@ -509,3 +509,95 @@ table.table {
     transition: width 0.3s ease;
   }
 }
+
+/* ---------- Régua ---------- */
+.regua {
+  padding: 12px 8px 4px;
+}
+.regua-trilho {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--pos-soft);
+  border: 1px solid var(--line);
+}
+.regua-zona-neg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--neg-soft);
+  border-radius: 999px 0 0 999px;
+}
+.regua-marca {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink-2);
+}
+.regua-marca-limite {
+  background: var(--warn);
+}
+.regua-ponto {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  border: 3px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.regua-ponto.ok {
+  background: var(--pos);
+}
+.regua-ponto.ruim {
+  background: var(--neg);
+}
+.regua-previsao {
+  background: var(--surface);
+  border: 3px dashed var(--accent);
+  box-shadow: none;
+}
+.regua-rotulos {
+  position: relative;
+  height: 18px;
+  margin-top: 8px;
+}
+.regua-rotulos span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.regua-rotulos span:first-child {
+  transform: none;
+}
+.regua-rotulos span:last-child {
+  transform: translateX(-100%);
+}
+
+.cat-bar {
+  display: grid;
+  gap: 4px;
+}
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.month-nav h1 {
+  margin: 0;
+  text-align: center;
+  flex: 1;
+  font-size: 1.2rem;
+}
+.tag-estimativa {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}

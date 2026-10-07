@@ -18,3 +18,15 @@ test('lançamento manual', async ({ page }) => {
   await page.getByRole('button', { name: /Confirmar 1 item/ }).click();
   await expect(page.getByText('1 lançamento salvo')).toBeVisible();
 });
+
+test('resultado aparece na tela Mês e reembolso pode ser marcado', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('textbox', { name: 'Por texto' }).fill('recebi 1000 do show\ngastei 300 no mercado\n200 hotel');
+  await page.getByRole('button', { name: 'Interpretar' }).click();
+  await page.getByRole('button', { name: /Confirmar 3 itens/ }).click();
+  await page.getByRole('link', { name: 'Mês' }).click();
+  await expect(page.getByText('+R$ 700,00').first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Reembolsos pendentes' })).toBeVisible();
+  await page.getByRole('button', { name: 'Recebido' }).click();
+  await expect(page.getByRole('heading', { name: 'Reembolsos pendentes' })).toBeHidden();
+});

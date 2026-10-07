@@ -87,6 +87,12 @@ export function monthLabel(ym: string): string {
   return `${MESES[m - 1] ?? ''} de ${ym.slice(0, 4)}`;
 }
 
+/** "Outubro de 2026" */
+export function monthTitle(ym: string): string {
+  const l = monthLabel(ym);
+  return l.charAt(0).toUpperCase() + l.slice(1);
+}
+
 export function monthShort(ym: string): string {
   const m = monthNumber(ym);
   return `${MESES_CURTOS[m - 1] ?? ''}/${ym.slice(2, 4)}`;
