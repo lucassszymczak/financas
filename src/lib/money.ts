@@ -20,7 +20,7 @@ export function cents(reaisValue: number): number {
 /** R$ 1.234,56 (troca o espaço especial por um normal). */
 export function formatBRL(value: number, opts: { semCentavos?: boolean } = {}): string {
   const f = opts.semCentavos ? fmtNoCents : fmt;
-  return f.format(value / 100).replace(/ /g, ' ');
+  return f.format(value / 100).replace(/\u00a0/g, ' ');
 }
 
 /** +R$ 10,00 / −R$ 10,00 */
