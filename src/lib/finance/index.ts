@@ -9,3 +9,6 @@ export * from './duplicados';
 export * from './recorrencias';
 export * from './tetos';
 export * from './veredito';
+export * from './fechamento';
+export * from './calendario';
+export * from './simulador';
