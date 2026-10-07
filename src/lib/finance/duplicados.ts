@@ -13,5 +13,7 @@ export function ehDuplicado(a: Tx, b: Tx): boolean {
  * ou de um candidato anterior no mesmo lote.
  */
 export function marcarDuplicados(candidatos: readonly Tx[], existentes: readonly Tx[]): boolean[] {
-  return candidatos.map((c, i) => existentes.some((e) => ehDuplicado(c, e)) || candidatos.slice(0, i).some((p) => ehDuplicado(c, p)));
+  return candidatos.map(
+    (c, i) => existentes.some((e) => ehDuplicado(c, e)) || candidatos.slice(0, i).some((p) => ehDuplicado(c, p)),
+  );
 }

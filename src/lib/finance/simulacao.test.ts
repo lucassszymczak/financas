@@ -3,10 +3,25 @@ import type { Debt, Projecao } from '../db/schemas';
 import { FLUXO_PADRAO, fluxoBase, simular12Meses } from './simulacao';
 
 const proj = (p: Partial<Projecao> = {}): Projecao => ({
-  resultadoManual: null, pisoReserva: 1_500_000, decimoNov: 0, decimoDez: 0, plrMarco: 0, restituicaoJunho: 0, janelaLongevidade: null, ...p,
+  resultadoManual: null,
+  pisoReserva: 1_500_000,
+  decimoNov: 0,
+  decimoDez: 0,
+  plrMarco: 0,
+  restituicaoJunho: 0,
+  janelaLongevidade: null,
+  ...p,
 });
 const divida = (p: Partial<Debt>): Debt => ({
-  id: 'd', nome: 'D', papel: 'outra', saldo: 0, taxaMensal: 0, parcela: 0, ordem: 0, ativo: true, ...p,
+  id: 'd',
+  nome: 'D',
+  papel: 'outra',
+  saldo: 0,
+  taxaMensal: 0,
+  parcela: 0,
+  ordem: 0,
+  ativo: true,
+  ...p,
 });
 
 describe('fluxoBase', () => {
@@ -20,8 +35,14 @@ describe('fluxoBase', () => {
 describe('simular12Meses', () => {
   it('sem dados usa −1.200 por mês e começa no mês seguinte ao aplicado', () => {
     const r = simular12Meses({
-      ultimoMesAplicado: '2026-09', reserva: 2_000_000, capital: 0, longevidadeModo: '2/2', salarioBase: 1_000_000,
-      dividas: [], projecao: proj(), mediaFechados: null,
+      ultimoMesAplicado: '2026-09',
+      reserva: 2_000_000,
+      capital: 0,
+      longevidadeModo: '2/2',
+      salarioBase: 1_000_000,
+      dividas: [],
+      projecao: proj(),
+      mediaFechados: null,
     });
     expect(r.linhas).toHaveLength(12);
     expect(r.linhas[0]!.mes).toBe('2026-10');
@@ -33,9 +54,14 @@ describe('simular12Meses', () => {
 
   it('parcela de dívida quitada volta ao fluxo', () => {
     const r = simular12Meses({
-      ultimoMesAplicado: '2026-09', reserva: 0, capital: 0, longevidadeModo: '2/2', salarioBase: 0,
+      ultimoMesAplicado: '2026-09',
+      reserva: 0,
+      capital: 0,
+      longevidadeModo: '2/2',
+      salarioBase: 0,
       dividas: [divida({ papel: 'acordo', saldo: 20_000, parcela: 10_000 })],
-      projecao: proj({ resultadoManual: 0 }), mediaFechados: null,
+      projecao: proj({ resultadoManual: 0 }),
+      mediaFechados: null,
     });
     expect(r.linhas[0]!.fluxo).toBe(0);
     expect(r.linhas[1]!.fluxo).toBe(0);
@@ -44,9 +70,14 @@ describe('simular12Meses', () => {
 
   it('extraordinário completa o piso, amortiza o consignado e a sobra vai à reserva', () => {
     const r = simular12Meses({
-      ultimoMesAplicado: '2026-10', reserva: 1_000_000, capital: 0, longevidadeModo: '2/2', salarioBase: 0,
+      ultimoMesAplicado: '2026-10',
+      reserva: 1_000_000,
+      capital: 0,
+      longevidadeModo: '2/2',
+      salarioBase: 0,
       dividas: [divida({ papel: 'consignado', saldo: 300_000, taxaMensal: 0, parcela: 100_000 })],
-      projecao: proj({ resultadoManual: 0, decimoNov: 1_000_000 }), mediaFechados: null,
+      projecao: proj({ resultadoManual: 0, decimoNov: 1_000_000 }),
+      mediaFechados: null,
     });
     const nov = r.linhas[0]!;
     expect(nov.mes).toBe('2026-11');
@@ -60,8 +91,14 @@ describe('simular12Meses', () => {
 
   it('custo extra do 6/6 a partir da janela', () => {
     const r = simular12Meses({
-      ultimoMesAplicado: '2026-09', reserva: 0, capital: 0, longevidadeModo: '2/2', salarioBase: 1_000_000,
-      dividas: [], projecao: proj({ resultadoManual: 0, janelaLongevidade: '2026-11' }), mediaFechados: null,
+      ultimoMesAplicado: '2026-09',
+      reserva: 0,
+      capital: 0,
+      longevidadeModo: '2/2',
+      salarioBase: 1_000_000,
+      dividas: [],
+      projecao: proj({ resultadoManual: 0, janelaLongevidade: '2026-11' }),
+      mediaFechados: null,
     });
     expect(r.linhas[0]!.fluxo).toBe(0);
     expect(r.linhas[0]!.modo).toBe('2/2');
@@ -72,9 +109,14 @@ describe('simular12Meses', () => {
 
   it('dívida com juros evolui pela fórmula', () => {
     const r = simular12Meses({
-      ultimoMesAplicado: '2026-09', reserva: 5_000_000, capital: 0, longevidadeModo: '2/2', salarioBase: 0,
+      ultimoMesAplicado: '2026-09',
+      reserva: 5_000_000,
+      capital: 0,
+      longevidadeModo: '2/2',
+      salarioBase: 0,
       dividas: [divida({ papel: 'consignado', saldo: 1_000_000, taxaMensal: 2, parcela: 100_000 })],
-      projecao: proj({ resultadoManual: 0 }), mediaFechados: null,
+      projecao: proj({ resultadoManual: 0 }),
+      mediaFechados: null,
     });
     expect(r.linhas[0]!.consignado).toBe(920_000);
     expect(r.mesQuitacaoConsignado).toBe('2027-09');

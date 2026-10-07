@@ -87,7 +87,10 @@ export function amortizar(d: DebtCore, valor: number): { saldo: number; usado: n
 }
 
 /** Efeito de uma amortização: parcelas e juros evitados (mantendo a parcela). */
-export function efeitoAmortizacao(d: DebtCore, valor: number): {
+export function efeitoAmortizacao(
+  d: DebtCore,
+  valor: number,
+): {
   mesesAntes: number;
   mesesDepois: number;
   parcelasEvitadas: number;

@@ -1,4 +1,8 @@
+import { useEffect } from 'react';
+import { BackupBanner } from './components/BackupBanner';
 import { Icon, type IconName } from './components/Icon';
+import { ToastProvider } from './components/Toast';
+import { useSettings } from './hooks/useData';
 import { useRoute, type Route } from './router';
 import { CapturarScreen } from './screens/CapturarScreen';
 import { MesScreen } from './screens/MesScreen';
@@ -39,20 +43,30 @@ function Screen({ route }: { route: Route }) {
 
 export function App() {
   const route = useRoute();
+  const settings = useSettings();
+  const tema = settings?.tema ?? 'auto';
+  useEffect(() => {
+    if (tema === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', tema);
+  }, [tema]);
+
   return (
-    <div className="app">
-      <nav className="tabs" aria-label="Seções">
-        <div className="brand">Plano Patrimonial</div>
-        {TABS.map((t) => (
-          <a key={t.route} className="tab" href={`#/${t.route}`} aria-current={route === t.route ? 'page' : undefined}>
-            <Icon name={t.icon} />
-            <span>{t.label}</span>
-          </a>
-        ))}
-      </nav>
-      <main className="main">
-        <Screen route={route} />
-      </main>
-    </div>
+    <ToastProvider>
+      <div className="app">
+        <nav className="tabs" aria-label="Seções">
+          <div className="brand">Plano Patrimonial</div>
+          {TABS.map((t) => (
+            <a key={t.route} className="tab" href={`#/${t.route}`} aria-current={route === t.route ? 'page' : undefined}>
+              <Icon name={t.icon} />
+              <span>{t.label}</span>
+            </a>
+          ))}
+        </nav>
+        <main className="main">
+          <BackupBanner />
+          <Screen route={route} />
+        </main>
+      </div>
+    </ToastProvider>
   );
 }

@@ -1,17 +1,32 @@
 import { describe, expect, it } from 'vitest';
 import type { Debt } from '../db/schemas';
 import {
-  aplicarParcela, aplicarParcelasDoMes, efeitoAmortizacao, mesesRestantes, mesTermino, proximoMesAplicavel,
+  aplicarParcela,
+  aplicarParcelasDoMes,
+  efeitoAmortizacao,
+  mesesRestantes,
+  mesTermino,
+  proximoMesAplicavel,
 } from './dividas';
 
 const divida = (p: Partial<Debt>): Debt => ({
-  id: 'd', nome: 'D', papel: 'outra', saldo: 0, taxaMensal: 0, parcela: 0, ordem: 0, ativo: true, ...p,
+  id: 'd',
+  nome: 'D',
+  papel: 'outra',
+  saldo: 0,
+  taxaMensal: 0,
+  parcela: 0,
+  ordem: 0,
+  ativo: true,
+  ...p,
 });
 
 describe('aplicarParcela', () => {
   it('com juros', () => {
     expect(aplicarParcela({ saldo: 1_000_000, taxaMensal: 2, parcela: 100_000 })).toEqual({
-      saldo: 920_000, juros: 20_000, pago: 100_000,
+      saldo: 920_000,
+      juros: 20_000,
+      pago: 100_000,
     });
   });
   it('sem juros', () => {
@@ -63,7 +78,14 @@ describe('proximoMesAplicavel', () => {
 describe('aplicarParcelasDoMes', () => {
   it('atualiza saldos, capital, juros e gera snapshot', () => {
     const r = aplicarParcelasDoMes(
-      { capital: 500_000, jurosPagos: 1_000, reserva: 2_000_000, longevidadeModo: '2/2', salarioBaseLongevidade: 1_000_000, ultimoMesAplicado: '2026-09' },
+      {
+        capital: 500_000,
+        jurosPagos: 1_000,
+        reserva: 2_000_000,
+        longevidadeModo: '2/2',
+        salarioBaseLongevidade: 1_000_000,
+        ultimoMesAplicado: '2026-09',
+      },
       [
         divida({ id: 'a', nome: 'Consignado', saldo: 1_000_000, taxaMensal: 2, parcela: 100_000 }),
         divida({ id: 'b', nome: 'Acordo', saldo: 50_000, parcela: 20_000 }),

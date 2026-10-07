@@ -33,7 +33,13 @@ describe('duplicados', () => {
 
 describe('recorrências', () => {
   const tx = (mes: string, valor: number, estabelecimento: string, fixoId: string | null = null) => ({
-    tipo: 'saida' as const, mes, valor, estabelecimento, descricao: '', categoria: 'Assinaturas', fixoId,
+    tipo: 'saida' as const,
+    mes,
+    valor,
+    estabelecimento,
+    descricao: '',
+    categoria: 'Assinaturas',
+    fixoId,
   });
   it('detecta valores estáveis em 2+ meses', () => {
     const r = detectarRecorrencias([

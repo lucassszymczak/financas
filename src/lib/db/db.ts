@@ -1,6 +1,15 @@
 import Dexie, { type EntityTable } from 'dexie';
 import type {
-  CategoryRule, Closing, CsvMapping, Debt, FixedItem, KeywordEntry, Receipt, Settings, Snapshot, Transaction,
+  CategoryRule,
+  Closing,
+  CsvMapping,
+  Debt,
+  FixedItem,
+  KeywordEntry,
+  Receipt,
+  Settings,
+  Snapshot,
+  Transaction,
 } from './schemas';
 import { DICIONARIO_INICIAL } from './categories';
 import { stableId } from '../id';

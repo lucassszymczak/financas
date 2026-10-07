@@ -21,10 +21,7 @@ export const DESTINO_CATEGORIA: Record<DestinoExtra, string> = {
  * 3. com o consignado quitado, o restante segue 30% uso livre e 70% patrimônio
  *    (reserva até 30 mil, depois amortização do CDC; a sobra vai para a reserva).
  */
-export function sugerirAlocacao(
-  valor: number,
-  estado: { reserva: number; consignado: number; cdc: number },
-): Alocacao[] {
+export function sugerirAlocacao(valor: number, estado: { reserva: number; consignado: number; cdc: number }): Alocacao[] {
   const out: Alocacao[] = [];
   const add = (destino: DestinoExtra, v: number, motivo: string) => {
     if (v <= 0) return;

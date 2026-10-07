@@ -40,7 +40,10 @@ export type EntradaSimulacao = {
   meses?: number;
 };
 
-export function fluxoBase(projecao: Projecao, mediaFechados: number | null): {
+export function fluxoBase(
+  projecao: Projecao,
+  mediaFechados: number | null,
+): {
   valor: number;
   origem: 'manual' | 'media' | 'padrao';
 } {
