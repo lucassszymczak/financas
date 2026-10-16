@@ -32,7 +32,7 @@ export function Mercado() {
 
   return (
     <div className="tela">
-      <Leitura texto={radar.leituras_secao?.mercado} />
+      <Leitura titulo="🔎 Leitura do mercado" texto={radar.leituras_secao?.mercado} destaque />
       {acoesSemPreco.length > 0 && (
         <details className="aviso-preco">
           <summary>

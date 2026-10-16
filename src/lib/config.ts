@@ -12,12 +12,106 @@ export type Config = {
   limites: Limite[];
   /** Quando a configuração mudou pela última vez (a sincronização fica com a mais nova). */
   atualizadaEm?: string;
+  /** Versão da lista padrão já aplicada (para acrescentar grupos novos a quem já usa o app). */
+  versaoLista?: number;
 };
 
 export const COR_PADRAO = '#005C46';
 export const LARANJA = '#F58220';
 
 const grupo = (nome: string, ids: string[]): GrupoWatch => ({ nome, itens: ids.map((id) => ({ id, ativo: true })) });
+
+/**
+ * Carteira de referência do Ibovespa (vigência set–dez/2026: entrou TEND3; saíram RECV3 e SLCE3).
+ * A regra "grupo:acoes_ibov" traz automaticamente tudo o que a rotina enviar como ação do Ibovespa,
+ * então rebalanceamentos futuros aparecem sem editar esta lista.
+ */
+export const IBOVESPA_REFERENCIA = [
+  'ALOS3',
+  'ABEV3',
+  'ASAI3',
+  'AURE3',
+  'AXIA3',
+  'AXIA6',
+  'AZZA3',
+  'B3SA3',
+  'BBAS3',
+  'BBDC3',
+  'BBDC4',
+  'BBSE3',
+  'BPAC11',
+  'BRAP4',
+  'BRAV3',
+  'BRKM5',
+  'CEAB3',
+  'CMIG4',
+  'CMIN3',
+  'COGN3',
+  'CPFE3',
+  'CPLE3',
+  'CSAN3',
+  'CSNA3',
+  'CURY3',
+  'CXSE3',
+  'CYRE3',
+  'DIRR3',
+  'EGIE3',
+  'EMBJ3',
+  'ENEV3',
+  'ENGI11',
+  'EQTL3',
+  'FLRY3',
+  'GGBR4',
+  'GOAU4',
+  'HAPV3',
+  'HYPE3',
+  'IGTI11',
+  'IRBR3',
+  'ISAE4',
+  'ITSA4',
+  'ITUB4',
+  'KLBN11',
+  'LREN3',
+  'MBRF3',
+  'MGLU3',
+  'MOTV3',
+  'MRVE3',
+  'MULT3',
+  'NATU3',
+  'PETR3',
+  'PETR4',
+  'POMO4',
+  'PRIO3',
+  'PSSA3',
+  'RADL3',
+  'RAIL3',
+  'RAIZ4',
+  'RDOR3',
+  'RENT3',
+  'SANB11',
+  'SBSP3',
+  'SMFT3',
+  'SMTO3',
+  'STBP3',
+  'SUZB3',
+  'TAEE11',
+  'TEND3',
+  'TIMS3',
+  'TOTS3',
+  'UGPA3',
+  'USIM5',
+  'VALE3',
+  'VAMO3',
+  'VBBR3',
+  'VIVA3',
+  'VIVT3',
+  'WEGE3',
+  'YDUQ3',
+];
+
+export const REGRA_IBOV = 'grupo:acoes_ibov';
+export const GRUPO_IBOV = grupo('Ibovespa — carteira completa', [REGRA_IBOV, ...IBOVESPA_REFERENCIA]);
+export const VERSAO_LISTA = 2;
 
 export const WATCHLIST_PADRAO: GrupoWatch[] = [
   grupo('Índices domésticos', ['IBOV', 'IBXX', 'SMLL', 'IDIV', 'IFIX']),
@@ -36,6 +130,7 @@ export const WATCHLIST_PADRAO: GrupoWatch[] = [
     'TESOURO_PRE_*',
     'TESOURO_IPCA_*',
   ]),
+  GRUPO_IBOV,
 ];
 
 export const LIMITES_PADRAO: Limite[] = [
@@ -50,6 +145,7 @@ export const CONFIG_PADRAO: Config = {
   tema: 'sistema',
   watchlist: WATCHLIST_PADRAO,
   limites: LIMITES_PADRAO,
+  versaoLista: VERSAO_LISTA,
 };
 
 /** Completa uma config salva (ou vinda de backup) com os padrões, sem confiar no formato. */
@@ -60,13 +156,30 @@ export function normalizarConfig(c: unknown): Config {
     nomeApp: typeof o.nomeApp === 'string' && o.nomeApp.trim() ? o.nomeApp : CONFIG_PADRAO.nomeApp,
     corDestaque: typeof o.corDestaque === 'string' && /^#[0-9a-f]{6}$/i.test(o.corDestaque) ? o.corDestaque : COR_PADRAO,
     tema,
-    watchlist: Array.isArray(o.watchlist) ? o.watchlist : WATCHLIST_PADRAO,
+    watchlist: Array.isArray(o.watchlist) ? migrarLista(o.watchlist, o.versaoLista ?? 1) : WATCHLIST_PADRAO,
     limites: Array.isArray(o.limites) ? o.limites : LIMITES_PADRAO,
     ...(typeof o.atualizadaEm === 'string' ? { atualizadaEm: o.atualizadaEm } : {}),
+    versaoLista: VERSAO_LISTA,
   };
+}
+
+/** Acrescenta à lista de quem já usa o app os grupos padrão criados depois (sem mexer no que a pessoa editou). */
+function migrarLista(lista: GrupoWatch[], versao: number): GrupoWatch[] {
+  let r = lista;
+  if (versao < 2 && !r.some((g) => g.itens.some((i) => i.id === REGRA_IBOV))) r = [...r, GRUPO_IBOV];
+  return r;
 }
 
 /** Id da watchlist com curinga no fim ("TESOURO_PRE_*") casa com qualquer id que comece igual. */
 export function casaId(padrao: string, id: string): boolean {
   return padrao.endsWith('*') ? id.startsWith(padrao.slice(0, -1)) : padrao === id;
+}
+
+/** Regras da watchlist: "grupo:xxx" (todos do grupo) e "PREFIXO_*" (todos os vencimentos). */
+export const ehRegra = (id: string) => id.startsWith('grupo:') || id.endsWith('*');
+
+export function descreverRegra(id: string): string {
+  if (id.startsWith('grupo:')) return `todos do grupo ${id.slice(6)} (automático)`;
+  if (id.endsWith('*')) return 'todos os vencimentos';
+  return '';
 }

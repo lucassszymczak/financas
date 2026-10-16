@@ -4,6 +4,7 @@ import { diaMes, numero, partesValor } from '../lib/formato';
 import { dadoAntigo } from '../lib/pregao';
 import { serie } from '../lib/precos';
 import { lerLocal, gravarLocal } from '../lib/local';
+import { descreverRegra, ehRegra } from '../lib/config';
 import { useAbrirHistorico } from './HistoricoAtivo';
 import { Sparkline } from './Sparkline';
 
@@ -225,8 +226,8 @@ export function GrupoAtivos({
             <details className="ausentes">
               <summary>+ {ausentes.length} sem dado hoje</summary>
               <p className="mudo pequeno">
-                {ausentes.map((id) => id.replace(/_\*$/, ' (qualquer vencimento)')).join(', ')}. Não vieram no arquivo desta
-                edição.
+                {ausentes.map((id) => (ehRegra(id) ? `${id} (${descreverRegra(id)})` : id)).join(', ')}. Não vieram no arquivo
+                desta edição.
               </p>
             </details>
           )}

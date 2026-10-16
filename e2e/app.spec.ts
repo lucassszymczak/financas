@@ -17,6 +17,25 @@ async function carregarExemplo(page: Page) {
 test('boas-vindas, exemplo e tela Hoje', async ({ page }) => {
   await carregarExemplo(page);
   await expect(page.getByText('🌡️ Termômetro')).toBeVisible();
+  // Leituras em destaque logo depois do termômetro, antes de alertas, KPIs e notícias.
+  const painel = page.locator('.painel-leituras');
+  await expect(painel.getByRole('heading', { name: '🧠 Leituras do dia' })).toBeVisible();
+  await expect(painel.getByRole('link', { name: /No campo/ })).toHaveAttribute('href', '#/clima');
+  await expect(painel.getByRole('link', { name: /Guarapuava/ })).toBeVisible();
+  const ordem = await page.evaluate(() =>
+    ['.termometro', '.painel-leituras', '.kpis', '.lista-cards'].map(
+      (s) => document.querySelector(s)!.getBoundingClientRect().top,
+    ),
+  );
+  expect([...ordem].sort((a, b) => a - b)).toEqual(ordem);
+  // Nome do app e data no topo aparecem inteiros (sem reticências), também no celular.
+  const cortados = await page.evaluate(
+    () => [...document.querySelectorAll('.marca-nome, .topo-edicao')].filter((e) => e.scrollWidth > e.clientWidth).length,
+  );
+  expect(cortados).toBe(0);
+  // Ticker dividido por seções.
+  await expect(page.locator('.ticker-secao').first()).toHaveText('Índices');
+  await expect(page.locator('.ticker-secao', { hasText: 'Moedas' }).first()).toBeAttached();
   await expect(page.getByLabel('Indicadores principais').getByText('Dólar comercial')).toBeVisible();
   await expect(page.getByText('3 cotações com dado antigo')).toBeVisible();
   await expect(page.getByText('Guarapuava (PR): frio (17/10 a 20/10)')).toBeVisible();
@@ -89,10 +108,12 @@ test('mercado: lista limpa, preço, grupos recolhíveis e mapa de calor', async 
   const blue = page.getByRole('button', { name: /Blue chips/ });
   await expect(blue).toHaveAttribute('aria-expanded', 'true');
   await expect(blue).toContainText('▼ 4');
-  await expect(page.getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toContainText('sem preço');
+  await expect(page.locator('#grupo-w-Blue-chips').getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toContainText(
+    'sem preço',
+  );
   await blue.click();
   await expect(blue).toHaveAttribute('aria-expanded', 'false');
-  await expect(page.getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toHaveCount(0);
+  await expect(page.locator('#grupo-w-Blue-chips').getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toHaveCount(0);
   // Itens ausentes ficam numa linha só.
   await expect(page.getByText('+ 4 sem dado hoje')).toBeVisible();
   await semRolagemHorizontal(page);
@@ -108,7 +129,9 @@ test('mercado: lista limpa, preço, grupos recolhíveis e mapa de calor', async 
   await page.goto('./#/mercado');
   await page.getByRole('button', { name: '☰ Lista' }).click();
   await page.getByRole('button', { name: /Blue chips/ }).click();
-  await expect(page.getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toContainText('30,12');
+  await expect(page.locator('#grupo-w-Blue-chips').getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toContainText(
+    '30,12',
+  );
 });
 
 test('detalhe do ativo pelo ticker: gráfico, estatísticas e notícias', async ({ page }) => {
