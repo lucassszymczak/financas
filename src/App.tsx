@@ -12,6 +12,8 @@ import { EmBreve } from './screens/EmBreve';
 import { Mercado } from './screens/Mercado';
 import { Agro } from './screens/Agro';
 import { Historico } from './screens/Historico';
+import { Clima } from './screens/Clima';
+import { Agenda } from './screens/Agenda';
 
 const PRINCIPAIS: AbaId[] = ['hoje', 'mercado', 'agro', 'clima'];
 
@@ -23,6 +25,10 @@ function Tela({ aba }: { aba: AbaId }): ReactNode {
       return <Mercado />;
     case 'agro':
       return <Agro />;
+    case 'clima':
+      return <Clima />;
+    case 'agenda':
+      return <Agenda />;
     case 'historico':
       return <Historico />;
     default:

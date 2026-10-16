@@ -1136,3 +1136,112 @@ label {
 .lista-edicoes .botoes {
   flex-wrap: nowrap;
 }
+
+/* ---------- Clima ---------- */
+.resumo-clima {
+  font-size: 1rem;
+  margin: 0;
+}
+.dias-clima {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+}
+.dia-clima {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  padding: 0.7rem;
+  box-shadow: var(--sombra);
+}
+.dia-clima.hoje {
+  border: 2px solid var(--destaque);
+}
+.dia-clima-data strong {
+  text-transform: capitalize;
+}
+.dia-clima-icone {
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+.dia-clima-temp {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.frio {
+  color: var(--info-texto);
+}
+.quente {
+  color: var(--laranja-texto);
+}
+.dia-clima-chuva {
+  font-size: 0.85rem;
+}
+.dia-clima-cond {
+  font-size: 0.82rem;
+  color: var(--texto-mudo);
+}
+
+/* ---------- Agenda ---------- */
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+.agenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+.agenda-hoje {
+  border: 2px solid var(--destaque);
+}
+.agenda-passada {
+  opacity: 0.75;
+}
+.agenda li {
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--borda);
+}
+.agenda li:last-child {
+  border-bottom: 0;
+}
+.agenda-hora {
+  flex: none;
+  width: 4.2rem;
+  font-weight: 800;
+  color: var(--destaque);
+  font-size: 0.95rem;
+}
+.agenda-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.agenda-titulo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+.agenda-titulo a {
+  color: inherit;
+}
+.agenda-mede {
+  font-size: 0.9rem;
+}
