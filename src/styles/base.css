@@ -1903,3 +1903,14 @@ body.com-modal {
     align-items: start;
   }
 }
+
+/* ---------- Busca de ativos ---------- */
+.busca input {
+  width: 100%;
+  min-height: 46px;
+  padding-left: 2.3rem;
+  border-radius: 12px;
+  background: var(--superficie)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23889691' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E")
+    no-repeat 0.75rem center;
+}

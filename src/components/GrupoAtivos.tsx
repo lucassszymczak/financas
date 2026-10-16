@@ -78,6 +78,7 @@ function Etiquetas({ p, edicaoData }: { p: Preco; edicaoData: string }) {
 }
 
 const CHAVE_FECHADOS = 'radar.grupos.fechados';
+const CHAVE_ABERTOS = 'radar.grupos.abertos';
 
 /**
  * Grupo recolhível de ativos (Mercado e Agro).
@@ -93,6 +94,7 @@ export function GrupoAtivos({
   ordem,
   radares,
   topo,
+  sempreAberto = false,
 }: {
   chave: string;
   titulo: string;
@@ -103,17 +105,29 @@ export function GrupoAtivos({
   ordem: Ordem;
   radares: Radar[];
   topo?: ReactNode;
+  sempreAberto?: boolean;
 }) {
   const abrir = useAbrirHistorico();
   const [aberto, setAberto] = useState(() => {
+    if (sempreAberto) return true;
+    // Grupos grandes (ex.: todas as ações do Ibovespa) começam fechados, salvo se o usuário abriu antes.
     const fechados = lerLocal<string[]>(CHAVE_FECHADOS, []);
-    return itens.length > 0 && !fechados.includes(chave);
+    const abertos = lerLocal<string[]>(CHAVE_ABERTOS, []);
+    if (abertos.includes(chave)) return true;
+    return itens.length > 0 && itens.length <= 15 && !fechados.includes(chave);
   });
   const alternar = () => {
     const fechados = new Set(lerLocal<string[]>(CHAVE_FECHADOS, []));
-    if (aberto) fechados.add(chave);
-    else fechados.delete(chave);
+    const abertos = new Set(lerLocal<string[]>(CHAVE_ABERTOS, []));
+    if (aberto) {
+      fechados.add(chave);
+      abertos.delete(chave);
+    } else {
+      fechados.delete(chave);
+      abertos.add(chave);
+    }
     gravarLocal(CHAVE_FECHADOS, [...fechados]);
+    gravarLocal(CHAVE_ABERTOS, [...abertos]);
     setAberto(!aberto);
   };
 

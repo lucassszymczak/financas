@@ -133,6 +133,27 @@ test('detalhe do ativo pelo ticker: gráfico, estatísticas e notícias', async 
   await semRolagemHorizontal(page);
 });
 
+test('busca no universo amplo de cotações e mostra os dados do pregão', async ({ page }) => {
+  await carregarExemplo(page);
+  await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
+  await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
+  await page.goto('./#/mercado');
+  await page.getByLabel('Buscar ativo').fill('wege');
+  await expect(page.getByRole('button', { name: /Resultados \(1\)/ })).toBeVisible();
+  await page.getByRole('button', { name: 'WEG ON: ver detalhes' }).click();
+  const det = page.getByRole('dialog');
+  await expect(det.getByText('Volume financeiro')).toBeVisible();
+  await expect(det.getByText('R$ 612,0 mi')).toBeVisible();
+  await expect(det.getByText('Faixa de 52 semanas')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.getByLabel('Buscar ativo').fill('');
+  // A watchlist passa a mostrar ativos que vieram só no bloco amplo.
+  await expect(page.getByRole('button', { name: 'Small Caps: ver detalhes' })).toBeVisible();
+  // O ticker continua só com o Radar curado.
+  await expect(page.locator('.ticker-item', { hasText: 'WEGE3' })).toHaveCount(0);
+  await semRolagemHorizontal(page);
+});
+
 test('calculadora CDB x LCA', async ({ page }) => {
   await carregarExemplo(page);
   await page.goto('./#/calculadoras');

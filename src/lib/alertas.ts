@@ -2,7 +2,7 @@ import type { Preco, Radar } from '../schema/radar';
 import type { Limite } from './config';
 import { diaMes, numeroAuto, valorComUnidade } from './formato';
 import { dadoAntigo } from './pregao';
-import { todosPrecos } from './precos';
+import { precosCurados, todosPrecos } from './precos';
 
 export type NivelAlerta = 'info' | 'atencao' | 'alerta' | 'perigo';
 
@@ -97,7 +97,8 @@ export function calcularAlertas(r: Radar, limites: Limite[]): Alerta[] {
     });
   }
 
-  const antigos = precos.filter((p) => dadoAntigo(p, r.edicao.data));
+  // O resumo de dado antigo olha só o Radar curado (o universo amplo poluiria a faixa de alertas).
+  const antigos = precosCurados(r).filter((p) => dadoAntigo(p, r.edicao.data));
   if (antigos.length) {
     alertas.push({
       chave: 'antigos',

@@ -15,13 +15,49 @@ export function taxasComoPrecos(r: Radar): Preco[] {
   ];
 }
 
-/** Todos os itens com preço de uma edição (cotações, agro e taxas). */
-export function todosPrecos(r: Radar): Preco[] {
+/** Itens do bloco de cotações amplas, já com data, fonte e nome herdados do bloco. Ids do Radar curado têm prioridade. */
+export function cotacoesAmplas(r: Radar): Preco[] {
+  const b = r.cotacoes_amplas;
+  if (!b) return [];
+  const curados = new Set([...r.cotacoes, ...r.agro].map((c) => c.id));
+  return b.itens
+    .filter((i) => !curados.has(i.id))
+    .map((i) => ({
+      ...i,
+      nome: i.nome ?? i.id,
+      data_ref: i.data_ref ?? b.data_ref ?? null,
+      fonte: i.fonte ?? b.fonte ?? null,
+      url: i.url ?? b.url ?? null,
+      nota_fonte: i.nota_fonte ?? b.nota_fonte ?? null,
+      kpi: false,
+    }));
+}
+
+/** Itens curados do Radar (cotações, agro e taxas): os que entram no ticker, KPIs e resumo de dado antigo. */
+export function precosCurados(r: Radar): Preco[] {
   return [...r.cotacoes, ...r.agro, ...taxasComoPrecos(r)];
 }
 
+const cacheTodos = new WeakMap<Radar, Preco[]>();
+const cacheMapa = new WeakMap<Radar, Map<string, Preco>>();
+
+/** Todos os itens com preço de uma edição (curados + cotações amplas). */
+export function todosPrecos(r: Radar): Preco[] {
+  let t = cacheTodos.get(r);
+  if (!t) {
+    t = [...precosCurados(r), ...cotacoesAmplas(r)];
+    cacheTodos.set(r, t);
+  }
+  return t;
+}
+
 export function mapaPrecos(r: Radar): Map<string, Preco> {
-  return new Map(todosPrecos(r).map((p) => [p.id, p]));
+  let m = cacheMapa.get(r);
+  if (!m) {
+    m = new Map(todosPrecos(r).map((p) => [p.id, p]));
+    cacheMapa.set(r, m);
+  }
+  return m;
 }
 
 /** Juros são exibidos em pb e têm a cor neutra no ticker. */
@@ -39,6 +75,19 @@ export const NOMES_GRUPOS: Record<string, string> = {
   acoes_bluechips: 'Ações blue chips',
   acoes_agro: 'Ações agro e proteína',
   renda_fixa: 'Renda fixa',
+  acoes_ibov: 'Ações do Ibovespa',
+  acoes_outras: 'Outras ações',
+  indices_setoriais: 'Índices setoriais B3',
+  fiis: 'Fundos imobiliários',
+  bdrs: 'BDRs',
+  etfs: 'ETFs',
+  moedas_mundo: 'Moedas no mundo',
+  cripto: 'Criptoativos',
+  curva_di: 'Curva de juros (DI)',
+  tesouro: 'Tesouro Direto',
+  commodities_agricolas: 'Commodities agrícolas',
+  commodities_metais: 'Metais',
+  commodities_energia: 'Energia',
   [GRUPO_TAXAS]: 'Taxas de referência',
 };
 

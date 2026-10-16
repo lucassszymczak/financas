@@ -65,10 +65,36 @@ const precoComum = {
   url: texto,
   nota_fonte: nota,
   kpi: z.boolean().nullable().optional(),
+  // Detalhes opcionais do pregão (mostrados no pop-up do ativo quando vierem).
+  setor: texto,
+  abertura: numero,
+  maxima: numero,
+  minima: numero,
+  fechamento_anterior: numero,
+  volume_financeiro: numero,
+  var_semana_pct: numero,
+  var_mes_pct: numero,
+  var_ano_pct: numero,
+  var_12m_pct: numero,
+  minima_52s: numero,
+  maxima_52s: numero,
 };
 
 export const cotacaoSchema = z.object({ ...precoComum, grupo: z.string() });
 export const agroSchema = z.object({ ...precoComum, regiao: z.string() });
+
+/**
+ * Universo amplo de cotações do dia (opcional). Não entra no ticker, nos KPIs nem no texto do Radar:
+ * alimenta a busca, o Mercado → Todos, a watchlist e o histórico.
+ * `data_ref`, `fonte` e `url` do bloco valem para os itens que não trouxerem os próprios.
+ */
+export const cotacoesAmplasSchema = z.object({
+  data_ref: dataISO.nullable().optional(),
+  fonte: texto,
+  url: texto,
+  nota_fonte: nota,
+  itens: z.array(cotacaoSchema.extend({ nome: z.string().optional() })).default([]),
+});
 
 export const taxasSchema = z.object({
   selic_meta: numero,
@@ -154,6 +180,7 @@ export const radarSchema = z.object({
   leituras_secao: z.record(z.string(), z.string().nullable()).nullable().optional(),
   cotacoes: z.array(cotacaoSchema).default([]),
   agro: z.array(agroSchema).default([]),
+  cotacoes_amplas: cotacoesAmplasSchema.nullable().optional(),
   taxas_referencia: taxasSchema.nullable().optional(),
   clima: climaSchema.nullable().optional(),
   agenda: z.array(eventoAgendaSchema).default([]),
@@ -168,6 +195,7 @@ export type Noticia = z.infer<typeof noticiaSchema>;
 export type Cotacao = z.infer<typeof cotacaoSchema>;
 export type ItemAgro = z.infer<typeof agroSchema>;
 export type Taxas = z.infer<typeof taxasSchema>;
+export type CotacoesAmplas = z.infer<typeof cotacoesAmplasSchema>;
 export type RegiaoClima = z.infer<typeof regiaoClimaSchema>;
 export type AlertaClima = z.infer<typeof alertaClimaSchema>;
 export type EventoAgenda = z.infer<typeof eventoAgendaSchema>;

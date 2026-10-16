@@ -709,5 +709,97 @@
     "Milho CBOT e Cepea de 15/10 indisponíveis: usados dados de 14/10.",
     "Preços em R$ das ações não coletados nesta edição (só variação)."
   ],
-  "aviso": "Material informativo de uso interno, não é recomendação de investimento."
+  "aviso": "Material informativo de uso interno, não é recomendação de investimento.",
+  "cotacoes_amplas": {
+    "data_ref": "2026-10-19",
+    "fonte": "Fonte de teste",
+    "nota_fonte": 4,
+    "itens": [
+      {
+        "id": "WEGE3",
+        "nome": "WEG ON",
+        "grupo": "acoes_ibov",
+        "setor": "Bens industriais",
+        "valor": 41.2,
+        "unidade": "R$",
+        "variacao_pct": 0.8,
+        "abertura": 40.9,
+        "maxima": 41.5,
+        "minima": 40.7,
+        "fechamento_anterior": 40.87,
+        "volume_financeiro": 612000000,
+        "var_mes_pct": 3.1,
+        "var_ano_pct": -5.4,
+        "var_12m_pct": -2.2,
+        "minima_52s": 35.1,
+        "maxima_52s": 48.9
+      },
+      {
+        "id": "BBDC4",
+        "nome": "Bradesco PN",
+        "grupo": "acoes_ibov",
+        "setor": "Financeiro",
+        "valor": 15.4,
+        "unidade": "R$",
+        "variacao_pct": -0.6
+      },
+      {
+        "id": "PRIO3",
+        "nome": "PRIO ON",
+        "grupo": "acoes_ibov",
+        "setor": "Petróleo e gás",
+        "valor": 44.1,
+        "unidade": "R$",
+        "variacao_pct": 1.9
+      },
+      {
+        "id": "SMLL",
+        "nome": "Small Caps",
+        "grupo": "indices_br",
+        "valor": 2210.5,
+        "unidade": "pts",
+        "variacao_pct": -0.9
+      },
+      {
+        "id": "IFNC",
+        "nome": "Índice Financeiro",
+        "grupo": "indices_setoriais",
+        "valor": 15890,
+        "unidade": "pts",
+        "variacao_pct": -1.1
+      },
+      {
+        "id": "DAX",
+        "nome": "DAX",
+        "grupo": "indices_mundo",
+        "valor": 24100,
+        "unidade": "pts",
+        "variacao_pct": 0.4
+      },
+      {
+        "id": "BTC",
+        "nome": "Bitcoin",
+        "grupo": "cripto",
+        "valor": 610000,
+        "unidade": "R$",
+        "variacao_pct": 2.3,
+        "data_ref": "2026-10-20"
+      },
+      {
+        "id": "MXRF11",
+        "nome": "Maxi Renda",
+        "grupo": "fiis",
+        "valor": 9.6,
+        "unidade": "R$",
+        "variacao_pct": 0.1
+      },
+      {
+        "id": "IBOV",
+        "nome": "Ibovespa (duplicado, deve ser ignorado)",
+        "grupo": "indices_br",
+        "valor": 1,
+        "unidade": "pts"
+      }
+    ]
+  }
 }

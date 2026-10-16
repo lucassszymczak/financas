@@ -34,6 +34,7 @@ Legenda das tabelas: **Obrig.** = obrigatório. "Pode ser null" = aceita `null`.
 | `leituras_secao` | objeto texto→texto | não, pode ser null | ver [leituras_secao](#leituras_secao) |
 | `cotacoes` | lista de [cotação](#cotacoes) | não | |
 | `agro` | lista de [item agro](#agro) | não | |
+| `cotacoes_amplas` | objeto | não, pode ser null | Universo amplo de cotações; ver [cotacoes_amplas](#cotacoes_amplas). |
 | `taxas_referencia` | objeto | não, pode ser null | ver [taxas_referencia](#taxas_referencia) |
 | `clima` | objeto | não, pode ser null | ver [clima](#clima) |
 | `agenda` | lista de [evento](#agenda) | não | |
@@ -129,6 +130,13 @@ Cada item é um ativo. Aparece no ticker, nas tabelas do Mercado (agrupado por `
 | `url` | texto | não, pode ser null | |
 | `nota_fonte` | número 0 a 5 | não, pode ser null | |
 | `kpi` | verdadeiro/falso | não | `true` = vira card grande na tela Hoje (com mini-gráfico). Padrão: `false`. |
+| `setor` | texto | não | `"Petróleo e gás"`. Entra na busca e no detalhe. |
+| `abertura`, `maxima`, `minima`, `fechamento_anterior` | número | não, pode ser null | Preços do pregão do `data_ref`, na mesma unidade de `valor`. |
+| `volume_financeiro` | número | não, pode ser null | Em R$ (ex.: `612000000`). O app abrevia para "R$ 612,0 mi". |
+| `var_semana_pct`, `var_mes_pct`, `var_ano_pct`, `var_12m_pct` | número | não, pode ser null | Variação acumulada em % (ex.: `-5.4`). |
+| `minima_52s`, `maxima_52s` | número | não, pode ser null | Faixa de 52 semanas. |
+
+Os campos de detalhe do pregão (de `setor` a `maxima_52s`) valem para `cotacoes`, `agro` e `cotacoes_amplas`. Todos são opcionais: o pop-up do ativo só mostra os que vierem.
 
 ### Ids recomendados
 
@@ -155,6 +163,43 @@ Igual a `cotacoes`, trocando `grupo` por `regiao`.
 |---|---|---|---|
 | `regiao` | texto | **sim** | Um bloco por região. Nomes conhecidos: `chicago`, `brasil`, `guarapuava`, `noroeste_paulista`. Outros aparecem com o nome formatado. |
 | demais campos | | | Iguais aos de [cotacoes](#cotacoes) (`id`, `nome`, `valor`, `unidade`, `variacao_pct`, `data_ref`, `periodo`, `fonte`, `url`, `nota_fonte`, `kpi`…). |
+
+## `cotacoes_amplas`
+
+Bloco **opcional** com o universo grande de cotações do dia: todas as ações do Ibovespa, índices setoriais, FIIs, bolsas do mundo, moedas, commodities, cripto, curva de juros etc. Ele **não muda o Radar curado**:
+
+- não entra no ticker, nos KPIs, no texto da tela Hoje nem no resumo de "dado antigo";
+- aparece no **Mercado → Todos**, na **busca de ativos**, na **watchlist** (preenchendo o que antes era "sem dado hoje"), no **histórico** e nos gráficos.
+
+Se um `id` aparecer em `cotacoes`/`agro` **e** em `cotacoes_amplas`, vale o do Radar curado.
+
+| Campo | Tipo | Obrig. | Observação |
+|---|---|---|---|
+| `data_ref` | data | não, pode ser null | Data padrão dos itens (normalmente o último pregão). |
+| `fonte`, `url` | texto | não, pode ser null | Fonte padrão dos itens. |
+| `nota_fonte` | número 0 a 5 | não, pode ser null | Nota padrão. |
+| `itens` | lista | não | Mesmos campos de [cotacoes](#cotacoes); `nome` pode faltar (o app usa o `id`). Cada item pode sobrescrever `data_ref`, `fonte`, `url` e `nota_fonte`. |
+
+Grupos com nome próprio no app (outros aparecem com o nome formatado): `acoes_ibov`, `acoes_outras`, `indices_br`, `indices_setoriais`, `indices_mundo`, `fiis`, `bdrs`, `etfs`, `moedas`, `moedas_mundo`, `cripto`, `juros_br`, `curva_di`, `tesouro`, `juros_mundo`, `commodities`, `commodities_agricolas`, `commodities_metais`, `commodities_energia`.
+
+Exemplo compacto:
+
+```json
+"cotacoes_amplas": {
+  "data_ref": "2026-10-15",
+  "fonte": "B3",
+  "nota_fonte": 4.5,
+  "itens": [
+    {"id": "WEGE3", "nome": "WEG ON", "grupo": "acoes_ibov", "setor": "Bens industriais", "valor": 41.20, "unidade": "R$", "variacao_pct": 0.8,
+     "abertura": 40.90, "maxima": 41.50, "minima": 40.70, "fechamento_anterior": 40.87, "volume_financeiro": 612000000,
+     "var_mes_pct": 3.1, "var_ano_pct": -5.4, "var_12m_pct": -2.2, "minima_52s": 35.10, "maxima_52s": 48.90},
+    {"id": "IFNC", "nome": "Índice Financeiro", "grupo": "indices_setoriais", "valor": 15890, "unidade": "pts", "variacao_pct": -1.1},
+    {"id": "BTC", "nome": "Bitcoin", "grupo": "cripto", "valor": 610000, "unidade": "R$", "variacao_pct": 2.3, "data_ref": "2026-10-16", "fonte": "Mercado Bitcoin"}
+  ]
+}
+```
+
+Instruções prontas para a rotina gerar este bloco: [`rotina-cotacoes.md`](rotina-cotacoes.md).
 
 ## `taxas_referencia`
 
