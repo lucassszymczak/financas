@@ -8,13 +8,13 @@ import { useTemaEfetivo } from './tema';
 import { dataCurta, dataLonga } from './lib/formato';
 import { BoasVindas } from './screens/BoasVindas';
 import { Hoje } from './screens/Hoje';
-import { EmBreve } from './screens/EmBreve';
 import { Mercado } from './screens/Mercado';
 import { Agro } from './screens/Agro';
 import { Historico } from './screens/Historico';
 import { Clima } from './screens/Clima';
 import { Agenda } from './screens/Agenda';
 import { Calculadoras } from './screens/Calculadoras';
+import { Config } from './screens/Config';
 
 const PRINCIPAIS: AbaId[] = ['hoje', 'mercado', 'agro', 'clima'];
 
@@ -34,8 +34,8 @@ function Tela({ aba }: { aba: AbaId }): ReactNode {
       return <Calculadoras />;
     case 'historico':
       return <Historico />;
-    default:
-      return <EmBreve nome={ABAS.find((a) => a.id === aba)!.nome} />;
+    case 'config':
+      return <Config />;
   }
 }
 

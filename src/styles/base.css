@@ -762,6 +762,12 @@ label {
   font-size: 1rem;
 }
 .chevron {
+  flex: none;
+  align-self: flex-start;
+  display: inline-block;
+  width: 1.2em;
+  line-height: 1.2;
+  text-align: center;
   transition: transform 0.15s;
   color: var(--texto-mudo);
 }
@@ -1357,4 +1363,72 @@ label {
 .detalhe-anos ul {
   margin: 0;
   padding-left: 1.1rem;
+}
+
+/* ---------- Configurações ---------- */
+.watch {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.watch-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.watch-nome {
+  font-weight: 700;
+  flex: 1 1 180px;
+}
+.watch-itens,
+.limites {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.watch-itens li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--borda);
+  padding: 0.15rem 0;
+}
+.watch-itens .check {
+  font-weight: 400;
+  min-width: 0;
+}
+.watch-itens .botoes {
+  flex-wrap: nowrap;
+  gap: 0.3rem;
+}
+.watch-grupo form input {
+  flex: 1 1 140px;
+}
+.limites li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--borda);
+}
+.limites li > input:first-child {
+  width: 9rem;
+}
+.limites li > input[inputmode='decimal'] {
+  width: 7rem;
+}
+.limite-nome {
+  flex-basis: 100%;
+}
+.divisor {
+  border: 0;
+  border-top: 1px solid var(--borda);
+  width: 100%;
+  margin: 0.2rem 0;
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }

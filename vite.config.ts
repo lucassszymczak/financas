@@ -1,6 +1,9 @@
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import { readFileSync } from 'node:fs';
+
+const pacote = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as { version: string };
 
 /**
  * Gera o service worker com a lista de arquivos do build.
@@ -13,7 +16,14 @@ function serviceWorker(): Plugin {
     apply: 'build',
     generateBundle(_options, bundle) {
       const files = Object.keys(bundle).filter((f) => !f.endsWith('.map'));
-      const assets = ['./', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', ...files.map((f) => `./${f}`)];
+      const assets = [
+        './',
+        './manifest.webmanifest',
+        './icon.svg',
+        './icon-192.png',
+        './icon-512.png',
+        ...files.map((f) => `./${f}`),
+      ];
       const version = Date.now().toString(36);
       const source = `const CACHE = 'radar-' + ${JSON.stringify(version)};
 const ASSETS = ${JSON.stringify(assets)};
@@ -50,6 +60,7 @@ self.addEventListener('fetch', (event) => {
 export default defineConfig({
   // Caminho relativo: funciona no GitHub Pages (subpasta /nome-do-repositorio/) sem ajuste.
   base: './',
+  define: { __VERSAO__: JSON.stringify(pacote.version) },
   plugins: [react(), serviceWorker()],
   build: { target: 'es2022' },
   test: {
