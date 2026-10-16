@@ -34,6 +34,21 @@
   --destaque: #005c46;
   --destaque-texto: #ffffff;
   --destaque-suave: #d9e7e3;
+  /* Mapa de calor: fundo e texto por intensidade (a = alta, b = baixa) */
+  --mapa-a3: #13703f;
+  --mapa-a3-texto: #ffffff;
+  --mapa-a2: #bfe6cf;
+  --mapa-a2-texto: #0b3d22;
+  --mapa-a1: #e3f4ea;
+  --mapa-a1-texto: #0b3d22;
+  --mapa-b1: #fbe4e4;
+  --mapa-b1-texto: #6e1418;
+  --mapa-b2: #f4bcbc;
+  --mapa-b2-texto: #5c1014;
+  --mapa-b3: #b3262c;
+  --mapa-b3-texto: #ffffff;
+  --mapa-n0: #edf1ef;
+  --mapa-n0-texto: #4b5a55;
 }
 
 :root[data-theme='dark'] {
@@ -66,4 +81,18 @@
   --destaque: #3fae8f;
   --destaque-texto: #000000;
   --destaque-suave: #17302a;
+  --mapa-a3: #0f6b3d;
+  --mapa-a3-texto: #ffffff;
+  --mapa-a2: #0d4f2f;
+  --mapa-a2-texto: #e9fff2;
+  --mapa-a1: #123c28;
+  --mapa-a1-texto: #d5f5e3;
+  --mapa-b1: #4a1d20;
+  --mapa-b1-texto: #ffe1e1;
+  --mapa-b2: #6b2226;
+  --mapa-b2-texto: #fff0f0;
+  --mapa-b3: #8f2329;
+  --mapa-b3-texto: #ffffff;
+  --mapa-n0: #1b2421;
+  --mapa-n0-texto: #9eada8;
 }

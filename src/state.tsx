@@ -37,17 +37,19 @@ export function EstadoProvider({ children }: { children: ReactNode }) {
     }
     lista.sort((a, b) => b.data.localeCompare(a.data));
     setEdicoes(lista);
+    setConfig(await db.lerConfig());
   }, []);
 
   useEffect(() => {
-    Promise.all([recarregar(), db.lerConfig().then(setConfig)])
+    recarregar()
       .catch((e) => console.error('Falha ao abrir o banco local', e))
       .finally(() => setCarregando(false));
   }, [recarregar]);
 
   const salvarConfig = useCallback(async (c: Config) => {
-    setConfig(c);
-    await db.salvarConfig(c);
+    const nova = { ...c, atualizadaEm: new Date().toISOString() };
+    setConfig(nova);
+    await db.salvarConfig(nova);
   }, []);
 
   const valor = useMemo<Estado>(() => {

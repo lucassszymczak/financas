@@ -81,27 +81,56 @@ test('edição repetida pergunta antes de substituir', async ({ page }) => {
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
 
-test('mercado mostra preço das ações e avisa quando falta', async ({ page }) => {
+test('mercado: lista limpa, preço, grupos recolhíveis e mapa de calor', async ({ page }) => {
   await carregarExemplo(page);
   await page.goto('./#/mercado');
-  await expect(page.getByText(/ações vieram sem preço no arquivo/)).toBeVisible();
-  await expect(page.getByText('sem preço no arquivo', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(/ações sem preço no arquivo de hoje/)).toBeVisible();
+  // Grupo com dado vem aberto; o resumo mostra quedas e ausentes.
+  const blue = page.getByRole('button', { name: /Blue chips/ });
+  await expect(blue).toHaveAttribute('aria-expanded', 'true');
+  await expect(blue).toContainText('▼ 4');
+  await expect(page.getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toContainText('sem preço');
+  await blue.click();
+  await expect(blue).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toHaveCount(0);
+  // Itens ausentes ficam numa linha só.
+  await expect(page.getByText('+ 4 sem dado hoje')).toBeVisible();
+  await semRolagemHorizontal(page);
+
+  // Mapa de calor
+  await page.getByRole('button', { name: '▦ Mapa' }).click();
+  await expect(page.locator('.bloco.mapa-b2').first()).toBeVisible();
+  await semRolagemHorizontal(page);
+
+  // Com preço no arquivo
   await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
   await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
   await page.goto('./#/mercado');
-  await expect(page.getByRole('row', { name: /Petrobras PN/ })).toContainText('R$ 30,12');
+  await page.getByRole('button', { name: '☰ Lista' }).click();
+  await page.getByRole('button', { name: /Blue chips/ }).click();
+  await expect(page.getByRole('button', { name: 'Petrobras PN: ver detalhes' })).toContainText('30,12');
 });
 
-test('mercado ordena e abre o histórico do ativo', async ({ page }) => {
+test('detalhe do ativo pelo ticker: gráfico, estatísticas e notícias', async ({ page }) => {
   await carregarExemplo(page);
-  await page.goto('./#/mercado');
-  await expect(page.getByText('sem dado hoje').first()).toBeVisible();
-  await page.getByRole('button', { name: 'Todos os grupos' }).click();
   await page
-    .getByRole('button', { name: /Ibovespa/ })
+    .getByTestId('input-arquivo')
     .first()
-    .click();
-  await expect(page.getByRole('dialog')).toContainText('O gráfico aparece a partir de duas edições');
+    .setInputFiles(['e2e/fixtures/radar_2026-10-19.json', 'e2e/fixtures/radar_2026-10-20.json']);
+  await expect(page.getByText('2 edições carregadas.')).toBeVisible();
+  // O ticker está sempre rolando: focar o item pausa a animação; Enter abre o detalhe.
+  await page.locator('.ticker-item').first().focus();
+  await page.keyboard.press('Enter');
+  const det = page.getByRole('dialog');
+  await expect(det.getByRole('heading', { name: 'Ibovespa' })).toBeVisible();
+  await expect(det.locator('.grafico canvas')).toBeVisible();
+  await expect(det.getByText('Mínimo · máximo')).toBeVisible();
+  await expect(det.getByText('Edições com dado')).toBeVisible();
+  await expect(det.getByText('No Radar de hoje')).toBeVisible();
+  await expect(det.getByText('Datafolha: empate técnico')).toBeVisible();
+  await det.getByRole('button', { name: '7d' }).click();
+  await expect(det.locator('.grafico canvas')).toBeVisible();
+  await semRolagemHorizontal(page);
 });
 
 test('calculadora CDB x LCA', async ({ page }) => {

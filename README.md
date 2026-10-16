@@ -45,18 +45,44 @@ O navegador pode apagar dados de sites em algumas situações (falta de espaço,
 - **Importar backup** restaura esse arquivo. Edições com a mesma data são substituídas e as outras são mantidas.
 - Se aparecer o botão **Pedir armazenamento persistente**, toque nele. Instalar o app (PWA) também ajuda a proteger os dados.
 
-## 5. Como o app funciona
+## 5. Sincronizar celular e computador
+
+O app pode manter o mesmo histórico e as mesmas configurações em todos os seus aparelhos. Os dados ficam num **Gist secreto** da sua conta do GitHub. Gist é um espaço de arquivos do próprio GitHub; o secreto não aparece em buscas nem no seu perfil.
+
+1. No app, abra **Configurações → Sincronização entre aparelhos** e toque em **Abra esta página do GitHub**. A página já vem com a permissão **gist** marcada.
+2. Em *Expiration*, escolha *No expiration* (ou 1 ano), toque em **Generate token** e copie a chave, que começa com `ghp_`.
+3. Cole a chave no app e toque em **Ativar sincronização**.
+4. Nos outros aparelhos, faça só os passos 1 e 3, colando **a mesma chave**. Guarde a chave num lugar seguro, como o app de senhas do celular: o GitHub só a mostra uma vez.
+
+Depois disso, cada aparelho sincroniza sozinho: ao abrir o app e alguns segundos depois de carregar um arquivo, apagar uma edição ou mudar uma configuração. O botão **Sincronizar agora** força na hora.
+
+Como os dados de dois aparelhos se juntam:
+- **Edições:** juntam-se as dos dois aparelhos; se a mesma data foi carregada nos dois, vale a carregada por último.
+- **Edições apagadas:** somem também nos outros aparelhos.
+- **Configurações:** vale a alterada por último.
+
+A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em github.com → Settings → Developer settings → Personal access tokens.
+
+## 6. Como o app funciona
 
 | Aba | O que mostra |
 |---|---|
 | 🏠 **Hoje** | KPIs (itens com `kpi: true`) com mini-gráfico, Termômetro, alertas, destaques e notícias (toque para expandir), Leitura do dia, limitações e aviso. |
-| 📊 **Mercado** | **Minha lista** (watchlist configurável; ativos ausentes aparecem como "sem dado hoje") ou **todos os grupos** do arquivo. Toque no título da coluna para ordenar e no ativo para ver o histórico. |
-| 🌾 **Agro** | Blocos por região (Chicago, Brasil, Guarapuava, Noroeste Paulista…), com leitura de cada região e período dos dados semanais. |
+| 📊 **Mercado** | **Minha lista** (watchlist configurável) ou **Todos** os grupos do arquivo. Cada grupo é recolhível e mostra um resumo (▲ altas, ▼ quedas, sem dado). Há duas visões: **Lista** (ativo, mini-gráfico, preço e variação) e **Mapa** (blocos coloridos pela variação). Também dá para ordenar por maior alta, maior queda ou A–Z. Os ativos sem dado no dia ficam numa linha só. |
+| 🌾 **Agro** | Os mesmos grupos recolhíveis, um por região (Chicago, Brasil, Guarapuava, Noroeste Paulista…), com a leitura de cada região e o período dos dados semanais. |
 | 🌦️ **Clima** | ENSO, previsão por dia, alertas e "No campo". |
 | 📅 **Agenda** | Eventos por dia em horário de Brasília. O dia de hoje fica destacado e os eventos passados ficam ocultos (há uma opção para mostrá-los). |
 | 🧮 **Calculadoras** | CDB x LCA, Pré x IPCA+ x Pós (break-even), capital social, juros compostos e conversões saca/arroba/bushel. Os campos já vêm com as taxas do arquivo do dia; se o dado veio `null`, o campo fica vazio com um aviso. |
 | 🗂️ **Histórico** | Edições salvas por mês; **Abrir** mostra uma edição antiga em modo leitura. Comparação de até 3 ativos (normalizado em base 100 ou em valor) em 7, 30 ou 90 dias, ou em todo o período. |
 | ⚙️ **Configurações** | Nome do app, cor de destaque, tema, watchlist (marcar, reordenar, adicionar), limites de preço, backup. |
+
+**Detalhe do ativo:** ao tocar num ativo (no ticker, num card de KPI ou numa lista), abre um pop-up com:
+- gráfico do histórico (7, 30 ou 90 dias, ou todo o período);
+- mínimo e máximo das edições carregadas;
+- variação acumulada no período;
+- data de referência e fonte;
+- limite de alerta configurado;
+- notícias do dia que citam o ativo.
 
 **Alertas:**
 - **Limites de preço:** os padrões são dólar acima de 5,10, DI jan/29 acima de 12,75% e boi Cepea SP abaixo de 370. Quando um limite é cruzado, o card fica com borda laranja e o alerta aparece na tela Hoje.
