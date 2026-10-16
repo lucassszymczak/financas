@@ -9,6 +9,9 @@ import { dataCurta, dataLonga } from './lib/formato';
 import { BoasVindas } from './screens/BoasVindas';
 import { Hoje } from './screens/Hoje';
 import { EmBreve } from './screens/EmBreve';
+import { Mercado } from './screens/Mercado';
+import { Agro } from './screens/Agro';
+import { Historico } from './screens/Historico';
 
 const PRINCIPAIS: AbaId[] = ['hoje', 'mercado', 'agro', 'clima'];
 
@@ -16,6 +19,12 @@ function Tela({ aba }: { aba: AbaId }): ReactNode {
   switch (aba) {
     case 'hoje':
       return <Hoje />;
+    case 'mercado':
+      return <Mercado />;
+    case 'agro':
+      return <Agro />;
+    case 'historico':
+      return <Historico />;
     default:
       return <EmBreve nome={ABAS.find((a) => a.id === aba)!.nome} />;
   }

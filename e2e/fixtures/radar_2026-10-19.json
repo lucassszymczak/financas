@@ -1,0 +1,732 @@
+{
+ "schema_version": "1.0",
+ "edicao": {
+  "data": "2026-10-19",
+  "dia_semana": "sexta",
+  "gerado_em": "2026-10-16T07:21:00-03:00",
+  "referencia_mercado": "Fechamento de 15/10; Ásia e Brent da madrugada de 16/10",
+  "titulo": "Radar 2026-10-19"
+ },
+ "termometro": {
+  "tom": "cautela",
+  "texto": "Cautela aqui, alívio lá fora. A eleição segue empatada e o mercado voltou a cobrar prêmio no juro e no dólar. Nos EUA, a inflação no atacado assustou, mas o juro longo caiu: o mercado leu como efeito da gasolina, não de economia aquecida."
+ },
+ "destaques": [
+  {
+   "id": "datafolha-2026-10-15",
+   "emoji": "🗳️",
+   "titulo": "Datafolha: empate técnico",
+   "categoria": "politica",
+   "o_que": "Flávio tem 47% e Lula, 45% (eram 49% x 45%), dentro da margem de erro de 2 pontos.",
+   "por_que": "O mercado vinha apostando numa vitória mais clara de Flávio, associada a um ajuste fiscal mais duro.",
+   "o_que_muda": "Com a disputa aberta, o investidor pede mais juro para financiar o governo no longo prazo. Por isso o DI jan/29 subiu 25 pb e a bolsa caiu 1,06% ainda antes do resultado.",
+   "ativos_afetados": [
+    "Ibovespa",
+    "Dólar",
+    "DI 2028-2031",
+    "NTN-B",
+    "Estatais"
+   ],
+   "impacto": "negativo",
+   "horizonte": "dias",
+   "confianca": "media",
+   "fontes": [
+    {
+     "nome": "Brasil de Fato",
+     "url": "https://www.brasildefato.com.br/2026/10/15/datafolha-aponta-empate-tecnico-no-2o-turno-flavio-bolsonaro-47-lula-45/",
+     "nota": 3.5
+    },
+    {
+     "nome": "InfoMoney",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+     "nota": 4
+    }
+   ]
+  },
+  {
+   "id": "ppi-eua-set26",
+   "emoji": "🇺🇸",
+   "titulo": "Inflação no atacado dispara nos EUA",
+   "categoria": "mundo",
+   "o_que": "O PPI, que mede preços na porta da fábrica, subiu 1,3% em setembro (esperado: 0,5%). O varejo cresceu 0,8%, mas no grupo de controle, que tira itens voláteis, a alta foi de só 0,1%.",
+   "por_que": "É inflação de energia, puxada pela guerra no Golfo, com o consumo esfriando.",
+   "o_que_muda": "O Treasury de 10 anos caiu para 5,10%, um alívio para emergentes como o Brasil.",
+   "ativos_afetados": [
+    "Treasuries",
+    "Dólar global",
+    "Bolsas EUA"
+   ],
+   "impacto": "misto",
+   "horizonte": "semanas",
+   "confianca": "media",
+   "fontes": [
+    {
+     "nome": "Babypips",
+     "url": "https://www.babypips.com/news/headline-us-ppi-retail-sales-september-2026-gasoline-prices-fed-outlook-2026-10-15",
+     "nota": 3.5
+    },
+    {
+     "nome": "Tesouro dos EUA",
+     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month=202610",
+     "nota": 5
+    }
+   ]
+  },
+  {
+   "id": "pec-6x1",
+   "emoji": "⚖️",
+   "titulo": "Fim da escala 6x1",
+   "categoria": "brasil",
+   "o_que": "O Senado aprovou por 75 a 1 a PEC que reduz a jornada máxima de 44h para 40h, com duas folgas e sem corte de salário. Promulgação em 16/10.",
+   "por_que": "A PEC já tinha passado na Câmara; o Senado concluiu os dois turnos.",
+   "o_que_muda": "A hora trabalhada fica mais cara para quem usa muita mão de obra (varejo, serviços, frigoríficos), o que pode pressionar o preço dos serviços. A transição ainda não tem cronograma.",
+   "ativos_afetados": [
+    "Varejo",
+    "Serviços",
+    "Frigoríficos",
+    "DI"
+   ],
+   "impacto": "negativo",
+   "horizonte": "meses",
+   "confianca": "media",
+   "fontes": [
+    {
+     "nome": "Agência Senado",
+     "url": "https://www12.senado.leg.br/noticias/materias/2026/10/14/senado-aprova-fim-da-6x1-em-primeiro-turno",
+     "nota": 5
+    }
+   ]
+  }
+ ],
+ "noticias": [
+  {
+   "id": "conab-1-lev-2026-27",
+   "titulo": "Conab: 1º levantamento da safra 2026/27",
+   "data": "2026-10-15",
+   "categoria": "agro",
+   "resumo": "Grãos em 367,1 mi t (+1,4%). Soja 181,6 mi t (+0,7%), milho 148 mi t (+2,4%), trigo 5,7 mi t (-27,2%).",
+   "por_que_importa": "Safra cheia de soja segura altas de preço; menos trigo tende a firmar o cereal.",
+   "ativos_afetados": [
+    "Soja",
+    "Milho",
+    "Trigo"
+   ],
+   "impacto": "misto",
+   "horizonte": "meses",
+   "confianca": "alta",
+   "fontes": [
+    {
+     "nome": "Conab via Agência Gov",
+     "url": "https://agenciagov.ebc.com.br/noticias/202610/primeiro-levantamento-da-safra-de-graos-2026-27-estima-producao-acima-de-367-milhoes-de-toneladas",
+     "nota": 5
+    }
+   ]
+  }
+ ],
+ "leitura_do_dia": "O Brasil paga prêmio pela incerteza eleitoral num momento em que a atividade já desacelera (varejo, serviços e indústria fracos em agosto). Lá fora, o juro americano em queda dá algum fôlego. Na renda fixa, taxas mais altas significam retorno contratado maior para quem entra agora, mas o preço dos títulos deve oscilar até 25/10.",
+ "leituras_secao": {
+  "mercado": "Dólar e juro subiram aqui enquanto o juro americano caía: o peso veio de dentro (eleição e fiscal), não de fora.",
+  "brasil_agro": "A soja caiu em Chicago, mas subiu no porto: o dólar mais alto compensou e sustentou o preço em reais.",
+  "guarapuava": "Mercado local parado: todos os preços iguais aos do dia anterior.",
+  "noroeste_paulista": "O boi de novembro na B3 vale mais que o físico: o mercado espera arroba mais cara na entressafra."
+ },
+ "cotacoes": [
+  {
+   "id": "IBOV",
+   "nome": "Ibovespa",
+   "grupo": "indices_br",
+   "valor": 206776.1511,
+   "unidade": "pts",
+   "variacao_pct": -1.06,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4,
+   "kpi": true
+  },
+  {
+   "id": "USDBRL",
+   "nome": "Dólar comercial",
+   "grupo": "moedas",
+   "valor": 5.0361,
+   "unidade": "R$",
+   "variacao_pct": 1.17,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4,
+   "kpi": true
+  },
+  {
+   "id": "DI1F29",
+   "nome": "DI jan/29",
+   "grupo": "juros_br",
+   "valor": 12.7809,
+   "unidade": "% a.a.",
+   "variacao_pb": 25,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4,
+   "kpi": true
+  },
+  {
+   "id": "DI1F27",
+   "nome": "DI jan/27",
+   "grupo": "juros_br",
+   "valor": 13.5711,
+   "unidade": "% a.a.",
+   "variacao_pb": 4.2,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "DI1F31",
+   "nome": "DI jan/31",
+   "grupo": "juros_br",
+   "valor": 12.811,
+   "unidade": "% a.a.",
+   "variacao_pb": 22,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "UST10",
+   "nome": "Treasury 10 anos",
+   "grupo": "juros_mundo",
+   "valor": 5.1204,
+   "unidade": "%",
+   "variacao_pb": -9,
+   "data_ref": "2026-10-16",
+   "fonte": "Tesouro dos EUA",
+   "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month=202610",
+   "nota_fonte": 5,
+   "kpi": true
+  },
+  {
+   "id": "UST2",
+   "nome": "Treasury 2 anos",
+   "grupo": "juros_mundo",
+   "valor": 4.7891,
+   "unidade": "%",
+   "variacao_pb": -5,
+   "data_ref": "2026-10-16",
+   "fonte": "Tesouro dos EUA",
+   "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month=202610",
+   "nota_fonte": 5
+  },
+  {
+   "id": "BRENT",
+   "nome": "Petróleo Brent",
+   "grupo": "commodities",
+   "valor": 105.6308,
+   "unidade": "US$/barril",
+   "variacao_pct": -0.67,
+   "data_ref": "2026-10-16",
+   "fonte": "Reuters",
+   "url": "https://tribune.com.pk/story/2635163/oil-heads-for-weekly-gain-with-mideast-supply-risks",
+   "nota_fonte": 4.5,
+   "kpi": true
+  },
+  {
+   "id": "OURO",
+   "nome": "Ouro",
+   "grupo": "commodities",
+   "valor": 4205.9668,
+   "unidade": "US$/onça",
+   "variacao_pct": 0.44,
+   "data_ref": "2026-10-16",
+   "fonte": "Trading Economics",
+   "url": "https://pt.tradingeconomics.com/commodity/iron-ore",
+   "nota_fonte": 3.5
+  },
+  {
+   "id": "MINERIO",
+   "nome": "Minério de ferro 62%",
+   "grupo": "commodities",
+   "valor": 90.9323,
+   "unidade": "US$/t",
+   "variacao_pct": -0.19,
+   "data_ref": "2026-10-16",
+   "fonte": "Trading Economics",
+   "url": "https://pt.tradingeconomics.com/commodity/iron-ore",
+   "nota_fonte": 3.5
+  },
+  {
+   "id": "SPX",
+   "nome": "S&P 500",
+   "grupo": "indices_mundo",
+   "valor": 7775.0362,
+   "unidade": "pts",
+   "variacao_pct": 0.33,
+   "data_ref": "2026-10-16",
+   "fonte": "TheStreet",
+   "url": "https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-oct-15-2026",
+   "nota_fonte": 3.5
+  },
+  {
+   "id": "NDX",
+   "nome": "Nasdaq",
+   "grupo": "indices_mundo",
+   "valor": 26819.8721,
+   "unidade": "pts",
+   "variacao_pct": 0.08,
+   "data_ref": "2026-10-16",
+   "fonte": "TheStreet",
+   "url": "https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-oct-15-2026",
+   "nota_fonte": 3.5
+  },
+  {
+   "id": "DJI",
+   "nome": "Dow Jones",
+   "grupo": "indices_mundo",
+   "valor": 52386.4008,
+   "unidade": "pts",
+   "variacao_pct": 1.08,
+   "data_ref": "2026-10-16",
+   "fonte": "TheStreet",
+   "url": "https://www.thestreet.com/stock-market-today/stock-market-today-dow-jones-sp-500-nasdaq-updates-oct-15-2026",
+   "nota_fonte": 3.5
+  },
+  {
+   "id": "KOSPI",
+   "nome": "Kospi",
+   "grupo": "indices_mundo",
+   "valor": 5690.7222,
+   "unidade": "pts",
+   "variacao_pct": 2.05,
+   "data_ref": "2026-10-16",
+   "fonte": "Aju Press",
+   "url": "https://www.ajupress.com/view/20261016153219133",
+   "nota_fonte": 3.5
+  },
+  {
+   "id": "N225",
+   "nome": "Nikkei 225",
+   "grupo": "indices_mundo",
+   "valor": 65585.5872,
+   "unidade": "pts",
+   "variacao_pct": 1.4,
+   "data_ref": "2026-10-16",
+   "fonte": "Aju Press",
+   "url": "https://www.ajupress.com/view/20261016153219133",
+   "nota_fonte": 3.5
+  },
+  {
+   "id": "EMBJ3",
+   "nome": "Embraer",
+   "grupo": "acoes_bluechips",
+   "valor": null,
+   "unidade": "R$",
+   "variacao_pct": 2.7,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "PETR4",
+   "nome": "Petrobras PN",
+   "grupo": "acoes_bluechips",
+   "valor": null,
+   "unidade": "R$",
+   "variacao_pct": -1.29,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "VALE3",
+   "nome": "Vale ON",
+   "grupo": "acoes_bluechips",
+   "valor": null,
+   "unidade": "R$",
+   "variacao_pct": -0.45,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "ITUB4",
+   "nome": "Itaú PN",
+   "grupo": "acoes_bluechips",
+   "valor": null,
+   "unidade": "R$",
+   "variacao_pct": -1.29,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "BBAS3",
+   "nome": "Banco do Brasil ON",
+   "grupo": "acoes_bluechips",
+   "valor": null,
+   "unidade": "R$",
+   "variacao_pct": -1.78,
+   "data_ref": "2026-10-16",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4
+  }
+ ],
+ "agro": [
+  {
+   "id": "SOJA_CBOT",
+   "nome": "Soja Chicago nov/26",
+   "regiao": "chicago",
+   "valor": 12.6805,
+   "unidade": "US$/bu",
+   "variacao_pct": -1.12,
+   "data_ref": "2026-10-16",
+   "fonte": "CME via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/soja",
+   "nota_fonte": 4.5,
+   "kpi": false
+  },
+  {
+   "id": "MILHO_CBOT",
+   "nome": "Milho Chicago dez/26",
+   "regiao": "chicago",
+   "valor": 4.8267,
+   "unidade": "US$/bu",
+   "variacao_pct": -0.41,
+   "data_ref": "2026-10-16",
+   "fonte": "CME via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/milho",
+   "nota_fonte": 4.5
+  },
+  {
+   "id": "SOJA_PGUA",
+   "nome": "Soja Paranaguá (Cepea)",
+   "regiao": "brasil",
+   "valor": 155.3188,
+   "unidade": "R$/sc 60 kg",
+   "variacao_pct": 0.27,
+   "data_ref": "2026-10-16",
+   "fonte": "Cepea via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/soja",
+   "nota_fonte": 4.5
+  },
+  {
+   "id": "MILHO_CEPEA",
+   "nome": "Milho Campinas (Cepea)",
+   "regiao": "brasil",
+   "valor": 65.6917,
+   "unidade": "R$/sc 60 kg",
+   "variacao_pct": -0.24,
+   "data_ref": "2026-10-16",
+   "fonte": "Cepea via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/milho",
+   "nota_fonte": 4.5
+  },
+  {
+   "id": "BOI_CEPEA",
+   "nome": "Boi gordo SP (Cepea)",
+   "regiao": "brasil",
+   "valor": 381.7208,
+   "unidade": "R$/@",
+   "variacao_pct": 0.21,
+   "data_ref": "2026-10-16",
+   "fonte": "Cepea via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/boi-gordo",
+   "nota_fonte": 4.5,
+   "kpi": true
+  },
+  {
+   "id": "CAFE_CEPEA",
+   "nome": "Café arábica (Cepea)",
+   "regiao": "brasil",
+   "valor": 1583.5188,
+   "unidade": "R$/sc 60 kg",
+   "variacao_pct": 0.38,
+   "data_ref": "2026-10-16",
+   "fonte": "Cepea via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/cafe",
+   "nota_fonte": 4.5
+  },
+  {
+   "id": "GPV_SOJA",
+   "nome": "Soja",
+   "regiao": "guarapuava",
+   "valor": 137.7488,
+   "unidade": "R$/sc 60 kg",
+   "variacao_pct": 0,
+   "data_ref": "2026-10-16",
+   "fonte": "DERAL/SEAB via FAEP",
+   "url": "https://www.sistemafaep.org.br/cotacoes/",
+   "nota_fonte": 5
+  },
+  {
+   "id": "GPV_MILHO",
+   "nome": "Milho",
+   "regiao": "guarapuava",
+   "valor": 52.5092,
+   "unidade": "R$/sc 60 kg",
+   "variacao_pct": 0,
+   "data_ref": "2026-10-16",
+   "fonte": "DERAL/SEAB via FAEP",
+   "url": "https://www.sistemafaep.org.br/cotacoes/",
+   "nota_fonte": 5
+  },
+  {
+   "id": "GPV_TRIGO",
+   "nome": "Trigo",
+   "regiao": "guarapuava",
+   "valor": 79.316,
+   "unidade": "R$/sc 60 kg",
+   "variacao_pct": 0,
+   "data_ref": "2026-10-16",
+   "fonte": "DERAL/SEAB via FAEP",
+   "url": "https://www.sistemafaep.org.br/cotacoes/",
+   "nota_fonte": 5
+  },
+  {
+   "id": "GPV_FEIJAO",
+   "nome": "Feijão preto",
+   "regiao": "guarapuava",
+   "valor": 251,
+   "unidade": "R$/sc 60 kg",
+   "variacao_pct": 0,
+   "data_ref": "2026-10-16",
+   "fonte": "DERAL/SEAB via FAEP",
+   "url": "https://www.sistemafaep.org.br/cotacoes/",
+   "nota_fonte": 5
+  },
+  {
+   "id": "GPV_BOI",
+   "nome": "Boi em pé",
+   "regiao": "guarapuava",
+   "valor": 371.48,
+   "unidade": "R$/@",
+   "variacao_pct": 0,
+   "data_ref": "2026-10-16",
+   "fonte": "DERAL/SEAB via FAEP",
+   "url": "https://www.sistemafaep.org.br/cotacoes/",
+   "nota_fonte": 5
+  },
+  {
+   "id": "NWP_BOI_VISTA",
+   "nome": "Boi Araçatuba/Barretos à vista",
+   "regiao": "noroeste_paulista",
+   "valor": 377.504,
+   "unidade": "R$/@",
+   "variacao_pct": 0,
+   "data_ref": "2026-10-16",
+   "fonte": "Scot Consultoria",
+   "url": "https://www.scotconsultoria.com.br/cotacoes/boi-gordo/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "NWP_BOI_PRAZO",
+   "nome": "Boi Araçatuba/Barretos a prazo",
+   "regiao": "noroeste_paulista",
+   "valor": 381.52,
+   "unidade": "R$/@",
+   "variacao_pct": 0,
+   "data_ref": "2026-10-16",
+   "fonte": "Scot Consultoria",
+   "url": "https://www.scotconsultoria.com.br/cotacoes/boi-gordo/",
+   "nota_fonte": 4
+  },
+  {
+   "id": "BOI_B3_NOV26",
+   "nome": "Boi B3 nov/26",
+   "regiao": "noroeste_paulista",
+   "valor": 397.584,
+   "unidade": "R$/@",
+   "variacao_pct": 0.43,
+   "data_ref": "2026-10-16",
+   "fonte": "B3 via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/boi-gordo",
+   "nota_fonte": 4.5
+  },
+  {
+   "id": "ACUCAR_CEPEA",
+   "nome": "Açúcar cristal SP (Cepea)",
+   "regiao": "noroeste_paulista",
+   "valor": 124.4358,
+   "unidade": "R$/sc 50 kg",
+   "variacao_pct": 0.13,
+   "data_ref": "2026-10-16",
+   "fonte": "Cepea via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/sucroenergetico",
+   "nota_fonte": 4.5
+  },
+  {
+   "id": "ETANOL_CEPEA",
+   "nome": "Etanol hidratado (Cepea, semanal)",
+   "regiao": "noroeste_paulista",
+   "valor": 2.6479,
+   "unidade": "R$/l",
+   "variacao_pct": 2.87,
+   "data_ref": "2026-10-09",
+   "periodo": "05 a 09/10",
+   "fonte": "Cepea via Notícias Agrícolas",
+   "url": "https://www.noticiasagricolas.com.br/cotacoes/sucroenergetico",
+   "nota_fonte": 4.5
+  }
+ ],
+ "taxas_referencia": {
+  "selic_meta": null,
+  "cdi_anual": null,
+  "ipca_12m": null,
+  "observacao": "Preencher a partir do BCB/IBGE quando verificado; null = não verificado nesta edição."
+ },
+ "clima": {
+  "enso": {
+   "fase": "El Niño",
+   "intensidade": "forte",
+   "texto": "Alerta de El Niño mantido; próximo boletim em 12/11.",
+   "data_ref": "2026-10-08",
+   "fonte": "NOAA/CPC",
+   "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml"
+  },
+  "regioes": [
+   {
+    "id": "guarapuava",
+    "nome": "Guarapuava (PR)",
+    "resumo": "Pancadas hoje; seco e frio no fim de semana, mínima de 4 °C na segunda.",
+    "previsao": [
+     {
+      "data": "2026-10-16",
+      "min": 13,
+      "max": 20,
+      "chuva_mm": 0.5,
+      "prob_chuva": 63,
+      "condicao": "Sol com muitas nuvens, pancadas à tarde"
+     },
+     {
+      "data": "2026-10-17",
+      "min": 9,
+      "max": 16,
+      "chuva_mm": 0,
+      "prob_chuva": null,
+      "condicao": "Sol com nuvens"
+     },
+     {
+      "data": "2026-10-18",
+      "min": 6,
+      "max": 16,
+      "chuva_mm": 0,
+      "prob_chuva": null,
+      "condicao": "Sol com nuvens"
+     },
+     {
+      "data": "2026-10-19",
+      "min": 4,
+      "max": 19,
+      "chuva_mm": 0,
+      "prob_chuva": null,
+      "condicao": "Sol com nuvens, nevoeiro cedo"
+     },
+     {
+      "data": "2026-10-20",
+      "min": 8,
+      "max": 22,
+      "chuva_mm": 1.2,
+      "prob_chuva": 40,
+      "condicao": "Chuva à noite"
+     }
+    ],
+    "alertas": [
+     {
+      "tipo": "frio",
+      "nivel": "atencao",
+      "texto": "Temperatura muito baixa de 17 a 20/10 (Climatempo). Geada em baixadas é risco, não previsão oficial.",
+      "inicio": "2026-10-17",
+      "fim": "2026-10-20",
+      "fonte": "Climatempo"
+     }
+    ],
+    "fonte": "Climatempo",
+    "url": "https://www.climatempo.com.br/previsao-do-tempo/15-dias/cidade/273/guarapuava-pr"
+   },
+   {
+    "id": "rio_preto",
+    "nome": "São José do Rio Preto (SP)",
+    "resumo": "Pancadas e trovoadas hoje; fim de semana seco.",
+    "previsao": [
+     {
+      "data": "2026-10-16",
+      "min": 21,
+      "max": 25,
+      "chuva_mm": null,
+      "prob_chuva": null,
+      "condicao": "Pancadas e trovoadas (INMET)"
+     },
+     {
+      "data": "2026-10-17",
+      "min": 19,
+      "max": 26,
+      "chuva_mm": 0,
+      "prob_chuva": null,
+      "condicao": "Seco"
+     },
+     {
+      "data": "2026-10-18",
+      "min": 16,
+      "max": 25,
+      "chuva_mm": 0,
+      "prob_chuva": null,
+      "condicao": "Seco"
+     }
+    ],
+    "alertas": [],
+    "fonte": "INMET; Climatempo",
+    "url": "https://apiprevmet3.inmet.gov.br/previsao/3549805"
+   }
+  ],
+  "no_campo": "O tempo seco ajuda a colher o trigo. O frio de segunda pode castigar soja recém-emergida em baixadas."
+ },
+ "agenda": [
+  {
+   "data": "2026-10-25",
+   "hora": null,
+   "fuso": "America/Sao_Paulo",
+   "pais": "BR",
+   "evento": "2º turno das eleições",
+   "o_que_mede": null,
+   "expectativa": null,
+   "relevancia": "alta",
+   "fonte": "TSE"
+  },
+  {
+   "data": "2026-10-28",
+   "hora": null,
+   "fuso": "America/Sao_Paulo",
+   "pais": "US",
+   "evento": "Decisão do Fed (FOMC)",
+   "o_que_mede": null,
+   "expectativa": null,
+   "relevancia": "alta",
+   "fonte": "Federal Reserve",
+   "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+  },
+  {
+   "data": "2026-11-04",
+   "hora": null,
+   "fuso": "America/Sao_Paulo",
+   "pais": "BR",
+   "evento": "Decisão do Copom",
+   "o_que_mede": null,
+   "expectativa": null,
+   "relevancia": "alta",
+   "fonte": "B3/BCB"
+  }
+ ],
+ "limitacoes": [
+  "Probabilidade de alta do Fed em 28/10 não verificada em fonte confiável.",
+  "PPI e varejo dos EUA via portais (nota 3,5); não conferidos no BLS/Census.",
+  "Milho CBOT e Cepea de 15/10 indisponíveis: usados dados de 14/10.",
+  "Preços em R$ das ações não coletados nesta edição (só variação)."
+ ],
+ "aviso": "Material informativo de uso interno, não é recomendação de investimento."
+}

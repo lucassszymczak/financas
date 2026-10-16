@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import { dataISOParaDate, diaMes, numeroAuto } from '../lib/formato';
@@ -27,12 +27,14 @@ export function Grafico({
   rotulo: string;
 }) {
   const caixa = useRef<HTMLDivElement>(null);
+  const tema = useTemaDocumento();
 
   useEffect(() => {
     const el = caixa.current;
     if (!el) return;
     const datas = [...new Set(series.flatMap((s) => s.pontos.map((p) => p.x)))].sort();
-    const xs = datas.map((d) => dataISOParaDate(d).getTime() / 1000);
+    // Datas à meia-noite UTC, com o eixo em UTC: as marcas caem exatamente nos dias.
+    const xs = datas.map((d) => dataISOParaDate(d).getTime() / 1000 - 12 * 3600);
     const ys = series.map((s) => {
       const m = new Map(s.pontos.map((p) => [p.x, p.y]));
       return datas.map((d) => m.get(d) ?? null);
@@ -45,11 +47,15 @@ export function Grafico({
       legend: { show: series.length > 1 },
       cursor: { drag: { x: false, y: false } },
       scales: { x: { time: true } },
+      tzDate: (ts) => uPlot.tzDate(new Date(ts * 1000), 'Etc/UTC'),
       axes: [
         {
           stroke: texto,
           grid: { stroke: grade, width: 1 },
           ticks: { stroke: grade },
+          // Só marcas em dias inteiros (os dados são diários).
+          incrs: [1, 2, 7, 14, 30, 61, 91, 182, 365].map((d) => d * 86400),
+          space: 50,
           values: (_u, vals) => vals.map((v) => diaMes(new Date(v * 1000).toISOString().slice(0, 10))),
         },
         {
@@ -61,7 +67,7 @@ export function Grafico({
         },
       ],
       series: [
-        { value: (_u, v) => (v === null ? '—' : diaMes(new Date(v * 1000).toISOString().slice(0, 10))) },
+        { label: 'Data', value: (_u, v) => (v === null ? '—' : diaMes(new Date(v * 1000).toISOString().slice(0, 10))) },
         ...series.map((s, i) => ({
           label: s.nome,
           stroke: cor(CORES[i % CORES.length]!, el),
@@ -79,7 +85,18 @@ export function Grafico({
       obs.disconnect();
       plot.destroy();
     };
-  }, [series, altura, formatar]);
+  }, [series, altura, formatar, tema]);
 
   return <div ref={caixa} className="grafico" role="img" aria-label={rotulo} />;
+}
+
+/** Tema aplicado no <html>, para redesenhar o gráfico com as cores certas. */
+function useTemaDocumento(): string | undefined {
+  const [tema, setTema] = useState(() => document.documentElement.dataset.theme);
+  useEffect(() => {
+    const obs = new MutationObserver(() => setTema(document.documentElement.dataset.theme));
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
+    return () => obs.disconnect();
+  }, []);
+  return tema;
 }

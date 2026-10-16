@@ -936,3 +936,203 @@ label {
 .grafico .u-legend th {
   font-weight: 600;
 }
+
+/* ---------- Tabelas ---------- */
+.tabela-rolagem {
+  overflow-x: auto;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.tabela th,
+.tabela td {
+  padding: 0.35rem 0.6rem;
+  border-bottom: 1px solid var(--borda);
+  text-align: left;
+  vertical-align: middle;
+}
+.tabela tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.tabela tbody tr:hover {
+  background: var(--superficie-2);
+}
+.tabela thead th {
+  position: sticky;
+  top: 0;
+  background: var(--superficie-2);
+  font-size: 0.78rem;
+  color: var(--texto-mudo);
+  white-space: nowrap;
+  padding: 0;
+}
+.tabela thead button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 0.6rem;
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.tabela .dir {
+  text-align: right;
+  white-space: nowrap;
+}
+.tabela thead .dir button {
+  justify-content: flex-end;
+}
+.seta-ordem {
+  opacity: 0.7;
+}
+.link-ativo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 44px;
+  justify-content: center;
+  text-align: left;
+  padding: 0;
+  font: inherit;
+  color: var(--texto);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.link-ativo:hover .ativo-nome {
+  color: var(--destaque);
+  text-decoration: underline;
+}
+.ativo-nome {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ativo-id {
+  font-size: 0.72rem;
+  color: var(--texto-mudo);
+}
+.celula-data {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  white-space: nowrap;
+}
+.celula-fonte {
+  font-size: 0.82rem;
+  min-width: 9rem;
+}
+.linha-ausente .ativo-nome {
+  color: var(--texto-mudo);
+  font-weight: 600;
+}
+
+/* ---------- Alternador e filtros ---------- */
+.alternador {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--superficie);
+  align-self: flex-start;
+}
+.alternador button {
+  min-height: 44px;
+  padding: 0 0.85rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--texto);
+  background: none;
+  border: 0;
+  border-right: 1px solid var(--borda);
+  cursor: pointer;
+}
+.alternador button:last-child {
+  border-right: 0;
+}
+.alternador button[aria-pressed='true'] {
+  background: var(--destaque);
+  color: var(--destaque-texto);
+}
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: flex-end;
+  margin-bottom: 0.7rem;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  flex: 1 1 180px;
+}
+.campo select,
+.campo input {
+  width: 100%;
+}
+
+/* ---------- Histórico ---------- */
+.mes {
+  font-size: 0.9rem;
+  color: var(--texto-mudo);
+  margin-bottom: 0.3rem;
+}
+.lista-edicoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lista-edicoes li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--borda);
+}
+.lista-edicoes li:last-child {
+  border-bottom: 0;
+}
+.lista-edicoes li.atual strong {
+  color: var(--destaque);
+}
+.edicao-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Itens de coluna flex não podem crescer além da tela (as tabelas rolam por dentro). */
+.tela > *,
+.secao > * {
+  min-width: 0;
+}
+.linha-ausente .ativo-nome {
+  white-space: normal;
+}
+.alternador button {
+  flex: 1 1 auto;
+}
+.tabela-rolagem,
+.ticker {
+  position: relative;
+}
+.ticker {
+  position: sticky;
+}
+.lista-edicoes .botoes {
+  flex-wrap: nowrap;
+}
