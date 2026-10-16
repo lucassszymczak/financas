@@ -1245,3 +1245,116 @@ label {
 .agenda-mede {
   font-size: 0.9rem;
 }
+
+/* ---------- Calculadoras ---------- */
+.calc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.calc h3 {
+  font-size: 1rem;
+}
+.calc-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.grade-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.7rem;
+  align-items: start;
+}
+.campo-entrada {
+  display: flex;
+  align-items: stretch;
+}
+.campo-entrada input {
+  flex: 1;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.campo-entrada input:only-child {
+  border-radius: 8px;
+}
+.sufixo {
+  display: flex;
+  align-items: center;
+  padding: 0 0.6rem;
+  font-size: 0.82rem;
+  color: var(--texto-mudo);
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  white-space: nowrap;
+}
+.campo input[aria-invalid='true'] {
+  border-color: var(--baixa);
+}
+.campo-aviso {
+  font-size: 0.8rem;
+  color: var(--aviso-texto);
+  background: var(--aviso-fundo);
+  border-radius: 6px;
+  padding: 0.2rem 0.45rem;
+}
+.resultado {
+  border-top: 1px solid var(--borda);
+  padding-top: 0.7rem;
+}
+.comparacao {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+.comparacao > div {
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  background: var(--superficie-2);
+}
+.comparacao h4 {
+  margin-top: 0;
+}
+.comparacao .vencedor {
+  border: 2px solid var(--destaque);
+  background: var(--destaque-suave);
+}
+.valor-grande {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0.1rem 0;
+}
+.frase {
+  font-size: 0.98rem;
+  margin: 0.6rem 0 0;
+}
+.destaque-frase {
+  background: var(--destaque-suave);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+}
+.lista-conv {
+  padding-left: 1.1rem;
+}
+.lista-conv li {
+  margin: 0.25rem 0;
+}
+.aviso-simulacao {
+  margin: 0;
+}
+.detalhe-anos summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+.detalhe-anos ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}

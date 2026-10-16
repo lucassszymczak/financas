@@ -14,6 +14,7 @@ import { Agro } from './screens/Agro';
 import { Historico } from './screens/Historico';
 import { Clima } from './screens/Clima';
 import { Agenda } from './screens/Agenda';
+import { Calculadoras } from './screens/Calculadoras';
 
 const PRINCIPAIS: AbaId[] = ['hoje', 'mercado', 'agro', 'clima'];
 
@@ -29,6 +30,8 @@ function Tela({ aba }: { aba: AbaId }): ReactNode {
       return <Clima />;
     case 'agenda':
       return <Agenda />;
+    case 'calculadoras':
+      return <Calculadoras />;
     case 'historico':
       return <Historico />;
     default:
