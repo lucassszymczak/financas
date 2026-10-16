@@ -3,6 +3,7 @@
 Painel pessoal estilo homebroker com cotações, notícias explicadas, agro, clima, agenda e calculadoras. **O app não busca nada na internet**: todo o conteúdo vem do arquivo diário `radar_AAAA-MM-DD.json`, que você carrega no app. Os dados ficam guardados no próprio aparelho (IndexedDB) e o app funciona sem internet depois de aberto uma vez.
 
 - Formato do arquivo: [`docs/schema.md`](docs/schema.md) (exemplo real em [`docs/radar_2026-10-16.json`](docs/radar_2026-10-16.json)).
+- Para a rotina mandar muito mais cotações (todas as ações do Ibovespa, índices, moedas, cripto…) sem mudar o Radar: [`docs/rotina-cotacoes.md`](docs/rotina-cotacoes.md).
 - Tecnologia: Vite + React + TypeScript, `zod` (validação), `idb` (banco local), `uPlot` (gráficos). Site estático, sem servidor.
 
 ---
@@ -68,7 +69,7 @@ A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em g
 | Aba | O que mostra |
 |---|---|
 | 🏠 **Hoje** | KPIs (itens com `kpi: true`) com mini-gráfico, Termômetro, alertas, destaques e notícias (toque para expandir), Leitura do dia, limitações e aviso. |
-| 📊 **Mercado** | **Minha lista** (watchlist configurável) ou **Todos** os grupos do arquivo. Cada grupo é recolhível e mostra um resumo (▲ altas, ▼ quedas, sem dado). Há duas visões: **Lista** (ativo, mini-gráfico, preço e variação) e **Mapa** (blocos coloridos pela variação). Também dá para ordenar por maior alta, maior queda ou A–Z. Os ativos sem dado no dia ficam numa linha só. |
+| 📊 **Mercado** | **Busca** por código, nome ou setor em todos os ativos do arquivo (inclusive os do bloco `cotacoes_amplas`). **Minha lista** (watchlist configurável) ou **Todos** os grupos do arquivo. Cada grupo é recolhível e mostra um resumo (▲ altas, ▼ quedas, sem dado). Há duas visões: **Lista** (ativo, mini-gráfico, preço e variação) e **Mapa** (blocos coloridos pela variação). Também dá para ordenar por maior alta, maior queda ou A–Z. Os ativos sem dado no dia ficam numa linha só. |
 | 🌾 **Agro** | Os mesmos grupos recolhíveis, um por região (Chicago, Brasil, Guarapuava, Noroeste Paulista…), com a leitura de cada região e o período dos dados semanais. |
 | 🌦️ **Clima** | ENSO, previsão por dia, alertas e "No campo". |
 | 📅 **Agenda** | Eventos por dia em horário de Brasília. O dia de hoje fica destacado e os eventos passados ficam ocultos (há uma opção para mostrá-los). |

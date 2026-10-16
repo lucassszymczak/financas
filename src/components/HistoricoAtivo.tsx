@@ -40,6 +40,41 @@ export function noticiasDoAtivo(r: Radar, p: Preco) {
   ];
 }
 
+const pctSinal = (v: number) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${numero(Math.abs(v), 2)}%`;
+const tomVar = (v: number) => (v > 0 ? 'txt-alta' : v < 0 ? 'txt-baixa' : '');
+
+/** Dados extras do pregão que vierem no arquivo: [rótulo, valor, classe de cor]. */
+export function extrasDoAtivo(p: Preco): [string, string, string][] {
+  const r: [string, string, string][] = [];
+  const n = (v: number | null | undefined) => v !== null && v !== undefined && Number.isFinite(v);
+  if (n(p.abertura)) r.push(['Abertura', numeroAuto(p.abertura), '']);
+  if (n(p.minima) && n(p.maxima)) r.push(['Mínima · máxima do dia', `${numeroAuto(p.minima)} · ${numeroAuto(p.maxima)}`, '']);
+  if (n(p.fechamento_anterior)) r.push(['Fechamento anterior', numeroAuto(p.fechamento_anterior), '']);
+  if (n(p.volume_financeiro)) r.push(['Volume financeiro', volume(p.volume_financeiro!), '']);
+  for (const [campo, rotulo] of [
+    ['var_semana_pct', 'Na semana'],
+    ['var_mes_pct', 'No mês'],
+    ['var_ano_pct', 'No ano'],
+    ['var_12m_pct', 'Em 12 meses'],
+  ] as const) {
+    const v = p[campo];
+    if (n(v)) r.push([rotulo, pctSinal(v!), tomVar(v!)]);
+  }
+  if (n(p.minima_52s) && n(p.maxima_52s))
+    r.push(['Faixa de 52 semanas', `${numeroAuto(p.minima_52s)} · ${numeroAuto(p.maxima_52s)}`, '']);
+  if (p.setor) r.push(['Setor', p.setor, '']);
+  return r;
+}
+
+/** Volume em R$ abreviado: 1,2 bi, 350 mi, 12 mil. */
+export function volume(v: number): string {
+  const a = Math.abs(v);
+  if (a >= 1e9) return `R$ ${numero(v / 1e9, 1, 2)} bi`;
+  if (a >= 1e6) return `R$ ${numero(v / 1e6, 1, 1)} mi`;
+  if (a >= 1e3) return `R$ ${numero(v / 1e3, 0, 0)} mil`;
+  return `R$ ${numero(v, 0, 0)}`;
+}
+
 /** Estatísticas da série nas edições carregadas. */
 export function resumoSerie(pontos: Ponto[], juros: boolean) {
   if (pontos.length < 2) return null;
@@ -138,6 +173,12 @@ function Detalhe({ id, fechar }: { id: string; fechar: () => void }) {
               </div>
             </>
           )}
+          {extrasDoAtivo(item).map(([rotulo, valor, tom]) => (
+            <div key={rotulo}>
+              <dt>{rotulo}</dt>
+              <dd className={`num${tom ? ` ${tom}` : ''}`}>{valor}</dd>
+            </div>
+          ))}
           <div>
             <dt>Edições com dado</dt>
             <dd className="num">{todos.length}</dd>

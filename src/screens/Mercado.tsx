@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { useRadar } from '../state';
 import { Leitura, Vazio } from '../components/Basicos';
 import { ControlesVisao, GrupoAtivos, useVisaoOrdem } from '../components/GrupoAtivos';
-import { agrupar, mapaPrecos, nomeGrupo, taxasComoPrecos } from '../lib/precos';
+import { agrupar, cotacoesAmplas, mapaPrecos, nomeGrupo, taxasComoPrecos, todosPrecos } from '../lib/precos';
+import { buscarAtivos } from '../lib/busca';
 import { montarWatchlist } from '../lib/watchlist';
 import { gravarLocal, lerLocal } from '../lib/local';
 
@@ -15,7 +16,13 @@ export function Mercado() {
   };
   const { visao, setVisao, ordem, setOrdem } = useVisaoOrdem('mercado');
   const radares = useMemo(() => edicoes.map((e) => e.radar), [edicoes]);
-  const grupos = useMemo(() => agrupar([...radar.cotacoes, ...taxasComoPrecos(radar)], (c) => c.grupo ?? 'outros'), [radar]);
+  const grupos = useMemo(
+    () => agrupar([...radar.cotacoes, ...taxasComoPrecos(radar), ...cotacoesAmplas(radar)], (c) => c.grupo ?? 'outros'),
+    [radar],
+  );
+  const [busca, setBusca] = useState('');
+  const resultados = useMemo(() => (busca.trim() ? buscarAtivos(todosPrecos(radar), busca) : []), [busca, radar]);
+  const total = todosPrecos(radar).length;
   const watch = useMemo(() => montarWatchlist(config.watchlist, mapaPrecos(radar)), [config.watchlist, radar]);
   const data = radar.edicao.data;
   // Ações que vieram só com a variação: o preço precisa vir no campo "valor" do arquivo.
@@ -37,44 +44,81 @@ export function Mercado() {
           </p>
         </details>
       )}
-      <ControlesVisao
-        visao={visao}
-        setVisao={setVisao}
-        ordem={ordem}
-        setOrdem={setOrdem}
-        extra={
-          <div className="alternador" role="group" aria-label="O que mostrar">
-            <button type="button" aria-pressed={fonte === 'lista'} onClick={() => setFonte('lista')}>
-              ⭐ Minha lista
-            </button>
-            <button type="button" aria-pressed={fonte === 'grupos'} onClick={() => setFonte('grupos')}>
-              Todos
-            </button>
-          </div>
-        }
-      />
+      <div className="busca">
+        <input
+          type="search"
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          placeholder={`Buscar entre ${total} ativos (ex.: WEGE3, Nasdaq, ouro)`}
+          aria-label="Buscar ativo"
+          enterKeyHint="search"
+        />
+      </div>
+      {busca.trim() !== '' && (
+        <div className="grupos">
+          {resultados.length ? (
+            <GrupoAtivos
+              key={`busca:${busca}`}
+              chave="busca"
+              titulo={`Resultados (${resultados.length})`}
+              itens={resultados}
+              sempreAberto
+              {...comum}
+            />
+          ) : (
+            <Vazio>Nenhum ativo encontrado para “{busca}” nesta edição.</Vazio>
+          )}
+        </div>
+      )}
+      {busca.trim() === '' && (
+        <>
+          <ControlesVisao
+            visao={visao}
+            setVisao={setVisao}
+            ordem={ordem}
+            setOrdem={setOrdem}
+            extra={
+              <div className="alternador" role="group" aria-label="O que mostrar">
+                <button type="button" aria-pressed={fonte === 'lista'} onClick={() => setFonte('lista')}>
+                  ⭐ Minha lista
+                </button>
+                <button type="button" aria-pressed={fonte === 'grupos'} onClick={() => setFonte('grupos')}>
+                  Todos
+                </button>
+              </div>
+            }
+          />
 
-      {fonte === 'lista' &&
-        (watch.length ? (
-          <div className="grupos">
-            {watch.map((g) => (
-              <GrupoAtivos key={g.nome} chave={`w:${g.nome}`} titulo={g.nome} itens={g.itens} ausentes={g.ausentes} {...comum} />
+          {fonte === 'lista' &&
+            (watch.length ? (
+              <div className="grupos">
+                {watch.map((g) => (
+                  <GrupoAtivos
+                    key={g.nome}
+                    chave={`w:${g.nome}`}
+                    titulo={g.nome}
+                    itens={g.itens}
+                    ausentes={g.ausentes}
+                    {...comum}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Vazio>Sua lista está vazia. Marque ativos em Configurações → O que acompanhar.</Vazio>
             ))}
-          </div>
-        ) : (
-          <Vazio>Sua lista está vazia. Marque ativos em Configurações → O que acompanhar.</Vazio>
-        ))}
 
-      {fonte === 'grupos' &&
-        (grupos.length ? (
-          <div className="grupos">
-            {grupos.map(([g, itens]) => (
-              <GrupoAtivos key={g} chave={`g:${g}`} titulo={nomeGrupo(g)} itens={itens} {...comum} />
+          {fonte === 'grupos' &&
+            (grupos.length ? (
+              <div className="grupos">
+                {grupos.map(([g, itens]) => (
+                  <GrupoAtivos key={g} chave={`g:${g}`} titulo={nomeGrupo(g)} itens={itens} {...comum} />
+                ))}
+              </div>
+            ) : (
+              <Vazio>Esta edição não trouxe cotações.</Vazio>
             ))}
-          </div>
-        ) : (
-          <Vazio>Esta edição não trouxe cotações.</Vazio>
-        ))}
+        </>
+      )}
     </div>
   );
 }
