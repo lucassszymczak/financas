@@ -1,75 +1,119 @@
-:root {
-  --bg: #edf1ef;
-  --surface: #ffffff;
-  --surface-2: #f5f8f6;
-  --ink: #15231e;
-  --ink-2: #5a6a64;
-  --line: #d3dcd8;
-  --accent: #2346b8;
-  --accent-ink: #ffffff;
-  --accent-soft: #e3e9fa;
-  --pos: #1d7748;
-  --pos-soft: #e1f1e8;
-  --neg: #b0301d;
-  --neg-soft: #f8e4e0;
-  --warn: #9a6200;
-  --warn-soft: #f7ecd6;
-
-  --font-title: 'Sora', system-ui, sans-serif;
-  --font-text: 'Source Sans 3', system-ui, sans-serif;
-
-  --radius: 14px;
-  --radius-sm: 10px;
-  --gap: 16px;
-  --touch: 44px;
-  --shadow: 0 1px 2px rgb(21 35 30 / 0.06), 0 2px 8px rgb(21 35 30 / 0.05);
-
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
-
+/*
+ * Dois temas. O destaque (--destaque) é calculado em tema.ts a partir da cor escolhida
+ * nas Configurações, já ajustado para contraste AA no tema em uso.
+ * Os pares texto/fundo abaixo foram escolhidos com contraste ≥ 4,5:1.
+ */
+:root,
+:root[data-theme='light'] {
   color-scheme: light;
+  --fundo: #f4f6f5;
+  --superficie: #ffffff;
+  --superficie-2: #edf1ef;
+  --borda: #d3dcd8;
+  --texto: #13201c;
+  --texto-mudo: #4b5a55;
+  --alta: #0a7339;
+  --baixa: #c0262d;
+  --estavel: #4b5a55;
+  --laranja: #f58220;
+  --laranja-texto: #9a4a00;
+  --aviso-fundo: #fff3e0;
+  --aviso-texto: #7a3d00;
+  --info-fundo: #e6f0fb;
+  --info-texto: #18467a;
+  --perigo-fundo: #fde8e8;
+  --perigo-texto: #8f1a1f;
+  --positivo-fundo: #e3f4ea;
+  --negativo-fundo: #fde8e8;
+  --misto-fundo: #f1ecfa;
+  --misto-texto: #533a8a;
+  --sombra: 0 1px 2px rgb(0 0 0 / 6%), 0 2px 8px rgb(0 0 0 / 4%);
+  --serie-1: #005c46;
+  --serie-2: #d06a0c;
+  --serie-3: #2a5fb0;
+  --destaque: #005c46;
+  --destaque-texto: #ffffff;
+  --destaque-suave: #d9e7e3;
+  /* Mapa de calor: fundo e texto por intensidade (a = alta, b = baixa) */
+  --mapa-a3: #13703f;
+  --mapa-a3-texto: #ffffff;
+  --mapa-a2: #bfe6cf;
+  --mapa-a2-texto: #0b3d22;
+  --mapa-a1: #e3f4ea;
+  --mapa-a1-texto: #0b3d22;
+  --mapa-b1: #fbe4e4;
+  --mapa-b1-texto: #6e1418;
+  --mapa-b2: #f4bcbc;
+  --mapa-b2-texto: #5c1014;
+  --mapa-b3: #b3262c;
+  --mapa-b3-texto: #ffffff;
+  --mapa-n0: #edf1ef;
+  --mapa-n0-texto: #4b5a55;
+  --sombra-menu: 0 10px 30px rgb(10 30 24 / 12%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #0f1714;
-    --surface: #18231f;
-    --surface-2: #1e2b26;
-    --ink: #e6eeea;
-    --ink-2: #9aaba4;
-    --line: #2d3b36;
-    --accent: #8aa2f2;
-    --accent-ink: #0f1714;
-    --accent-soft: #1f2a4a;
-    --pos: #5bc48a;
-    --pos-soft: #17322a;
-    --neg: #f08572;
-    --neg-soft: #3a1f1a;
-    --warn: #e0a93b;
-    --warn-soft: #3a2e15;
-    --shadow: none;
-    color-scheme: dark;
-  }
+/* Barra escura do topo (igual nos dois temas), fontes e escala tipográfica. */
+:root {
+  --nav: #0b1412;
+  --nav-2: #111d1a;
+  --nav-line: #1e2c28;
+  --nav-fg: #e7eeea;
+  --nav-muted: #8ea39b;
+  --nav-up: #33c98a;
+  --nav-down: #ff7a72;
+  --fonte-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fonte-codigo: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --t-xs: 11.5px;
+  --t-sm: 12.5px;
+  --t-md: 14px;
+  --t-lg: 16px;
+  --t-xl: 20px;
+  --t-2xl: 26px;
 }
 
 :root[data-theme='dark'] {
-  --bg: #0f1714;
-  --surface: #18231f;
-  --surface-2: #1e2b26;
-  --ink: #e6eeea;
-  --ink-2: #9aaba4;
-  --line: #2d3b36;
-  --accent: #8aa2f2;
-  --accent-ink: #0f1714;
-  --accent-soft: #1f2a4a;
-  --pos: #5bc48a;
-  --pos-soft: #17322a;
-  --neg: #f08572;
-  --neg-soft: #3a1f1a;
-  --warn: #e0a93b;
-  --warn-soft: #3a2e15;
-  --shadow: none;
   color-scheme: dark;
+  --fundo: #0b0f0e;
+  --superficie: #131a18;
+  --superficie-2: #1b2421;
+  --borda: #2a3632;
+  --texto: #e7eeeb;
+  --texto-mudo: #9eada8;
+  --alta: #3ddc84;
+  --baixa: #ff6b6b;
+  --estavel: #9eada8;
+  --laranja: #f58220;
+  --laranja-texto: #ffa95e;
+  --aviso-fundo: #3a2610;
+  --aviso-texto: #ffc98f;
+  --info-fundo: #142538;
+  --info-texto: #9cc7f5;
+  --perigo-fundo: #3d1517;
+  --perigo-texto: #ffaaa8;
+  --positivo-fundo: #0f2e1d;
+  --negativo-fundo: #3d1517;
+  --misto-fundo: #261d3b;
+  --misto-texto: #c9b6ff;
+  --sombra: none;
+  --serie-1: #3ddc97;
+  --serie-2: #f58220;
+  --serie-3: #7fb2ff;
+  --destaque: #3fae8f;
+  --destaque-texto: #000000;
+  --destaque-suave: #17302a;
+  --mapa-a3: #0f6b3d;
+  --mapa-a3-texto: #ffffff;
+  --mapa-a2: #0d4f2f;
+  --mapa-a2-texto: #e9fff2;
+  --mapa-a1: #123c28;
+  --mapa-a1-texto: #d5f5e3;
+  --mapa-b1: #4a1d20;
+  --mapa-b1-texto: #ffe1e1;
+  --mapa-b2: #6b2226;
+  --mapa-b2-texto: #fff0f0;
+  --mapa-b3: #8f2329;
+  --mapa-b3-texto: #ffffff;
+  --mapa-n0: #1b2421;
+  --mapa-n0-texto: #9eada8;
+  --sombra-menu: 0 10px 30px rgb(0 0 0 / 45%);
 }

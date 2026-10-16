@@ -1,7 +1,7 @@
 node_modules
 dist
 *.tsbuildinfo
-public/ocr
 test-results
 playwright-report
 .DS_Store
+*.tmp.mjs
