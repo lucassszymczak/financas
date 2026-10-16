@@ -112,13 +112,13 @@ Objeto em que cada chave é uma seção e o valor é uma frase de leitura (caixa
 
 ## `cotacoes`
 
-Cada item é um ativo. Aparece no ticker, nas tabelas do Mercado (agrupado por `grupo`), na watchlist e nos gráficos de histórico.
+Cada item é um ativo. Aparece na fita de cotações do topo, nas tabelas do Mercado (agrupado por `grupo`), na watchlist e nos gráficos de histórico.
 
 | Campo | Tipo | Obrig. | Exemplo / observação |
 |---|---|---|---|
 | `id` | texto | **sim** | `"IBOV"`, `"USDBRL"`, `"DI1F29"`. **Mantenha o mesmo id todos os dias**: é ele que liga o histórico. |
 | `nome` | texto | **sim** | `"Ibovespa"` |
-| `nome_curto` | texto | não | Rótulo no ticker. Se faltar, o ticker usa o `id`. |
+| `nome_curto` | texto | não | Rótulo na fita quando o `id` não é um código de bolsa. Se faltar, a fita usa o `id`. |
 | `grupo` | texto | **sim** | Qualquer texto; o app cria uma tabela por grupo. Nomes conhecidos: `indices_br`, `indices_mundo`, `moedas`, `juros_br`, `juros_mundo`, `commodities`, `acoes_bluechips`, `acoes_agro`, `renda_fixa`. |
 | `valor` | número | não, pode ser null | `204324.26`. **Para ações (grupos `acoes_*`), é o preço de fechamento em R$ e deve vir preenchido**: sem ele, o app mostra "sem preço no arquivo" e só a variação. |
 | `unidade` | texto | não, pode ser null | `"pts"`, `"R$"`, `"US$"`, `"% a.a."`, `"%"`, `"US$/barril"`, `"R$/sc 60 kg"`… |
@@ -130,7 +130,7 @@ Cada item é um ativo. Aparece no ticker, nas tabelas do Mercado (agrupado por `
 | `url` | texto | não, pode ser null | |
 | `nota_fonte` | número 0 a 5 | não, pode ser null | |
 | `kpi` | verdadeiro/falso | não | `true` = vira card grande na tela Hoje (com mini-gráfico). Padrão: `false`. |
-| `setor` | texto | não | `"Petróleo e gás"`. Entra na busca e no detalhe. |
+| `setor` | texto | não | Setor B3 (ex.: `"Financeiro"`, `"Bens industriais"`). Monta o **Mapa setorial**, o menu Setores, os chips de Ações e as opções da fita; também entra na busca e no detalhe. Use sempre o mesmo nome para o mesmo setor. |
 | `abertura`, `maxima`, `minima`, `fechamento_anterior` | número | não, pode ser null | Preços do pregão do `data_ref`, na mesma unidade de `valor`. |
 | `volume_financeiro` | número | não, pode ser null | Em R$ (ex.: `612000000`). O app abrevia para "R$ 612,0 mi". |
 | `var_semana_pct`, `var_mes_pct`, `var_ano_pct`, `var_12m_pct` | número | não, pode ser null | Variação acumulada em % (ex.: `-5.4`). |
@@ -168,8 +168,8 @@ Igual a `cotacoes`, trocando `grupo` por `regiao`.
 
 Bloco **opcional** com o universo grande de cotações do dia: todas as ações do Ibovespa, índices setoriais, FIIs, bolsas do mundo, moedas, commodities, cripto, curva de juros etc. Ele **não muda o Radar curado**:
 
-- não entra no ticker, nos KPIs, no texto da tela Hoje nem no resumo de "dado antigo";
-- aparece no **Mercado → Todos**, na **busca de ativos**, na **watchlist** (preenchendo o que antes era "sem dado hoje"), no **histórico** e nos gráficos.
+- não entra na fita **Principais**, nos KPIs, no texto da tela Hoje nem no resumo de "dado antigo";
+- aparece nas outras opções da fita (Todas as ações, setores, Índices…), no **Mapa setorial**, nas tabelas de Mercado e Renda fixa, no **Mercado → Todos**, na **busca de ativos**, na **watchlist** (preenchendo o que antes era "sem dado hoje"), no **histórico** e nos gráficos.
 
 Se um `id` aparecer em `cotacoes`/`agro` **e** em `cotacoes_amplas`, vale o do Radar curado.
 

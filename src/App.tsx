@@ -1,14 +1,19 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useEstado } from './state';
-import { ABAS, irPara, useAba, type AbaId } from './router';
+import { ABAS, irPara, useRota, type Rota } from './router';
 import { BotaoCarregar } from './components/Carregar';
-import { Ticker } from './components/Ticker';
-import { useAbrirHistorico } from './components/HistoricoAtivo';
+import { MenuSuperior } from './components/MenuSuperior';
+import { Fita, LinhaTaxas } from './components/Fita';
 import { useTemaEfetivo } from './tema';
-import { dataCurta, dataLonga, diaSemanaCurto } from './lib/formato';
+import { dataCurta, diaMes } from './lib/formato';
+import { categoria, opcoesFita } from './lib/categorias';
+import { gravarLocal, lerLocal } from './lib/local';
+import { nomeRegiao } from './lib/precos';
+import type { Radar } from './schema/radar';
 import { BoasVindas } from './screens/BoasVindas';
 import { Hoje } from './screens/Hoje';
 import { Mercado } from './screens/Mercado';
+import { RendaFixa } from './screens/RendaFixa';
 import { Agro } from './screens/Agro';
 import { Historico } from './screens/Historico';
 import { Clima } from './screens/Clima';
@@ -16,16 +21,18 @@ import { Agenda } from './screens/Agenda';
 import { Calculadoras } from './screens/Calculadoras';
 import { Config } from './screens/Config';
 
-const PRINCIPAIS: AbaId[] = ['hoje', 'mercado', 'agro', 'clima'];
+const PRINCIPAIS = ['hoje', 'mercado', 'agro', 'clima'] as const;
 
-function Tela({ aba }: { aba: AbaId }): ReactNode {
-  switch (aba) {
+function Tela({ rota }: { rota: Rota }): ReactNode {
+  switch (rota.aba) {
     case 'hoje':
       return <Hoje />;
     case 'mercado':
-      return <Mercado />;
+      return <Mercado sub={rota.sub} arg={rota.arg} />;
+    case 'renda-fixa':
+      return <RendaFixa sub={rota.sub} />;
     case 'agro':
-      return <Agro />;
+      return <Agro praca={rota.sub} />;
     case 'clima':
       return <Clima />;
     case 'agenda':
@@ -39,14 +46,46 @@ function Tela({ aba }: { aba: AbaId }): ReactNode {
   }
 }
 
+/** Caminho e título da tela atual, para o cabeçalho de cada página. */
+export function tituloRota(r: Rota, radar: Radar | null): { caminho: string; titulo: string } {
+  const nome = ABAS.find((a) => a.id === r.aba)!.nome;
+  const cat = categoria(r.sub);
+  switch (r.aba) {
+    case 'hoje':
+      return { caminho: 'Hoje', titulo: radar ? `Radar de ${diaMes(radar.edicao.data)}` : 'Hoje' };
+    case 'mercado':
+      if (r.sub === 'setores') return { caminho: 'Mercado › Setores', titulo: r.arg ?? 'Mapa setorial' };
+      return { caminho: 'Mercado', titulo: cat?.nome ?? 'Visão geral' };
+    case 'renda-fixa':
+      return { caminho: 'Renda fixa', titulo: cat?.nome ?? 'Taxas de referência' };
+    case 'agro':
+      return {
+        caminho: 'Agro',
+        titulo: r.sub ? (r.sub === 'brasil' ? 'Físico Brasil (Cepea)' : nomeRegiao(r.sub)) : 'Todas as praças',
+      };
+    default:
+      return { caminho: 'Radar', titulo: nome };
+  }
+}
+
 export function App() {
   const { carregando, atual, modoLeitura, abrirEdicao, config } = useEstado();
-  const aba = useAba();
-  const abrirHistorico = useAbrirHistorico();
+  const rota = useRota();
+  const aba = rota.aba;
   const [tema, alternarTema] = useTemaEfetivo();
   const [mais, setMais] = useState(false);
+  const [filtroSalvo, setFiltroSalvo] = useState(() => lerLocal('radar.fita.filtro', 'principais'));
+  const setFiltro = (f: string) => {
+    gravarLocal('radar.fita.filtro', f);
+    setFiltroSalvo(f);
+  };
+  // Um setor escolhido antes pode não existir na edição aberta: volta para "Principais".
+  const filtro = useMemo(
+    () => (atual && opcoesFita(atual.radar).some((o) => o.valor === filtroSalvo) ? filtroSalvo : 'principais'),
+    [atual, filtroSalvo],
+  );
 
-  useEffect(() => setMais(false), [aba]);
+  useEffect(() => setMais(false), [rota]);
   useEffect(() => {
     document.title = atual ? `${config.nomeApp} · ${dataCurta(atual.data)}` : config.nomeApp;
   }, [atual, config.nomeApp]);
@@ -55,51 +94,15 @@ export function App() {
 
   // Configurações ficam acessíveis mesmo sem dados (para restaurar backup).
   const semDados = !atual && aba !== 'config';
+  const cab = tituloRota(rota, atual?.radar ?? null);
 
   return (
     <div className="app">
       <header className="topo">
-        <a href="#/hoje" className="marca">
-          <span className="marca-ponto" aria-hidden="true" />
-          <span className="marca-textos">
-            <span className="marca-nome">{config.nomeApp}</span>
-            {atual && (
-              <span className="topo-edicao" title={atual.radar.edicao.titulo ?? undefined}>
-                <span className="so-desktop">Edição de {dataLonga(atual.data)}</span>
-                <span className="so-celular">
-                  {diaSemanaCurto(atual.data)}, {dataCurta(atual.data)}
-                </span>
-              </span>
-            )}
-          </span>
-        </a>
-        <div className="topo-acoes">
-          <button
-            type="button"
-            className="btn btn-icone"
-            onClick={alternarTema}
-            aria-label={tema === 'escuro' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-            title="Alternar tema"
-          >
-            {tema === 'escuro' ? '☀️' : '🌙'}
-          </button>
-          <BotaoCarregar compacto className="btn btn-primario btn-carregar-topo" />
-        </div>
+        <MenuSuperior rota={rota} radar={atual?.radar ?? null} nomeApp={config.nomeApp} tema={tema} alternarTema={alternarTema} />
+        {atual && <LinhaTaxas radar={atual.radar} filtro={filtro} setFiltro={setFiltro} />}
+        {atual && <Fita radar={atual.radar} filtro={filtro} />}
       </header>
-
-      {atual && <Ticker radar={atual.radar} onAbrir={abrirHistorico} />}
-
-      <nav className="lateral" aria-label="Seções">
-        <ul>
-          {ABAS.map((a) => (
-            <li key={a.id}>
-              <a href={`#/${a.id}`} aria-current={aba === a.id ? 'page' : undefined}>
-                <span aria-hidden="true">{a.icone}</span> {a.nome}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
 
       <main className="conteudo" id="conteudo">
         {modoLeitura && atual && (
@@ -112,7 +115,20 @@ export function App() {
             </button>
           </div>
         )}
-        {semDados ? <BoasVindas nome={config.nomeApp} /> : <Tela aba={aba} />}
+        {!semDados && (
+          <div className="migalha">
+            <div>
+              <div className="migalha-caminho">{cab.caminho}</div>
+              <h1>{cab.titulo}</h1>
+            </div>
+            {atual && (
+              <div className="migalha-ref" title={atual.radar.edicao.titulo ?? undefined}>
+                Edição de <b className="num">{dataCurta(atual.data)}</b>
+              </div>
+            )}
+          </div>
+        )}
+        {semDados ? <BoasVindas nome={config.nomeApp} /> : <Tela rota={rota} />}
       </main>
 
       <nav className="inferior" aria-label="Seções">
@@ -129,7 +145,7 @@ export function App() {
           type="button"
           aria-expanded={mais}
           aria-controls="menu-mais"
-          className={!PRINCIPAIS.includes(aba) ? 'ativo' : undefined}
+          className={!(PRINCIPAIS as readonly string[]).includes(aba) ? 'ativo' : undefined}
           onClick={() => setMais(!mais)}
         >
           <span aria-hidden="true">☰</span>
@@ -139,13 +155,16 @@ export function App() {
       {mais && (
         <div className="mais-fundo" onClick={() => setMais(false)}>
           <ul id="menu-mais" className="menu-mais" onClick={(e) => e.stopPropagation()}>
-            {ABAS.filter((a) => !PRINCIPAIS.includes(a.id)).map((a) => (
+            {ABAS.filter((a) => !(PRINCIPAIS as readonly string[]).includes(a.id)).map((a) => (
               <li key={a.id}>
                 <button type="button" onClick={() => irPara(a.id)} aria-current={aba === a.id ? 'page' : undefined}>
                   <span aria-hidden="true">{a.icone}</span> {a.nome}
                 </button>
               </li>
             ))}
+            <li>
+              <BotaoCarregar className="menu-mais-carregar" />
+            </li>
           </ul>
         </div>
       )}

@@ -31,7 +31,7 @@ Instalado, ele abre em tela cheia e funciona offline com os dados já carregados
 ## 3. Carregar o Radar do dia
 
 1. Salve o arquivo `radar_AAAA-MM-DD.json` que chega pela manhã (no celular, em Arquivos/Downloads).
-2. No app, toque em **📥 Carregar** (no topo) e escolha o arquivo. Dá para escolher vários de uma vez.
+2. No app, toque em **📥** (no topo, ao lado do botão de tema; também em **Mais**) e escolha o arquivo. Dá para escolher vários de uma vez.
 3. No computador, também dá para **arrastar o arquivo** para a janela.
 
 O app valida o arquivo antes de salvar. Se algo estiver errado, ele mostra qual campo tem problema (por exemplo, `cotacoes[3].valor: esperado número, veio texto`) e não salva nada daquele arquivo. Se já existir uma edição com a mesma data, o app pergunta se você quer substituir.
@@ -66,22 +66,47 @@ A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em g
 
 ## 6. Como o app funciona
 
-| Aba | O que mostra |
+### Topo: menu, taxas e fita
+
+No alto fica uma barra escura com o conteúdo centralizado (até 1280 px) e o fundo de canto a canto:
+
+- **Menu:** logo "Radar · Investimentos" → **Hoje · Mercado ▾ · Setores ▾ · Renda fixa ▾ · Agro ▾ · Clima · Agenda · Calculadoras · Mais ▾** → busca → tema → 📥 carregar. No computador, o submenu abre ao passar o mouse ou clicar, e o item da página atual fica sublinhado em laranja.
+  - **Mercado:** Visão geral, Ações, Índices Brasil, Índices globais, Moedas, Commodities, FIIs e Cripto, com a quantidade de ativos de cada um.
+  - **Setores:** Mapa setorial e cada setor B3 presente no arquivo, com a variação média simples do dia.
+  - **Renda fixa:** Curva DI, Tesouro Direto, Juros no mundo e Taxas de referência.
+  - **Agro:** Chicago, Físico Brasil (Cepea), Guarapuava e Noroeste Paulista.
+  - **Mais:** Histórico, Configurações e Carregar arquivo.
+- **Celular e telas até 1020 px:** o botão **☰** abre o menu em tela cheia. A barra inferior (Hoje, Mercado, Agro, Clima e Mais) continua.
+- **Busca do topo:** encontra ativos pelo código ou nome e também setores, em todo o arquivo (`cotacoes`, `agro` e `cotacoes_amplas`). Tocar num ativo abre o detalhe; num setor, abre o mapa setorial nele.
+- **Linha de taxas:** SELIC, CDI e IPCA 12M (de `taxas_referencia`) à esquerda; à direita, **Fita:** escolhe o que a fita mostra (Principais, Índices, Todas as ações, cada setor, Moedas, Juros e Tesouro, Commodities, Agro). A escolha fica salva no aparelho.
+- **Fita de cotações:** ocupa a largura toda e roda sozinha (sem parar quando o mouse passa por cima). Cada item mostra o código, o valor e a variação (▲ verde, ▼ vermelho; juros em pb).
+  - **Arrastar** com o mouse ou o dedo move a fita para os dois lados, com inércia. A roda do mouse e as setas do teclado também movem. Ela volta a rodar ~1,8 s depois que você solta.
+  - **Clicar** num ativo (sem arrastar) **para a fita** nele: o item fica em laranja, aparece "Parada em XXXX" e abre o detalhe. Ao fechar o detalhe, a fita volta a rodar em ~0,5 s.
+  - Com "reduzir movimento" ativado no aparelho, a fita não roda sozinha; só arrastando.
+
+No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra do menu fica fixa; taxas e fita sobem junto com a página.
+
+### Telas
+
+| Tela | O que mostra |
 |---|---|
 | 🏠 **Hoje** | Termômetro e, logo depois, as **Leituras do dia** em destaque (leitura geral, mercado, agro, regiões e "no campo"; toque para ir à aba). Em seguida, alertas, KPIs (itens com `kpi: true`), destaques e notícias (abrem em pop-up), limitações e aviso. |
-| 📊 **Mercado** | **Busca** por código, nome ou setor em todos os ativos do arquivo (inclusive os do bloco `cotacoes_amplas`). **Minha lista** (watchlist configurável) ou **Todos** os grupos do arquivo. Cada grupo é recolhível e mostra um resumo (▲ altas, ▼ quedas, sem dado). Há duas visões: **Lista** (ativo, mini-gráfico, preço e variação) e **Mapa** (blocos coloridos pela variação). Também dá para ordenar por maior alta, maior queda ou A–Z. Os ativos sem dado no dia ficam numa linha só. |
-| 🌾 **Agro** | Os mesmos grupos recolhíveis, um por região (Chicago, Brasil, Guarapuava, Noroeste Paulista…), com a leitura de cada região e o período dos dados semanais. |
+| 📊 **Mercado** | Abas em pílula. **Visão geral:** leitura do mercado, busca, **Minha lista** (watchlist configurável) ou **Todos** os grupos do arquivo, em grupos recolhíveis com visão **Lista** ou **Mapa**. **Setores:** um cartão por setor B3 com a variação média simples, a barra de altas x baixas e "N ações · ▲ x · ▼ y"; o fundo fica mais verde ou mais vermelho conforme a variação. Tocar num setor mostra a tabela das ações dele. **Ações, Índices, Moedas, Commodities, FIIs, Cripto:** tabela ordenável por qualquer coluna (toque no título); em Ações, chips filtram por setor. |
+| 🏦 **Renda fixa** | Taxas de referência (Selic, CDI, IPCA 12 meses) e tabelas de Curva DI, Tesouro Direto e Juros no mundo. |
+| 🌾 **Agro** | Os mesmos grupos recolhíveis, um por praça (Chicago, Brasil, Guarapuava, Noroeste Paulista…), com a leitura de cada praça e o período dos dados semanais. O menu abre uma praça só. |
 | 🌦️ **Clima** | ENSO, previsão por dia, alertas e "No campo". |
 | 📅 **Agenda** | Eventos por dia em horário de Brasília. O dia de hoje fica destacado e os eventos passados ficam ocultos (há uma opção para mostrá-los). |
 | 🧮 **Calculadoras** | CDB x LCA, Pré x IPCA+ x Pós (break-even), capital social, juros compostos e conversões saca/arroba/bushel. Os campos já vêm com as taxas do arquivo do dia; se o dado veio `null`, o campo fica vazio com um aviso. |
 | 🗂️ **Histórico** | Edições salvas por mês; **Abrir** mostra uma edição antiga em modo leitura. Comparação de até 3 ativos (normalizado em base 100 ou em valor) em 7, 30 ou 90 dias, ou em todo o período. |
-| ⚙️ **Configurações** | Nome do app, cor de destaque, tema, watchlist (marcar, reordenar, adicionar), limites de preço, backup. |
+| ⚙️ **Configurações** | Nome do app, cor de destaque, tema, watchlist (marcar, reordenar, adicionar), limites de preço, backup e sincronização. |
 
-**Ticker:** a faixa do topo mostra as cotações do Radar divididas por seção (Índices, Mundo, Moedas, Juros, Commodities, Ações, Agro). Ela pausa ao passar o mouse ou tocar, e cada item abre o detalhe do ativo.
+**Setores:** o setor vem do campo `setor` de cada ação. Para as ações da carteira do Ibovespa que chegarem sem esse campo, o app usa o setor B3 conhecido delas. As médias são simples (cada ação pesa igual) e ignoram as ações sem variação no dia.
+
+**Tipografia:** IBM Plex Sans (400/500/600) na interface e IBM Plex Mono nos códigos dos ativos, embutidas no app (funcionam offline). Os números usam algarismos de largura fixa, para as colunas alinharem.
 
 **Ibovespa completo:** a lista "Ibovespa — carteira completa" (Configurações → O que acompanhar) já vem com a carteira de referência e com a regra automática `grupo:acoes_ibov`, que traz qualquer ação que a rotina enviar como parte do índice. Assim, os rebalanceamentos da B3 aparecem sem editar nada.
 
-**Detalhe do ativo:** ao tocar num ativo (no ticker, num card de KPI ou numa lista), abre um pop-up com:
+**Detalhe do ativo:** ao tocar num ativo (na fita, na busca, num card de KPI, numa lista ou tabela), abre um pop-up com:
 - gráfico do histórico (7, 30 ou 90 dias, ou todo o período);
 - mínimo e máximo das edições carregadas;
 - variação acumulada no período;
@@ -94,7 +119,7 @@ A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em g
 - **Clima:** cada alerta do arquivo aparece na tela Hoje, com ícone e cor conforme o nível.
 - **Dado antigo:** se a data de referência de uma cotação é anterior ao último dia útil antes da edição (segunda olha sexta), a cotação recebe o selo "dado de DD/MM". Dados semanais não contam como antigos.
 
-No celular, a barra inferior tem Hoje, Mercado, Agro, Clima e **Mais** (Agenda, Calculadoras, Histórico, Configurações). No computador, o menu fica na lateral.
+No celular, a barra inferior tem Hoje, Mercado, Agro, Clima e **Mais** (Renda fixa, Agenda, Calculadoras, Histórico, Configurações e Carregar). No computador, tudo fica no menu do topo.
 
 ---
 
@@ -121,8 +146,10 @@ src/
   lib/                 lógica pura: validação, formatação pt-BR, regra de dado antigo,
                        alertas, watchlist, agenda (fusos), cores/contraste, banco (idb)
   lib/calc/            IR regressivo, CDB x LCA, títulos/break-even, capital social, conversões
-  components/          ticker, KPI, sparkline, cards, tabelas, gráficos, diálogos
-  screens/             uma tela por aba
+  lib/categorias.ts    categorias do menu, setores B3 (média, altas/baixas) e opções da fita
+  lib/fita.ts          regra da fita (rodar, arrastar, inércia, parar no clique, retomar) como funções puras
+  components/          menu superior, fita, KPI, sparkline, cards, tabelas, gráficos, diálogos
+  screens/             uma tela por aba (Mercado inclui Setores e as listas por categoria)
   styles/              tokens.css (temas) e base.css
 docs/schema.md         contrato do arquivo diário
 e2e/                   testes de ponta a ponta e arquivos de teste

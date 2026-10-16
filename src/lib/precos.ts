@@ -33,7 +33,7 @@ export function cotacoesAmplas(r: Radar): Preco[] {
     }));
 }
 
-/** Itens curados do Radar (cotações, agro e taxas): os que entram no ticker, KPIs e resumo de dado antigo. */
+/** Itens curados do Radar (cotações, agro e taxas): os que entram na fita "Principais", KPIs e resumo de dado antigo. */
 export function precosCurados(r: Radar): Preco[] {
   return [...r.cotacoes, ...r.agro, ...taxasComoPrecos(r)];
 }
@@ -60,7 +60,7 @@ export function mapaPrecos(r: Radar): Map<string, Preco> {
   return m;
 }
 
-/** Juros são exibidos em pb e têm a cor neutra no ticker. */
+/** Juros são exibidos em pb e têm a cor neutra. */
 export function ehJuros(p: Preco): boolean {
   return p.variacao_pb !== null && p.variacao_pb !== undefined;
 }

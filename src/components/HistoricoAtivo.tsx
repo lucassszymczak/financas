@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useEstado } from '../state';
 import type { Preco, Radar } from '../schema/radar';
 import { mapaPrecos, nomeGrupo, nomeRegiao, serie, type Ponto } from '../lib/precos';
@@ -9,7 +9,9 @@ import { Grafico } from './Grafico';
 import { Estrelas, Leitura, Selo, Variacao } from './Basicos';
 import { Modal } from './Modal';
 
-const Ctx = createContext<(id: string) => void>(() => {});
+/** Abre o detalhe de um ativo; `aoFechar` é chamado quando o pop-up fecha (a fita usa para voltar a rodar). */
+type Abrir = (id: string, aoFechar?: () => void) => void;
+const Ctx = createContext<Abrir>(() => {});
 
 const PERIODOS = [
   { dias: 7, nome: '7d' },
@@ -234,13 +236,26 @@ function Detalhe({ id, fechar }: { id: string; fechar: () => void }) {
   );
 }
 
-/** Pop-up com detalhes e histórico de um ativo (aberto pelo ticker, KPIs e listas). */
+/** Pop-up com detalhes e histórico de um ativo (aberto pela fita, busca, KPIs, listas e tabelas). */
 export function HistoricoAtivoProvider({ children }: { children: ReactNode }) {
   const [id, setId] = useState<string | null>(null);
+  const aoFechar = useRef<(() => void) | undefined>(undefined);
+  const abrir = useCallback<Abrir>((novo, cb) => {
+    const anterior = aoFechar.current;
+    aoFechar.current = cb;
+    if (anterior && anterior !== cb) anterior();
+    setId(novo);
+  }, []);
+  const fechar = useCallback(() => {
+    const cb = aoFechar.current;
+    aoFechar.current = undefined;
+    setId(null);
+    cb?.();
+  }, []);
   return (
-    <Ctx.Provider value={setId}>
+    <Ctx.Provider value={abrir}>
       {children}
-      {id && <Detalhe key={id} id={id} fechar={() => setId(null)} />}
+      {id && <Detalhe key={id} id={id} fechar={fechar} />}
     </Ctx.Provider>
   );
 }

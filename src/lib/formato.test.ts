@@ -22,6 +22,16 @@ describe('formatação pt-BR', () => {
     expect(variacao({ variacao_pct: 0 })?.dir).toBe('estavel');
     expect(variacao({ variacao_pct: null })).toBeNull();
   });
+  it('variação: sinal, seta e casas decimais', () => {
+    expect(variacao({ variacao_pct: 2.5 })).toEqual({ texto: '+2,50%', dir: 'alta', seta: '▲' });
+    expect(variacao({ variacao_pct: -12.345 })?.texto).toBe('−12,35%');
+    expect(variacao({ variacao_pct: 1234.5 })?.texto).toBe('+1.234,50%');
+    expect(variacao({ variacao_pb: -7 })).toEqual({ texto: '−7 pb', dir: 'baixa', seta: '▼' });
+    expect(variacao({ variacao_pb: 0 })).toEqual({ texto: '0 pb', dir: 'estavel', seta: '■' });
+    // Juros: pb tem prioridade sobre %.
+    expect(variacao({ variacao_pct: 0.4, variacao_pb: 5 })?.texto).toBe('+5 pb');
+    expect(variacao({ variacao_pct: Number.NaN })).toBeNull();
+  });
   it('datas no fuso de Brasília', () => {
     expect(diaMes('2026-10-16')).toBe('16/10');
     expect(hojeISO(new Date('2026-10-17T01:30:00Z'))).toBe('2026-10-16');
