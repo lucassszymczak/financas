@@ -21,11 +21,20 @@ test('boas-vindas, exemplo e tela Hoje', async ({ page }) => {
   await expect(page.getByText('3 cotações com dado antigo')).toBeVisible();
   await expect(page.getByText('Guarapuava (PR): frio (17/10 a 20/10)')).toBeVisible();
 
-  // Card expansível
+  // Notícia abre em pop-up com fundo desfocado
   await page.getByRole('button', { name: /Datafolha: empate técnico/ }).click();
-  await expect(page.getByRole('heading', { name: 'Por que aconteceu' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'InfoMoney' }).first()).toBeVisible();
+  const popup = page.getByRole('dialog');
+  await expect(popup).toBeVisible();
+  await expect(popup.getByRole('heading', { name: 'Por que aconteceu' })).toBeVisible();
+  await expect(popup.getByRole('link', { name: 'InfoMoney' })).toBeVisible();
+  const desfoque = await page.locator('.modal-fundo').evaluate((e) => getComputedStyle(e).backdropFilter);
+  expect(desfoque).toContain('blur');
   await semRolagemHorizontal(page);
+  await page.keyboard.press('Escape');
+  await expect(popup).toHaveCount(0);
+  await page.getByRole('button', { name: /Datafolha: empate técnico/ }).click();
+  await page.getByRole('button', { name: 'Fechar' }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
 });
 
 test('todas as abas abrem sem rolagem horizontal', async ({ page }) => {
@@ -70,6 +79,17 @@ test('edição repetida pergunta antes de substituir', async ({ page }) => {
   await expect(page.getByRole('dialog')).toContainText('Já existe uma edição de 16/10/2026');
   await page.getByRole('button', { name: 'Manter a atual' }).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
+});
+
+test('mercado mostra preço das ações e avisa quando falta', async ({ page }) => {
+  await carregarExemplo(page);
+  await page.goto('./#/mercado');
+  await expect(page.getByText(/ações vieram sem preço no arquivo/)).toBeVisible();
+  await expect(page.getByText('sem preço no arquivo', { exact: true }).first()).toBeVisible();
+  await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
+  await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
+  await page.goto('./#/mercado');
+  await expect(page.getByRole('row', { name: /Petrobras PN/ })).toContainText('R$ 30,12');
 });
 
 test('mercado ordena e abre o histórico do ativo', async ({ page }) => {

@@ -119,7 +119,7 @@ Cada item é um ativo. Aparece no ticker, nas tabelas do Mercado (agrupado por `
 | `nome` | texto | **sim** | `"Ibovespa"` |
 | `nome_curto` | texto | não | Rótulo no ticker. Se faltar, o ticker usa o `id`. |
 | `grupo` | texto | **sim** | Qualquer texto; o app cria uma tabela por grupo. Nomes conhecidos: `indices_br`, `indices_mundo`, `moedas`, `juros_br`, `juros_mundo`, `commodities`, `acoes_bluechips`, `acoes_agro`, `renda_fixa`. |
-| `valor` | número | não, pode ser null | `204324.26` |
+| `valor` | número | não, pode ser null | `204324.26`. **Para ações (grupos `acoes_*`), é o preço de fechamento em R$ e deve vir preenchido**: sem ele, o app mostra "sem preço no arquivo" e só a variação. |
 | `unidade` | texto | não, pode ser null | `"pts"`, `"R$"`, `"US$"`, `"% a.a."`, `"%"`, `"US$/barril"`, `"R$/sc 60 kg"`… |
 | `variacao_pct` | número | não, pode ser null | Variação em % no dia (`-1.06`). |
 | `variacao_pb` | número | não, pode ser null | Variação em pontos-base, **para juros** (`25`). Se vier, o app mostra em pb e ignora `variacao_pct`. |
@@ -142,6 +142,8 @@ O app tem uma watchlist padrão com estes ids. Use-os quando o ativo vier no arq
 | Índices globais | `SPX`, `NDX`, `DJI`, `KOSPI`, `N225`, `DAX`, `SSEC` |
 | Renda fixa e taxas | `SELIC`, `CDI`, `IPCA12M` (vêm de `taxas_referencia`), `DI1F27`, `DI1F29`, `DI1F31`, `UST2`, `UST10` |
 | Tesouro Direto | `TESOURO_PRE_AAAA` e `TESOURO_IPCA_AAAA` (ex.: `TESOURO_PRE_2031`, `TESOURO_IPCA_2035`), no grupo `renda_fixa`, com `valor` = taxa em % a.a. e `unidade` `"% a.a."`. |
+
+**Ações:** use `unidade: "R$"` e preencha `valor` com o preço de fechamento do `data_ref` (ex.: `{"id": "PETR4", "nome": "Petrobras PN", "grupo": "acoes_bluechips", "valor": 30.12, "unidade": "R$", "variacao_pct": -1.29, "data_ref": "2026-10-15", ...}`). Use `null` só quando o preço realmente não pôde ser verificado, e registre isso em `limitacoes`.
 
 Outros ids usados pelos limites e calculadoras: `USDBRL` (dólar comercial), `BOI_CEPEA`, `SOJA_CBOT`, `SOJA_PGUA`.
 
