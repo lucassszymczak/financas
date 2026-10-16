@@ -3,10 +3,11 @@ import { useEstado } from '../state';
 import { Secao } from '../components/Basicos';
 import { useDialogo } from '../components/Dialogo';
 import { useCarregar } from '../components/Carregar';
+import { useSincronizacao } from '../components/Sincronizacao';
 import { COR_PADRAO, CONFIG_PADRAO, type Config, type GrupoWatch, type Limite, type Tema } from '../lib/config';
 import { apagarTudo, listarEdicoes, salvarEdicao } from '../lib/db';
 import { baixarArquivo, lerBackup, montarBackup } from '../lib/importar';
-import { hojeISO, lerNumero, numero } from '../lib/formato';
+import { dataHora, hojeISO, lerNumero, numero } from '../lib/formato';
 import { todosPrecos } from '../lib/precos';
 
 function mover<T>(lista: T[], i: number, delta: number): T[] {
@@ -265,6 +266,104 @@ function Limites({ config, salvar, nomes }: { config: Config; salvar: (c: Config
   );
 }
 
+const LINK_CHAVE = 'https://github.com/settings/tokens/new?scopes=gist&description=Radar%20de%20Investimentos';
+
+function Sincronizar() {
+  const { status, ligar, desligar, sincronizarAgora } = useSincronizacao();
+  const { confirmar } = useDialogo();
+  const { aviso } = useCarregar();
+  const [chave, setChave] = useState('');
+  const ocupado = status.estado === 'sincronizando';
+
+  if (status.estado === 'desligada') {
+    return (
+      <div className="cartao calc">
+        <p>
+          Mantém histórico e configurações iguais no celular e no computador. Os dados ficam num <strong>Gist secreto</strong> da
+          sua conta do GitHub (não aparece em buscas nem no seu perfil). Faça uma vez em cada aparelho:
+        </p>
+        <ol className="passos">
+          <li>
+            <a href={LINK_CHAVE} target="_blank" rel="noreferrer noopener">
+              Abra esta página do GitHub
+            </a>{' '}
+            (já vem com a opção <strong>gist</strong> marcada). Em <em>Expiration</em>, escolha <em>No expiration</em> ou 1 ano e
+            toque em <strong>Generate token</strong>.
+          </li>
+          <li>
+            Copie a chave (começa com <code>ghp_</code>) e cole abaixo. No outro aparelho, use a mesma chave.
+          </li>
+        </ol>
+        <form
+          className="botoes"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (chave.trim().length < 20) return;
+            void ligar(chave).then(() => setChave(''));
+          }}
+        >
+          <input
+            aria-label="Chave do GitHub"
+            placeholder="ghp_…"
+            value={chave}
+            onChange={(e) => setChave(e.target.value)}
+            autoComplete="off"
+            spellCheck={false}
+            className="campo-chave"
+          />
+          <button type="submit" className="btn btn-primario" disabled={chave.trim().length < 20}>
+            Ativar sincronização
+          </button>
+        </form>
+        <p className="mudo pequeno">
+          A chave fica guardada só neste aparelho e só dá acesso aos seus Gists. Ela não vai para o backup. Para revogar, apague-a
+          em github.com → Settings → Developer settings → Tokens.
+        </p>
+      </div>
+    );
+  }
+
+  const quando = status.ultima ? dataHora(status.ultima) : 'ainda não sincronizado';
+  return (
+    <div className="cartao calc">
+      <p className="status-sync">
+        {status.estado === 'sincronizando' && <>🔄 Sincronizando…</>}
+        {status.estado === 'ociosa' && <>✅ Sincronização ativa · última vez: {quando}</>}
+        {status.estado === 'erro' && <>⚠️ {status.mensagem}</>}
+      </p>
+      {status.estado === 'erro' && <p className="mudo pequeno">Última sincronização bem-sucedida: {quando}.</p>}
+      <p className="mudo pequeno">
+        Sincroniza sozinho ao abrir o app e alguns segundos depois de carregar um arquivo, apagar uma edição ou mudar uma
+        configuração.
+      </p>
+      <div className="botoes">
+        <button
+          type="button"
+          className="btn btn-primario"
+          disabled={ocupado}
+          onClick={() => void sincronizarAgora().then(() => aviso('Sincronização concluída.'))}
+        >
+          🔄 Sincronizar agora
+        </button>
+        <button
+          type="button"
+          className="btn"
+          onClick={async () => {
+            const ok = await confirmar({
+              titulo: 'Desligar sincronização',
+              texto: 'Este aparelho para de sincronizar e esquece a chave. Os dados daqui e do GitHub continuam como estão.',
+              ok: 'Desligar',
+            });
+            if (ok) await desligar();
+          }}
+        >
+          Desligar neste aparelho
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function Backup() {
   const { config, recarregar, salvarConfig, abrirEdicao } = useEstado();
   const { confirmar, avisar } = useDialogo();
@@ -306,7 +405,9 @@ function Backup() {
       ok: 'Restaurar',
     });
     if (!ok) return;
-    for (const e of edicoes) await salvarEdicao(e);
+    // Data de importação renovada: a restauração vale como importação nova (inclusive na sincronização).
+    const agora = new Date().toISOString();
+    for (const e of edicoes) await salvarEdicao({ ...e, importadoEm: agora });
     await salvarConfig(cfg);
     await recarregar();
     abrirEdicao(null);
@@ -412,6 +513,9 @@ export function Config() {
       <Secao titulo="Limites de preço" id="cfg-limites">
         <p className="mudo pequeno">Quando o arquivo cruzar um limite, o card fica destacado e o alerta aparece na tela Hoje.</p>
         <Limites config={config} salvar={salvar} nomes={nomes} />
+      </Secao>
+      <Secao titulo="Sincronização entre aparelhos" id="cfg-sync">
+        <Sincronizar />
       </Secao>
       <Secao titulo="Backup" id="cfg-backup">
         <Backup />

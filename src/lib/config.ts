@@ -10,6 +10,8 @@ export type Config = {
   tema: Tema;
   watchlist: GrupoWatch[];
   limites: Limite[];
+  /** Quando a configuração mudou pela última vez (a sincronização fica com a mais nova). */
+  atualizadaEm?: string;
 };
 
 export const COR_PADRAO = '#005C46';
@@ -60,6 +62,7 @@ export function normalizarConfig(c: unknown): Config {
     tema,
     watchlist: Array.isArray(o.watchlist) ? o.watchlist : WATCHLIST_PADRAO,
     limites: Array.isArray(o.limites) ? o.limites : LIMITES_PADRAO,
+    ...(typeof o.atualizadaEm === 'string' ? { atualizadaEm: o.atualizadaEm } : {}),
   };
 }
 

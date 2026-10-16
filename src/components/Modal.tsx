@@ -37,10 +37,9 @@ export function Modal({
     const corpo = document.body;
     corpo.dataset.modais = String(Number(corpo.dataset.modais ?? 0) + 1);
     corpo.classList.add('com-modal');
-    const foco =
-      caixa.current?.querySelector<HTMLElement>('[data-autofoco]') ??
-      caixa.current?.querySelector<HTMLElement>('button, a, input, select');
-    foco?.focus();
+    // Foca o botão principal quando houver; senão a própria janela (sem destacar o ✕).
+    const foco = caixa.current?.querySelector<HTMLElement>('[data-autofoco]') ?? caixa.current;
+    foco?.focus({ preventScroll: true });
     return () => {
       window.removeEventListener('keydown', tecla);
       const n = Number(corpo.dataset.modais ?? 1) - 1;
@@ -55,6 +54,7 @@ export function Modal({
       <div
         ref={caixa}
         className={`modal${largo ? ' modal-largo' : ''}`}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby={idTitulo}

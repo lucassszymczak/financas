@@ -7,17 +7,20 @@ import { EstadoProvider } from './state';
 import { DialogoProvider } from './components/Dialogo';
 import { CarregarProvider } from './components/Carregar';
 import { HistoricoAtivoProvider } from './components/HistoricoAtivo';
+import { SincronizacaoProvider } from './components/Sincronizacao';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <EstadoProvider>
-      <DialogoProvider>
-        <CarregarProvider>
-          <HistoricoAtivoProvider>
-            <App />
-          </HistoricoAtivoProvider>
-        </CarregarProvider>
-      </DialogoProvider>
+      <SincronizacaoProvider>
+        <DialogoProvider>
+          <CarregarProvider>
+            <HistoricoAtivoProvider>
+              <App />
+            </HistoricoAtivoProvider>
+          </CarregarProvider>
+        </DialogoProvider>
+      </SincronizacaoProvider>
     </EstadoProvider>
   </StrictMode>,
 );

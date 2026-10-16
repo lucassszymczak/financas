@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
-import { dataISOParaDate, diaMes, numeroAuto } from '../lib/formato';
+import { dataISOParaDate, diaMes, numero, numeroAuto } from '../lib/formato';
 
 export type SerieGrafico = { nome: string; pontos: { x: string; y: number }[] };
 
@@ -62,8 +62,9 @@ export function Grafico({
           stroke: texto,
           grid: { stroke: grade, width: 1 },
           ticks: { stroke: grade },
-          size: 64,
-          values: (_u, vals) => vals.map((v) => formatar(v)),
+          // Largura do eixo conforme o maior rótulo (números grandes não ficam cortados).
+          size: (_u, vals) => Math.max(44, ...(vals ?? []).map((v) => String(v).length * 7.2 + 18)),
+          values: (_u, vals) => vals.map((v) => (Math.abs(v) >= 1000 ? numero(v, 0) : formatar(v))),
         },
       ],
       series: [

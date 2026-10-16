@@ -33,6 +33,7 @@ const PARES: [string, string][] = [
   ['misto-texto', 'misto-fundo'],
   ['laranja-texto', 'superficie'],
   ['destaque-texto', 'destaque'],
+  ...['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'n0'].map((n): [string, string] => [`mapa-${n}-texto`, `mapa-${n}`]),
 ];
 
 describe('contraste WCAG AA (4,5:1) nos dois temas', () => {
