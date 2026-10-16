@@ -68,7 +68,7 @@ A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em g
 
 | Aba | O que mostra |
 |---|---|
-| 🏠 **Hoje** | KPIs (itens com `kpi: true`) com mini-gráfico, Termômetro, alertas, destaques e notícias (toque para expandir), Leitura do dia, limitações e aviso. |
+| 🏠 **Hoje** | Termômetro e, logo depois, as **Leituras do dia** em destaque (leitura geral, mercado, agro, regiões e "no campo"; toque para ir à aba). Em seguida, alertas, KPIs (itens com `kpi: true`), destaques e notícias (abrem em pop-up), limitações e aviso. |
 | 📊 **Mercado** | **Busca** por código, nome ou setor em todos os ativos do arquivo (inclusive os do bloco `cotacoes_amplas`). **Minha lista** (watchlist configurável) ou **Todos** os grupos do arquivo. Cada grupo é recolhível e mostra um resumo (▲ altas, ▼ quedas, sem dado). Há duas visões: **Lista** (ativo, mini-gráfico, preço e variação) e **Mapa** (blocos coloridos pela variação). Também dá para ordenar por maior alta, maior queda ou A–Z. Os ativos sem dado no dia ficam numa linha só. |
 | 🌾 **Agro** | Os mesmos grupos recolhíveis, um por região (Chicago, Brasil, Guarapuava, Noroeste Paulista…), com a leitura de cada região e o período dos dados semanais. |
 | 🌦️ **Clima** | ENSO, previsão por dia, alertas e "No campo". |
@@ -76,6 +76,10 @@ A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em g
 | 🧮 **Calculadoras** | CDB x LCA, Pré x IPCA+ x Pós (break-even), capital social, juros compostos e conversões saca/arroba/bushel. Os campos já vêm com as taxas do arquivo do dia; se o dado veio `null`, o campo fica vazio com um aviso. |
 | 🗂️ **Histórico** | Edições salvas por mês; **Abrir** mostra uma edição antiga em modo leitura. Comparação de até 3 ativos (normalizado em base 100 ou em valor) em 7, 30 ou 90 dias, ou em todo o período. |
 | ⚙️ **Configurações** | Nome do app, cor de destaque, tema, watchlist (marcar, reordenar, adicionar), limites de preço, backup. |
+
+**Ticker:** a faixa do topo mostra as cotações do Radar divididas por seção (Índices, Mundo, Moedas, Juros, Commodities, Ações, Agro). Ela pausa ao passar o mouse ou tocar, e cada item abre o detalhe do ativo.
+
+**Ibovespa completo:** a lista "Ibovespa — carteira completa" (Configurações → O que acompanhar) já vem com a carteira de referência e com a regra automática `grupo:acoes_ibov`, que traz qualquer ação que a rotina enviar como parte do índice. Assim, os rebalanceamentos da B3 aparecem sem editar nada.
 
 **Detalhe do ativo:** ao tocar num ativo (no ticker, num card de KPI ou numa lista), abre um pop-up com:
 - gráfico do histórico (7, 30 ou 90 dias, ou todo o período);

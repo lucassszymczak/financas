@@ -4,7 +4,16 @@ import { Secao } from '../components/Basicos';
 import { useDialogo } from '../components/Dialogo';
 import { useCarregar } from '../components/Carregar';
 import { useSincronizacao } from '../components/Sincronizacao';
-import { COR_PADRAO, CONFIG_PADRAO, type Config, type GrupoWatch, type Limite, type Tema } from '../lib/config';
+import {
+  COR_PADRAO,
+  CONFIG_PADRAO,
+  descreverRegra,
+  ehRegra,
+  type Config,
+  type GrupoWatch,
+  type Limite,
+  type Tema,
+} from '../lib/config';
 import { apagarTudo, listarEdicoes, salvarEdicao } from '../lib/db';
 import { baixarArquivo, lerBackup, montarBackup } from '../lib/importar';
 import { dataHora, hojeISO, lerNumero, numero } from '../lib/formato';
@@ -119,7 +128,7 @@ function Watchlist({ config, salvar, nomes }: { config: Config; salvar: (c: Conf
                     />
                     <span>
                       <strong>{it.id}</strong> {nomes.get(it.id) && <span className="mudo">{nomes.get(it.id)}</span>}
-                      {it.id.endsWith('*') && <span className="mudo"> (todos os vencimentos)</span>}
+                      {ehRegra(it.id) && <span className="mudo"> ({descreverRegra(it.id)})</span>}
                     </span>
                   </label>
                   <span className="botoes">

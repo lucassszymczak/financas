@@ -1914,3 +1914,110 @@ body.com-modal {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23889691' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E")
     no-repeat 0.75rem center;
 }
+
+/* Rótulo de seção no ticker */
+.ticker-secao {
+  display: flex;
+  align-items: center;
+  padding: 0 0.65rem 0 1rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--laranja-texto);
+  white-space: nowrap;
+  border-left: 3px solid var(--laranja);
+  background: color-mix(in srgb, var(--laranja) 10%, transparent);
+}
+
+/* Menu lateral maior no computador */
+@media (min-width: 900px) {
+  .app {
+    grid-template-columns: 250px minmax(0, 1fr);
+  }
+  .lateral ul {
+    padding: 0.9rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .lateral a {
+    min-height: 52px;
+    padding: 0 1rem;
+    gap: 0.8rem;
+    font-size: 1.08rem;
+    font-weight: 600;
+    border-radius: 10px;
+  }
+  .lateral a span[aria-hidden='true'] {
+    font-size: 1.35rem;
+    width: 1.6rem;
+    text-align: center;
+  }
+}
+
+/* ---------- Leituras em destaque ---------- */
+.leitura-destaque {
+  border-left: 0;
+  border-top: 4px solid var(--laranja);
+  background: color-mix(in srgb, var(--laranja) 9%, var(--superficie));
+  padding: 0.8rem 0.95rem;
+  font-size: 1.02rem;
+  box-shadow: var(--sombra);
+}
+.leitura-destaque strong {
+  font-size: 0.95rem;
+}
+.painel-leituras {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-top: 4px solid var(--destaque);
+  border-radius: 12px;
+  padding: 0.9rem;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.leitura-principal {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.leituras-secao {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+@media (min-width: 900px) {
+  .leituras-secao {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.leituras-secao a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  height: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  background: var(--destaque-suave);
+  color: var(--texto);
+  text-decoration: none;
+  border-left: 3px solid var(--destaque);
+}
+.leituras-secao a:hover {
+  filter: brightness(1.04);
+}
+.ls-rotulo {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--destaque);
+}
+.ls-texto {
+  font-size: 0.93rem;
+}

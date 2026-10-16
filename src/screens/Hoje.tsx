@@ -7,7 +7,7 @@ import { Leitura, Secao, Selo, type TomSelo } from '../components/Basicos';
 import { useAbrirHistorico } from '../components/HistoricoAtivo';
 import { calcularAlertas } from '../lib/alertas';
 import { serie } from '../lib/precos';
-import { dataHora } from '../lib/formato';
+import { dataHora, humanizar } from '../lib/formato';
 
 const TOM_TERMOMETRO: Record<string, TomSelo> = {
   otimismo: 'positivo',
@@ -45,6 +45,57 @@ export function Kpis() {
   );
 }
 
+/** Rótulo, ícone e aba de cada leitura de seção conhecida. */
+const LEITURAS: Record<string, { rotulo: string; icone: string; aba: string }> = {
+  mercado: { rotulo: 'Mercado', icone: '📊', aba: 'mercado' },
+  agro: { rotulo: 'Agro', icone: '🌾', aba: 'agro' },
+  brasil_agro: { rotulo: 'Agro Brasil', icone: '🌾', aba: 'agro' },
+  brasil: { rotulo: 'Agro Brasil', icone: '🌾', aba: 'agro' },
+  chicago: { rotulo: 'Chicago', icone: '🌽', aba: 'agro' },
+  guarapuava: { rotulo: 'Guarapuava', icone: '📍', aba: 'agro' },
+  noroeste_paulista: { rotulo: 'Noroeste Paulista', icone: '📍', aba: 'agro' },
+};
+
+/** As leituras do dia em destaque, antes dos números: o "e daí?" de cada seção. */
+function PainelLeituras() {
+  const { radar } = useRadar();
+  const secoes = Object.entries(radar.leituras_secao ?? {})
+    .filter((e): e is [string, string] => !!e[1])
+    .map(([chave, texto]) => ({ chave, texto, ...(LEITURAS[chave] ?? { rotulo: humanizar(chave), icone: '🔎', aba: 'hoje' }) }));
+  const noCampo = radar.clima?.no_campo;
+  if (!radar.leitura_do_dia && !secoes.length && !noCampo) return null;
+  return (
+    <section className="painel-leituras" aria-labelledby="titulo-leituras">
+      <h2 id="titulo-leituras">🧠 Leituras do dia</h2>
+      {radar.leitura_do_dia && <p className="leitura-principal">{radar.leitura_do_dia}</p>}
+      {(secoes.length > 0 || noCampo) && (
+        <ul className="leituras-secao">
+          {secoes.map((l) => (
+            <li key={l.chave}>
+              <a href={`#/${l.aba}`}>
+                <span className="ls-rotulo">
+                  <span aria-hidden="true">{l.icone}</span> {l.rotulo}
+                </span>
+                <span className="ls-texto">{l.texto}</span>
+              </a>
+            </li>
+          ))}
+          {noCampo && (
+            <li>
+              <a href="#/clima">
+                <span className="ls-rotulo">
+                  <span aria-hidden="true">🌦️</span> No campo
+                </span>
+                <span className="ls-texto">{noCampo}</span>
+              </a>
+            </li>
+          )}
+        </ul>
+      )}
+    </section>
+  );
+}
+
 export function Hoje() {
   const { radar, config } = useRadar();
   const alertas = useMemo(() => calcularAlertas(radar, config.limites), [radar, config.limites]);
@@ -52,8 +103,6 @@ export function Hoje() {
 
   return (
     <div className="tela">
-      <Kpis />
-
       {t && (
         <section className="termometro" aria-label="Termômetro do dia">
           <div className="termometro-topo">
@@ -65,7 +114,11 @@ export function Hoje() {
         </section>
       )}
 
+      <PainelLeituras />
+
       <FaixaAlertas alertas={alertas} />
+
+      <Kpis />
 
       {radar.destaques.length > 0 && (
         <Secao titulo="Destaques" id="sec-destaques">
@@ -84,12 +137,6 @@ export function Hoje() {
               <CardNoticia key={n.id} item={n} noticia />
             ))}
           </div>
-        </Secao>
-      )}
-
-      {radar.leitura_do_dia && (
-        <Secao titulo="🧠 Leitura do dia" id="sec-leitura">
-          <p className="texto-leitura">{radar.leitura_do_dia}</p>
         </Secao>
       )}
 

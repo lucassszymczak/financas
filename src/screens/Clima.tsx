@@ -39,6 +39,7 @@ export function Clima() {
 
   return (
     <div className="tela">
+      <Leitura titulo="🌾 No campo" texto={c.no_campo} destaque />
       {enso && (
         <section className="cartao enso" aria-label="ENSO">
           <div className="termometro-topo">
@@ -110,8 +111,6 @@ export function Clima() {
           )}
         </Secao>
       ))}
-
-      <Leitura titulo="No campo" texto={c.no_campo} />
     </div>
   );
 }

@@ -12,7 +12,7 @@ export function Agro() {
   if (!regioes.length) return <Vazio>Esta edição não trouxe cotações do agro.</Vazio>;
   return (
     <div className="tela">
-      <Leitura texto={leituraSecao(radar, 'agro')} />
+      <Leitura titulo="🔎 Leitura do agro" texto={leituraSecao(radar, 'agro')} destaque />
       <ControlesVisao visao={visao} setVisao={setVisao} ordem={ordem} setOrdem={setOrdem} />
       <div className="grupos">
         {regioes.map(([regiao, itens]) => {

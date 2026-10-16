@@ -79,11 +79,19 @@ export function SeloAntigo({ item, edicaoData }: { item: Pick<Preco, 'data_ref' 
   );
 }
 
-export function Leitura({ texto, titulo = 'Leitura' }: { texto: string | null | undefined; titulo?: string }) {
+export function Leitura({
+  texto,
+  titulo = 'Leitura',
+  destaque = false,
+}: {
+  texto: string | null | undefined;
+  titulo?: string;
+  destaque?: boolean;
+}) {
   if (!texto) return null;
   return (
-    <aside className="leitura">
-      <strong>🔎 {titulo}</strong>
+    <aside className={`leitura${destaque ? ' leitura-destaque' : ''}`}>
+      <strong>{destaque ? titulo : `🔎 ${titulo}`}</strong>
       <p>{texto}</p>
     </aside>
   );

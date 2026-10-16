@@ -83,7 +83,7 @@ export function App() {
         </div>
       </header>
 
-      {atual && <Ticker cotacoes={atual.radar.cotacoes} onAbrir={abrirHistorico} />}
+      {atual && <Ticker radar={atual.radar} onAbrir={abrirHistorico} />}
 
       <nav className="lateral" aria-label="Seções">
         <ul>
