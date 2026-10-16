@@ -6,8 +6,24 @@ import { agrupar, cotacoesAmplas, mapaPrecos, nomeGrupo, taxasComoPrecos, todosP
 import { buscarAtivos } from '../lib/busca';
 import { montarWatchlist } from '../lib/watchlist';
 import { gravarLocal, lerLocal } from '../lib/local';
+import { categoria } from '../lib/categorias';
+import { Abas, ABAS_MERCADO } from '../components/Abas';
+import { Setores } from './Setores';
+import { Categoria } from './Categoria';
 
-export function Mercado() {
+/** Mercado: abas Visão geral (minha lista / todos os grupos), Setores e uma lista por categoria. */
+export function Mercado({ sub = null, arg = null }: { sub?: string | null; arg?: string | null }) {
+  const cat = categoria(sub);
+  const atual = sub === 'setores' ? 'setores' : cat?.area === 'mercado' ? sub : null;
+  return (
+    <div className="tela">
+      <Abas aba="mercado" itens={ABAS_MERCADO} atual={atual} />
+      {sub === 'setores' ? <Setores setor={arg} /> : cat ? <Categoria key={cat.id} id={cat.id} /> : <VisaoGeral />}
+    </div>
+  );
+}
+
+function VisaoGeral() {
   const { radar, config, edicoes } = useRadar();
   const [fonte, setFonteEstado] = useState<'lista' | 'grupos'>(() => lerLocal('radar.mercado.fonte', 'lista'));
   const setFonte = (f: 'lista' | 'grupos') => {
@@ -31,7 +47,7 @@ export function Mercado() {
   const comum = { edicaoData: data, visao, ordem, radares };
 
   return (
-    <div className="tela">
+    <>
       <Leitura titulo="🔎 Leitura do mercado" texto={radar.leituras_secao?.mercado} destaque />
       {acoesSemPreco.length > 0 && (
         <details className="aviso-preco">
@@ -119,6 +135,6 @@ export function Mercado() {
             ))}
         </>
       )}
-    </div>
+    </>
   );
 }

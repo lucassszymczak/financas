@@ -38,7 +38,7 @@ export function useTemaEfetivo(): [TemaEfetivo, () => void] {
     raiz.style.setProperty('--destaque', destaque);
     raiz.style.setProperty('--destaque-texto', textoSobre(destaque));
     raiz.style.setProperty('--destaque-suave', misturar(destaque, superficie, 0.85));
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', fundo);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0b1412');
   }, [tema, config.corDestaque]);
 
   const alternar = () => void salvarConfig({ ...config, tema: tema === 'escuro' ? 'claro' : 'escuro' });

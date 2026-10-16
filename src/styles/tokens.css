@@ -49,6 +49,26 @@
   --mapa-b3-texto: #ffffff;
   --mapa-n0: #edf1ef;
   --mapa-n0-texto: #4b5a55;
+  --sombra-menu: 0 10px 30px rgb(10 30 24 / 12%);
+}
+
+/* Barra escura do topo (igual nos dois temas), fontes e escala tipográfica. */
+:root {
+  --nav: #0b1412;
+  --nav-2: #111d1a;
+  --nav-line: #1e2c28;
+  --nav-fg: #e7eeea;
+  --nav-muted: #8ea39b;
+  --nav-up: #33c98a;
+  --nav-down: #ff7a72;
+  --fonte-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fonte-codigo: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --t-xs: 11.5px;
+  --t-sm: 12.5px;
+  --t-md: 14px;
+  --t-lg: 16px;
+  --t-xl: 20px;
+  --t-2xl: 26px;
 }
 
 :root[data-theme='dark'] {
@@ -95,4 +115,5 @@
   --mapa-b3-texto: #ffffff;
   --mapa-n0: #1b2421;
   --mapa-n0-texto: #9eada8;
+  --sombra-menu: 0 10px 30px rgb(0 0 0 / 45%);
 }

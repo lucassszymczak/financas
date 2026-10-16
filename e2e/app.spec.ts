@@ -1,6 +1,20 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const ABAS = ['hoje', 'mercado', 'agro', 'clima', 'agenda', 'calculadoras', 'historico', 'config'];
+const ABAS = [
+  'hoje',
+  'mercado',
+  'mercado/setores',
+  'mercado/acoes',
+  'renda-fixa',
+  'renda-fixa/di',
+  'agro',
+  'agro/guarapuava',
+  'clima',
+  'agenda',
+  'calculadoras',
+  'historico',
+  'config',
+];
 
 async function semRolagemHorizontal(page: Page) {
   const sobra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -28,14 +42,15 @@ test('boas-vindas, exemplo e tela Hoje', async ({ page }) => {
     ),
   );
   expect([...ordem].sort((a, b) => a - b)).toEqual(ordem);
-  // Nome do app e data no topo aparecem inteiros (sem reticências), também no celular.
+  // Logo e título da página aparecem inteiros (sem reticências), também no celular.
   const cortados = await page.evaluate(
-    () => [...document.querySelectorAll('.marca-nome, .topo-edicao')].filter((e) => e.scrollWidth > e.clientWidth).length,
+    () => [...document.querySelectorAll('.logo, .migalha h1, .migalha-ref')].filter((e) => e.scrollWidth > e.clientWidth).length,
   );
   expect(cortados).toBe(0);
-  // Ticker dividido por seções.
-  await expect(page.locator('.ticker-secao').first()).toHaveText('Índices');
-  await expect(page.locator('.ticker-secao', { hasText: 'Moedas' }).first()).toBeAttached();
+  await expect(page.locator('.migalha h1')).toHaveText('Radar de 16/10');
+  // Fita: começa pelos principais (Ibovespa) e tem o seletor com setores e categorias.
+  await expect(page.locator('.fita-item').first()).toContainText('IBOV');
+  await expect(page.getByLabel('O que mostrar na fita')).toHaveValue('principais');
   await expect(page.getByLabel('Indicadores principais').getByText('Dólar comercial')).toBeVisible();
   await expect(page.getByText('3 cotações com dado antigo')).toBeVisible();
   await expect(page.getByText('Guarapuava (PR): frio (17/10 a 20/10)')).toBeVisible();
@@ -141,10 +156,12 @@ test('detalhe do ativo pelo ticker: gráfico, estatísticas e notícias', async 
     .first()
     .setInputFiles(['e2e/fixtures/radar_2026-10-19.json', 'e2e/fixtures/radar_2026-10-20.json']);
   await expect(page.getByText('2 edições carregadas.')).toBeVisible();
-  // O ticker está sempre rolando: focar o item pausa a animação; Enter abre o detalhe.
-  await page.locator('.ticker-item').first().focus();
+  // A fita está sempre rolando: o foco do teclado segura o item; Enter para a fita nele e abre o detalhe.
+  await page.locator('.fita-item').first().focus();
   await page.keyboard.press('Enter');
   const det = page.getByRole('dialog');
+  await expect(page.locator('.fita-selo')).toHaveText('Parada em IBOV');
+  await expect(page.locator('.fita-item.sel').first()).toContainText('IBOV');
   await expect(det.getByRole('heading', { name: 'Ibovespa' })).toBeVisible();
   await expect(det.locator('.grafico canvas')).toBeVisible();
   await expect(det.getByText('Mínimo · máximo')).toBeVisible();
@@ -154,6 +171,8 @@ test('detalhe do ativo pelo ticker: gráfico, estatísticas e notícias', async 
   await det.getByRole('button', { name: '7d' }).click();
   await expect(det.locator('.grafico canvas')).toBeVisible();
   await semRolagemHorizontal(page);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.fita-item.sel')).toHaveCount(0);
 });
 
 test('busca no universo amplo de cotações e mostra os dados do pregão', async ({ page }) => {
@@ -161,7 +180,7 @@ test('busca no universo amplo de cotações e mostra os dados do pregão', async
   await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
   await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
   await page.goto('./#/mercado');
-  await page.getByLabel('Buscar ativo').fill('wege');
+  await page.getByLabel('Buscar ativo', { exact: true }).fill('wege');
   await expect(page.getByRole('button', { name: /Resultados \(1\)/ })).toBeVisible();
   await page.getByRole('button', { name: 'WEG ON: ver detalhes' }).click();
   const det = page.getByRole('dialog');
@@ -169,11 +188,13 @@ test('busca no universo amplo de cotações e mostra os dados do pregão', async
   await expect(det.getByText('R$ 612,0 mi')).toBeVisible();
   await expect(det.getByText('Faixa de 52 semanas')).toBeVisible();
   await page.keyboard.press('Escape');
-  await page.getByLabel('Buscar ativo').fill('');
+  await page.getByLabel('Buscar ativo', { exact: true }).fill('');
   // A watchlist passa a mostrar ativos que vieram só no bloco amplo.
   await expect(page.getByRole('button', { name: 'Small Caps: ver detalhes' })).toBeVisible();
-  // O ticker continua só com o Radar curado.
-  await expect(page.locator('.ticker-item', { hasText: 'WEGE3' })).toHaveCount(0);
+  // A fita "Principais" continua só com o Radar curado; "Todas as ações" traz o bloco amplo.
+  await expect(page.locator('.fita-item', { hasText: 'WEGE3' })).toHaveCount(0);
+  await page.getByLabel('O que mostrar na fita').selectOption('acoes');
+  await expect(page.locator('.fita-item', { hasText: 'WEGE3' }).first()).toBeAttached();
   await semRolagemHorizontal(page);
 });
 
@@ -218,4 +239,72 @@ test('funciona sem internet depois de aberto (service worker)', async ({ page, c
   await page.reload();
   await expect(page.getByText('Datafolha: empate técnico')).toBeVisible();
   await context.setOffline(false);
+});
+
+test('menu superior, busca do topo, setores e fita', async ({ page }, info) => {
+  const celular = info.project.name === 'celular';
+  await carregarExemplo(page);
+  await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
+  await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
+
+  // Menu: no celular o ☰ abre a lista em tela cheia; no computador o submenu abre ao passar o mouse.
+  if (celular) await page.getByRole('button', { name: 'Abrir menu' }).click();
+  const mercado = page.getByRole('button', { name: 'Mercado', exact: true });
+  if (celular) await mercado.click();
+  else await mercado.hover();
+  const sub = page.locator('#submenu-mercado');
+  await expect(sub.getByRole('link', { name: /Índices globais/ })).toContainText('6');
+  await sub.getByRole('link', { name: /^Ações/ }).click();
+  await expect(page).toHaveURL(/#\/mercado\/acoes$/);
+  await expect(page.locator('.migalha h1')).toHaveText('Ações');
+  if (!celular) await expect(mercado).toHaveClass(/ativo/);
+  // Chips de setor filtram a tabela de ações.
+  await page.getByRole('button', { name: 'Bens industriais' }).click();
+  await expect(page.locator('.tabela-ativos tbody tr')).toHaveCount(2);
+  await page.getByRole('button', { name: 'Todos', exact: true }).click();
+  await semRolagemHorizontal(page);
+
+  // Setores: cartões com média e a tabela do setor, ordenável.
+  if (celular) await page.getByRole('button', { name: 'Abrir menu' }).click();
+  const setores = page.getByRole('button', { name: 'Setores', exact: true });
+  if (celular) await setores.click();
+  else await setores.hover();
+  await expect(page.locator('#submenu-setores').getByRole('link', { name: /Financeiro/ })).toContainText('−1,22%');
+  await page
+    .locator('#submenu-setores')
+    .getByRole('link', { name: /Financeiro/ })
+    .click();
+  await expect(page.locator('.migalha h1')).toHaveText('Financeiro');
+  await expect(page.locator('.setor', { hasText: 'Financeiro' })).toContainText('3 ações');
+  await expect(page.locator('.setor', { hasText: 'Financeiro' })).toContainText('▼ 3');
+  const linhas = page.locator('.tabela-ativos tbody tr');
+  await expect(linhas).toHaveCount(3);
+  await page.getByRole('button', { name: /Variação/ }).click();
+  await expect(linhas.first()).toContainText('BBDC4');
+  await page.getByRole('button', { name: /Variação/ }).click();
+  await expect(linhas.first()).toContainText('BBAS3');
+  await semRolagemHorizontal(page);
+
+  // Busca do topo: ativos (inclusive do bloco amplo) e setores.
+  const busca = page.getByLabel('Buscar ativo, setor ou índice');
+  await busca.fill('financ');
+  await expect(page.getByRole('listbox').getByRole('option', { name: /SETOR.*Financeiro/ })).toBeVisible();
+  await busca.fill('wege');
+  await page.getByRole('listbox').getByRole('option', { name: /WEGE3/ }).click();
+  await expect(page.getByRole('dialog').getByText('Volume financeiro')).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  // Fita: clique sem arrastar para nela e abre o detalhe; fechar faz voltar a rodar.
+  await page.getByLabel('O que mostrar na fita').selectOption('setor:Financeiro');
+  await expect(page.locator('.fita-item').first()).toContainText('ITUB4');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  const caixa = (await page.locator('.fita-item').first().boundingBox())!;
+  // No celular, toque; no computador, clique.
+  if (celular) await page.touchscreen.tap(caixa.x + 8, caixa.y + caixa.height / 2);
+  else await page.mouse.click(caixa.x + 8, caixa.y + caixa.height / 2);
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.locator('.fita-selo')).toHaveText(/^Parada em /);
+  await expect(page.locator('.fita-item.sel').first()).toBeAttached();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.fita-item.sel')).toHaveCount(0);
 });

@@ -84,7 +84,7 @@ export const cotacaoSchema = z.object({ ...precoComum, grupo: z.string() });
 export const agroSchema = z.object({ ...precoComum, regiao: z.string() });
 
 /**
- * Universo amplo de cotações do dia (opcional). Não entra no ticker, nos KPIs nem no texto do Radar:
+ * Universo amplo de cotações do dia (opcional). Não entra na fita "Principais", nos KPIs nem no texto do Radar:
  * alimenta a busca, o Mercado → Todos, a watchlist e o histórico.
  * `data_ref`, `fonte` e `url` do bloco valem para os itens que não trouxerem os próprios.
  */
