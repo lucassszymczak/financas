@@ -4,22 +4,19 @@ import react from '@vitejs/plugin-react';
 
 /**
  * Gera o service worker com a lista de arquivos do build.
- * Só faz cache dos arquivos do site; os arquivos do OCR entram no cache
- * na primeira vez em que forem usados.
+ * Os dados ficam no IndexedDB; o service worker só guarda os arquivos do site,
+ * para o app abrir sem internet.
  */
 function serviceWorker(): Plugin {
   return {
-    name: 'plano-sw',
+    name: 'radar-sw',
     apply: 'build',
     generateBundle(_options, bundle) {
-      // Fontes .woff (sem 2) só servem a navegadores antigos: ficam fora do cache inicial.
-      const files = Object.keys(bundle).filter((f) => !f.endsWith('.map') && !f.endsWith('.woff'));
-      const assets = ['./', ...files.map((f) => `./${f}`)];
+      const files = Object.keys(bundle).filter((f) => !f.endsWith('.map'));
+      const assets = ['./', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', ...files.map((f) => `./${f}`)];
       const version = Date.now().toString(36);
-      const source = `const VERSION = ${JSON.stringify(version)};
+      const source = `const CACHE = 'radar-' + ${JSON.stringify(version)};
 const ASSETS = ${JSON.stringify(assets)};
-const CACHE = 'site-' + VERSION;
-const OCR_CACHE = 'ocr-v1';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -28,7 +25,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== OCR_CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -38,28 +35,10 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-
   if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req).catch(() => caches.match('./', { ignoreSearch: true }).then((r) => r || caches.match('./index.html'))),
-    );
+    event.respondWith(fetch(req).catch(() => caches.match('./', { ignoreSearch: true })));
     return;
   }
-
-  if (url.pathname.includes('/ocr/')) {
-    event.respondWith(
-      caches.open(OCR_CACHE).then(async (cache) => {
-        const hit = await cache.match(req, { ignoreVary: true });
-        if (hit) return hit;
-        const res = await fetch(req);
-        if (res.ok) cache.put(req, res.clone());
-        return res;
-      }),
-    );
-    return;
-  }
-
-  // ignoreVary: scripts de módulo e fontes enviam Origin; a cópia em cache foi baixada sem ele.
   event.respondWith(caches.match(req, { ignoreVary: true }).then((hit) => hit || fetch(req)));
 });
 `;
@@ -69,13 +48,12 @@ self.addEventListener('fetch', (event) => {
 }
 
 export default defineConfig({
-  // Caminho relativo: funciona no GitHub Pages (subpasta) e no Cloudflare Pages (raiz).
+  // Caminho relativo: funciona no GitHub Pages (subpasta /nome-do-repositorio/) sem ajuste.
   base: './',
   plugins: [react(), serviceWorker()],
-  build: { target: 'es2022', chunkSizeWarningLimit: 1500 },
+  build: { target: 'es2022' },
   test: {
     environment: 'node',
     include: ['src/**/*.test.{ts,tsx}'],
-    setupFiles: ['src/test/setup.ts'],
   },
 });

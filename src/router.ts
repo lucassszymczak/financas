@@ -1,27 +1,36 @@
 import { useEffect, useState } from 'react';
 
-export const ROUTES = ['capturar', 'mes', 'controle', 'plano', 'respostas', 'ir', 'config'] as const;
-export type Route = (typeof ROUTES)[number];
+export const ABAS = [
+  { id: 'hoje', icone: '🏠', nome: 'Hoje' },
+  { id: 'mercado', icone: '📊', nome: 'Mercado' },
+  { id: 'agro', icone: '🌾', nome: 'Agro' },
+  { id: 'clima', icone: '🌦️', nome: 'Clima' },
+  { id: 'agenda', icone: '📅', nome: 'Agenda' },
+  { id: 'calculadoras', icone: '🧮', nome: 'Calculadoras' },
+  { id: 'historico', icone: '🗂️', nome: 'Histórico' },
+  { id: 'config', icone: '⚙️', nome: 'Configurações' },
+] as const;
 
-function parse(hash: string): Route {
-  const name = hash.replace(/^#\/?/, '').split('/')[0] ?? '';
-  return (ROUTES as readonly string[]).includes(name) ? (name as Route) : 'capturar';
+export type AbaId = (typeof ABAS)[number]['id'];
+
+function ler(): AbaId {
+  const h = window.location.hash.replace(/^#\/?/, '').split(/[/?]/)[0];
+  return (ABAS.find((a) => a.id === h)?.id ?? 'hoje') as AbaId;
 }
 
-/** Navegação por hash: funciona em qualquer hospedagem estática, sem configuração. */
-export function useRoute(): Route {
-  const [route, setRoute] = useState<Route>(() => parse(window.location.hash));
+export function useAba(): AbaId {
+  const [aba, setAba] = useState<AbaId>(ler);
   useEffect(() => {
-    const on = () => {
-      setRoute(parse(window.location.hash));
+    const f = () => {
+      setAba(ler());
       window.scrollTo(0, 0);
     };
-    window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
+    window.addEventListener('hashchange', f);
+    return () => window.removeEventListener('hashchange', f);
   }, []);
-  return route;
+  return aba;
 }
 
-export function go(route: Route) {
-  window.location.hash = `#/${route}`;
-}
+export const irPara = (aba: AbaId) => {
+  window.location.hash = `/${aba}`;
+};
