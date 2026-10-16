@@ -5,7 +5,7 @@ import { BotaoCarregar } from './components/Carregar';
 import { Ticker } from './components/Ticker';
 import { useAbrirHistorico } from './components/HistoricoAtivo';
 import { useTemaEfetivo } from './tema';
-import { dataCurta, dataLonga } from './lib/formato';
+import { dataCurta, dataLonga, diaSemanaCurto } from './lib/formato';
 import { BoasVindas } from './screens/BoasVindas';
 import { Hoje } from './screens/Hoje';
 import { Mercado } from './screens/Mercado';
@@ -61,14 +61,18 @@ export function App() {
       <header className="topo">
         <a href="#/hoje" className="marca">
           <span className="marca-ponto" aria-hidden="true" />
-          <span className="marca-nome">{config.nomeApp}</span>
-        </a>
-        {atual && (
-          <span className="topo-edicao" title={atual.radar.edicao.titulo ?? undefined}>
-            <span className="so-desktop">Edição de </span>
-            {dataLonga(atual.data)}
+          <span className="marca-textos">
+            <span className="marca-nome">{config.nomeApp}</span>
+            {atual && (
+              <span className="topo-edicao" title={atual.radar.edicao.titulo ?? undefined}>
+                <span className="so-desktop">Edição de {dataLonga(atual.data)}</span>
+                <span className="so-celular">
+                  {diaSemanaCurto(atual.data)}, {dataCurta(atual.data)}
+                </span>
+              </span>
+            )}
           </span>
-        )}
+        </a>
         <div className="topo-acoes">
           <button
             type="button"

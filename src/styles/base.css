@@ -2021,3 +2021,40 @@ body.com-modal {
 .ls-texto {
   font-size: 0.93rem;
 }
+
+/* Cabeçalho: nome e data em duas linhas no celular, sem cortar */
+.marca-textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+.marca-nome {
+  font-size: 1rem;
+}
+.topo-edicao {
+  font-weight: 500;
+  font-size: 0.78rem;
+}
+.so-celular {
+  display: inline;
+  text-transform: capitalize;
+}
+@media (max-width: 379px) {
+  .marca-nome {
+    font-size: 0.92rem;
+  }
+}
+@media (min-width: 900px) {
+  .so-celular {
+    display: none;
+  }
+  .marca-textos {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+  .topo-edicao {
+    font-size: 0.85rem;
+  }
+}

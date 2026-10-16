@@ -28,6 +28,11 @@ test('boas-vindas, exemplo e tela Hoje', async ({ page }) => {
     ),
   );
   expect([...ordem].sort((a, b) => a - b)).toEqual(ordem);
+  // Nome do app e data no topo aparecem inteiros (sem reticências), também no celular.
+  const cortados = await page.evaluate(
+    () => [...document.querySelectorAll('.marca-nome, .topo-edicao')].filter((e) => e.scrollWidth > e.clientWidth).length,
+  );
+  expect(cortados).toBe(0);
   // Ticker dividido por seções.
   await expect(page.locator('.ticker-secao').first()).toHaveText('Índices');
   await expect(page.locator('.ticker-secao', { hasText: 'Moedas' }).first()).toBeAttached();
