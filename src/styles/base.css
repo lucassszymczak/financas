@@ -1432,3 +1432,87 @@ label {
   opacity: 0.4;
   cursor: default;
 }
+
+/* ---------- Pop-ups: fundo desfocado ---------- */
+.modal-fundo,
+.mais-fundo {
+  background: rgb(0 0 0 / 30%);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  animation: aparecer-fundo 0.18s ease-out;
+}
+.modal {
+  animation: aparecer-modal 0.2s ease-out;
+  overscroll-behavior: contain;
+}
+.menu-mais {
+  animation: aparecer-modal 0.18s ease-out;
+}
+body.com-modal {
+  overflow: hidden;
+}
+@keyframes aparecer-fundo {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes aparecer-modal {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-fundo,
+  .mais-fundo,
+  .modal,
+  .menu-mais {
+    animation: none;
+  }
+}
+.modal-titulo {
+  min-width: 0;
+}
+.modal-titulo h2 {
+  margin-bottom: 0.3rem;
+}
+.modal-titulo .selos {
+  margin-top: 0;
+}
+.valor-modal {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.noticia-detalhe .noticia-oque {
+  font-size: 1.02rem;
+  margin-top: 0.2rem;
+}
+.noticia-detalhe h4 {
+  margin-top: 0.9rem;
+}
+.card-noticia-mais {
+  flex: none;
+  align-self: center;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--texto-mudo);
+}
+.card-noticia-topo:hover .card-noticia-titulo {
+  color: var(--destaque);
+}
+
+/* ---------- Preço ausente ---------- */
+.sem-preco {
+  font-size: 0.78rem;
+  color: var(--texto-mudo);
+  font-style: italic;
+  white-space: nowrap;
+}
+.aviso-preco {
+  margin: 0;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  background: var(--aviso-fundo);
+  color: var(--aviso-texto);
+  font-size: 0.9rem;
+}

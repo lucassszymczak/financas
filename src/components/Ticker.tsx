@@ -10,7 +10,7 @@ export function Ticker({ cotacoes, onAbrir }: { cotacoes: Cotacao[]; onAbrir?: (
       <li key={`${copia ? 'b' : 'a'}-${c.id}`} aria-hidden={copia || undefined}>
         <button type="button" tabIndex={copia ? -1 : 0} onClick={() => onAbrir?.(c.id)} className="ticker-item">
           <span className="ticker-nome">{c.nome_curto ?? c.id}</span>
-          <span className="num">{valorComUnidade(c.valor, c.unidade)}</span>
+          {c.valor !== null && c.valor !== undefined && <span className="num">{valorComUnidade(c.valor, c.unidade)}</span>}
           <Variacao item={c} />
         </button>
       </li>

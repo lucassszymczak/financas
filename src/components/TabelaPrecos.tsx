@@ -100,7 +100,15 @@ export function TabelaPrecos({
                   <span className="ativo-id">{p.id}</span>
                 </button>
               </th>
-              <td className="dir num">{valorComUnidade(p.valor, p.unidade)}</td>
+              <td className="dir num">
+                {p.valor === null || p.valor === undefined ? (
+                  <span className="sem-preco" title="O arquivo do dia não trouxe o preço deste ativo">
+                    sem preço no arquivo
+                  </span>
+                ) : (
+                  <strong>{valorComUnidade(p.valor, p.unidade)}</strong>
+                )}
+              </td>
               <td className="dir">
                 <Variacao item={p} />
               </td>
