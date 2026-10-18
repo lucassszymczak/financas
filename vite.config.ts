@@ -22,6 +22,7 @@ function serviceWorker(): Plugin {
         './icon.svg',
         './icon-192.png',
         './icon-512.png',
+        './icon-maskable-512.png',
         ...files.map((f) => `./${f}`),
       ];
       const version = Date.now().toString(36);

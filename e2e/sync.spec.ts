@@ -82,7 +82,7 @@ test('sincroniza edições e configurações entre dois aparelhos', async ({ bro
   await a.getByRole('button', { name: /Sincronizar agora/ }).click();
   await expect(a.getByText('Sincronização concluída.')).toBeVisible();
   await expect(a.getByText(/2 edições salvas/)).toBeVisible();
-  await expect(a.getByRole('link', { name: 'Radar do Lucas: ir para Hoje' })).toBeVisible();
+  await expect(a.getByRole('link', { name: 'Oracle Capital · Radar do Lucas: ir para Hoje' })).toBeVisible();
 
   // Apagar no celular apaga no computador.
   await a.goto('./#/historico');

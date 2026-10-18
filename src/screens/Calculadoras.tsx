@@ -70,7 +70,7 @@ function Resultado({ children, faltando }: { children: ReactNode; faltando: bool
 
 const Aviso = ({ extra }: { extra?: string }) => (
   <p className="mudo pequeno aviso-simulacao">
-    ⚠️ Simulação com as premissas acima, só para apoio à conversa. Não é recomendação nem garantia de rentabilidade.
+    Simulação com as premissas acima, só para apoio à conversa. Não é recomendação nem garantia de rentabilidade.
     {extra ? ` ${extra}` : ''}
   </p>
 );
@@ -133,14 +133,14 @@ function CdbLca({ tx }: { tx: Taxas }) {
           <>
             <div className="comparacao">
               <div className={r.vencedor === 'cdb' ? 'vencedor' : undefined}>
-                <h4>CDB/RDC {r.vencedor === 'cdb' && '🏆'}</h4>
+                <h4>CDB/RDC {r.vencedor === 'cdb' && '· melhor'}</h4>
                 <p className="valor-grande num">{reais(r.cdb.liquido)}</p>
                 <p className="mudo pequeno">
                   Bruto {reais(r.cdb.bruto)} · IR {pct(r.aliquota * 100, 1)} ({reais(r.cdb.ir)})
                 </p>
               </div>
               <div className={r.vencedor === 'lca' ? 'vencedor' : undefined}>
-                <h4>LCA/LCI (isenta) {r.vencedor === 'lca' && '🏆'}</h4>
+                <h4>LCA/LCI (isenta) {r.vencedor === 'lca' && '· melhor'}</h4>
                 <p className="valor-grande num">{reais(r.lca.liquido)}</p>
                 <p className="mudo pequeno">Rendimento {reais(r.lca.rendimento)} · sem IR</p>
               </div>
@@ -247,7 +247,7 @@ function Titulos({ tx }: { tx: Taxas }) {
               {r.alternativas.map((a) => (
                 <div key={a.nome} className={a.nome === r.melhor ? 'vencedor' : undefined}>
                   <h4>
-                    {a.nome} {a.nome === r.melhor && '🏆'}
+                    {a.nome} {a.nome === r.melhor && '· melhor'}
                   </h4>
                   <p className="valor-grande num">{reais(a.liquido)}</p>
                   <p className="mudo pequeno">

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useEstado } from '../state';
-import { Secao, Vazio } from '../components/Basicos';
+import { Secao, Vazio, IconeLixeira } from '../components/Basicos';
 import { useDialogo } from '../components/Dialogo';
 import { useCarregar } from '../components/Carregar';
 import { Grafico, type SerieGrafico } from '../components/Grafico';
@@ -174,7 +174,7 @@ export function Historico() {
                       aria-label={`Apagar edição de ${dataCurta(e.data)}`}
                       onClick={() => void apagar(e.data)}
                     >
-                      🗑️
+                      <IconeLixeira />
                     </button>
                   </div>
                 </li>

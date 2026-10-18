@@ -70,7 +70,7 @@ A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em g
 
 No alto fica uma barra escura com o conteúdo centralizado (até 1280 px) e o fundo de canto a canto:
 
-- **Menu:** logo "Radar · Investimentos" → **Hoje · Mercado ▾ · Setores ▾ · Renda fixa ▾ · Agro ▾ · Clima · Agenda · Calculadoras · Mais ▾** → busca → tema → 📥 carregar. No computador, o submenu abre ao passar o mouse ou clicar, e o item da página atual fica sublinhado em laranja.
+- **Menu:** assinatura Oracle Capital → **Hoje · Mercado ▾ · Setores ▾ · Renda fixa ▾ · Agro ▾ · Clima · Agenda · Calculadoras · Mais ▾** → busca → tema → 📥 carregar. No computador, o submenu abre ao passar o mouse ou clicar, e o item da página atual fica sublinhado em dourado.
   - **Mercado:** Visão geral, Ações, Índices Brasil, Índices globais, Moedas, Commodities, FIIs e Cripto, com a quantidade de ativos de cada um.
   - **Setores:** Mapa setorial e cada setor B3 presente no arquivo, com a variação média simples do dia.
   - **Renda fixa:** Curva DI, Tesouro Direto, Juros no mundo e Taxas de referência.
@@ -81,7 +81,7 @@ No alto fica uma barra escura com o conteúdo centralizado (até 1280 px) e o fu
 - **Linha de taxas:** SELIC, CDI e IPCA 12M (de `taxas_referencia`) à esquerda; à direita, **Fita:** escolhe o que a fita mostra (Principais, Índices, Todas as ações, cada setor, Moedas, Juros e Tesouro, Commodities, Agro). A escolha fica salva no aparelho.
 - **Fita de cotações:** ocupa a largura toda e roda sozinha (sem parar quando o mouse passa por cima). Cada item mostra o código, o valor e a variação (▲ verde, ▼ vermelho; juros em pb).
   - **Arrastar** com o mouse ou o dedo move a fita para os dois lados, com inércia. A roda do mouse e as setas do teclado também movem. Ela volta a rodar ~1,8 s depois que você solta.
-  - **Clicar** num ativo (sem arrastar) **para a fita** nele: o item fica em laranja, aparece "Parada em XXXX" e abre o detalhe. Ao fechar o detalhe, a fita volta a rodar em ~0,5 s.
+  - **Clicar** num ativo (sem arrastar) **para a fita** nele: o item ganha o filete dourado, aparece "Parada em XXXX" e abre o detalhe. Ao fechar o detalhe, a fita volta a rodar em ~0,5 s.
   - Com "reduzir movimento" ativado no aparelho, a fita não roda sozinha; só arrastando.
 
 No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra do menu fica fixa; taxas e fita sobem junto com a página.
@@ -102,7 +102,16 @@ No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra d
 
 **Setores:** o setor vem do campo `setor` de cada ação. Para as ações da carteira do Ibovespa que chegarem sem esse campo, o app usa o setor B3 conhecido delas. As médias são simples (cada ação pesa igual) e ignoram as ações sem variação no dia.
 
-**Tipografia:** IBM Plex Sans (400/500/600) na interface e IBM Plex Mono nos códigos dos ativos, embutidas no app (funcionam offline). Os números usam algarismos de largura fixa, para as colunas alinharem.
+### Identidade visual (Oracle Capital)
+
+O app segue o manual da marca da Oracle Capital (design system "Oracle Capital"):
+
+- **Logo:** no topo, a assinatura negativa da marca: o símbolo (anel branco atravessado pela régua dourada) com "ORACLE CAPITAL" e o descritor "RADAR DE INVESTIMENTOS" (o nome do app, editável em Configurações). Em telas estreitas aparece só o símbolo. O ícone do app instalado é o símbolo sobre o quadrado navy, copiado do arquivo oficial.
+- **Cores:** faixa do topo em navy-900 (#14213D), página em papel branco e um único acento dourado (gold-600, #A67C2E), usado só em linhas e formas: o sublinhado do menu, o item parado da fita e o filete das leituras. Altas e baixas usam as cores de sinal do manual, azul (#1D4ED8) e laranja (#B45309), sempre com ▲/▼ ou sinal ao lado. Assim continuam distintas para quem não enxerga vermelho e verde.
+- **Tema escuro:** derivado do navy da marca (fundo navy-950). O manual só define o tema claro ("Papel"), então os tons do escuro foram ajustados para manter contraste de 4,5:1.
+- **Tipografia:** Source Serif 4 nos títulos e na assinatura, Source Sans 3 em todo o resto. As duas fontes vêm embutidas no app e funcionam offline. Nada fica abaixo de 12 px, e os números usam algarismos tabulares, alinhados à direita nas tabelas.
+- **Forma:** cantos retos, filetes finos e nenhuma sombra ou degradê. Cabeçalho de tabela no estilo rótulo, com filete navy de 2 px. Sem emojis decorativos nos títulos e menus ("dado antes de adorno"). Os emojis que vêm dentro do arquivo do dia, como os das notícias e do clima, continuam.
+- **Cor de destaque:** o padrão agora é o navy da marca. Quem nunca tinha mudado a cor (verde antigo) passa para o navy automaticamente.
 
 **Ibovespa completo:** a lista "Ibovespa — carteira completa" (Configurações → O que acompanhar) já vem com a carteira de referência e com a regra automática `grupo:acoes_ibov`, que traz qualquer ação que a rotina enviar como parte do índice. Assim, os rebalanceamentos da B3 aparecem sem editar nada.
 
@@ -115,7 +124,7 @@ No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra d
 - notícias do dia que citam o ativo.
 
 **Alertas:**
-- **Limites de preço:** os padrões são dólar acima de 5,10, DI jan/29 acima de 12,75% e boi Cepea SP abaixo de 370. Quando um limite é cruzado, o card fica com borda laranja e o alerta aparece na tela Hoje.
+- **Limites de preço:** os padrões são dólar acima de 5,10, DI jan/29 acima de 12,75% e boi Cepea SP abaixo de 370. Quando um limite é cruzado, o card fica com borda dourada e o alerta aparece na tela Hoje.
 - **Clima:** cada alerta do arquivo aparece na tela Hoje, com ícone e cor conforme o nível.
 - **Dado antigo:** se a data de referência de uma cotação é anterior ao último dia útil antes da edição (segunda olha sexta), a cotação recebe o selo "dado de DD/MM". Dados semanais não contam como antigos.
 

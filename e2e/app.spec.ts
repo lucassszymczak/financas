@@ -30,10 +30,21 @@ async function carregarExemplo(page: Page) {
 
 test('boas-vindas, exemplo e tela Hoje', async ({ page }) => {
   await carregarExemplo(page);
-  await expect(page.getByText('🌡️ Termômetro')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Termômetro', exact: true })).toBeVisible();
+  // Identidade Oracle Capital: assinatura no topo, títulos em Source Serif 4, texto em Source Sans 3, cantos retos.
+  await expect(page.getByRole('link', { name: 'Oracle Capital · Radar de Investimentos: ir para Hoje' })).toBeVisible();
+  const estilo = await page.evaluate(() => ({
+    titulo: getComputedStyle(document.querySelector('.migalha h1')!).fontFamily,
+    texto: getComputedStyle(document.body).fontFamily,
+    faixa: getComputedStyle(document.querySelector('.topo')!).backgroundColor,
+    cantos: getComputedStyle(document.querySelector('.termometro')!).borderRadius,
+  }));
+  expect(estilo.titulo).toContain('Source Serif 4');
+  expect(estilo.texto).toContain('Source Sans 3');
+  expect(estilo.cantos).toBe('0px');
   // Leituras em destaque logo depois do termômetro, antes de alertas, KPIs e notícias.
   const painel = page.locator('.painel-leituras');
-  await expect(painel.getByRole('heading', { name: '🧠 Leituras do dia' })).toBeVisible();
+  await expect(painel.getByRole('heading', { name: 'Leituras do dia' })).toBeVisible();
   await expect(painel.getByRole('link', { name: /No campo/ })).toHaveAttribute('href', '#/clima');
   await expect(painel.getByRole('link', { name: /Guarapuava/ })).toBeVisible();
   const ordem = await page.evaluate(() =>

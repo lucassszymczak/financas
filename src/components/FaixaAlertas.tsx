@@ -7,12 +7,10 @@ export function FaixaAlertas({ alertas }: { alertas: Alerta[] }) {
     <section className="alertas" aria-label="Alertas">
       {alertas.map((a) => (
         <div key={a.chave} className={`alerta alerta-${a.nivel}`} role={a.nivel === 'perigo' ? 'alert' : undefined}>
-          <span className="alerta-icone" aria-hidden="true">
-            {a.icone}
-          </span>
           <div>
+            <span className="alerta-nivel">{NOMES_NIVEL[a.nivel]}</span>
             <strong>
-              <span className="sr-only">{NOMES_NIVEL[a.nivel]}: </span>
+              <span className="sr-only">: </span>
               {a.titulo}
             </strong>
             <p>{a.texto}</p>

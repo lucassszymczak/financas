@@ -129,7 +129,7 @@ export function CarregarProvider({ children }: { children: ReactNode }) {
       {children}
       {arrastando && (
         <div className="soltar-aqui" aria-hidden="true">
-          <div>📥 Solte o arquivo do Radar aqui</div>
+          <div>Solte o arquivo do Radar aqui</div>
         </div>
       )}
       {toast && (
@@ -160,7 +160,9 @@ export function BotaoCarregar({ compacto = false, className = 'btn btn-primario'
         title="Carregar Radar do dia"
         aria-label="Carregar Radar do dia"
       >
-        <span aria-hidden="true">📥</span>
+        <svg className="icone-carregar" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 11v2.5h11V11" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        </svg>
         {compacto ? <span className="so-desktop">Carregar</span> : <span>Carregar Radar do dia</span>}
       </button>
       <input

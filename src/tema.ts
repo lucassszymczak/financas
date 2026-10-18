@@ -6,8 +6,8 @@ export type TemaEfetivo = 'claro' | 'escuro';
 
 /** Fundos de cada tema (iguais aos de tokens.css), usados para calcular o contraste do destaque. */
 const FUNDOS: Record<TemaEfetivo, { fundo: string; superficie: string }> = {
-  claro: { fundo: '#f4f6f5', superficie: '#ffffff' },
-  escuro: { fundo: '#0b0f0e', superficie: '#131a18' },
+  claro: { fundo: '#ffffff', superficie: '#ffffff' },
+  escuro: { fundo: '#0b1426', superficie: '#101b31' },
 };
 
 function preferenciaSistema(): TemaEfetivo {
@@ -38,7 +38,7 @@ export function useTemaEfetivo(): [TemaEfetivo, () => void] {
     raiz.style.setProperty('--destaque', destaque);
     raiz.style.setProperty('--destaque-texto', textoSobre(destaque));
     raiz.style.setProperty('--destaque-suave', misturar(destaque, superficie, 0.85));
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0b1412');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#14213d');
   }, [tema, config.corDestaque]);
 
   const alternar = () => void salvarConfig({ ...config, tema: tema === 'escuro' ? 'claro' : 'escuro' });
