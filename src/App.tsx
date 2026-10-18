@@ -42,7 +42,7 @@ function Tela({ rota }: { rota: Rota }): ReactNode {
     case 'historico':
       return <Historico />;
     case 'config':
-      return <Config />;
+      return <Config parear={rota.sub === 'parear' ? rota.arg : null} />;
   }
 }
 

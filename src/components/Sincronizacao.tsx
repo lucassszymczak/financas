@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { useEstado } from '../state';
 import * as db from '../lib/db';
 import { clienteGist, ErroSync, lerPacote, mesclar, montarPacote, type Lado } from '../lib/sync';
+import { abrirCodigo, criarCodigo, gerarSenha } from '../lib/pareamento';
 
 export type StatusSync =
   | { estado: 'desligada' }
@@ -12,6 +13,10 @@ export type StatusSync =
 type Api = {
   status: StatusSync;
   ligar: (token: string) => Promise<void>;
+  /** Conecta este aparelho com o código gerado em outro (sem pedir a chave do GitHub). */
+  ligarComCodigo: (codigo: string, senha: string) => Promise<void>;
+  /** Gera um código + senha para conectar outro aparelho a esta sincronização. */
+  gerarConvite: () => Promise<{ codigo: string; senha: string }>;
   desligar: () => Promise<void>;
   sincronizarAgora: () => Promise<void>;
 };
@@ -133,12 +138,35 @@ export function SincronizacaoProvider({ children }: { children: ReactNode }) {
     [sincronizarAgora],
   );
 
+  const ligarComCodigo = useCallback(
+    async (codigo: string, senha: string) => {
+      const { token, gistId } = await abrirCodigo(codigo, senha);
+      await db.salvarSync({ token, gistId });
+      await sincronizarAgora();
+    },
+    [sincronizarAgora],
+  );
+
+  const gerarConvite = useCallback(async () => {
+    let dados = await db.lerSync();
+    // O código leva o Gist junto: garante que ele já exista.
+    if (dados && !dados.gistId) {
+      await sincronizarAgora();
+      dados = await db.lerSync();
+    }
+    if (!dados?.gistId) throw new ErroSync('Sincronize este aparelho uma vez antes de gerar o código.');
+    const senha = gerarSenha();
+    return { codigo: await criarCodigo({ token: dados.token, gistId: dados.gistId }, senha), senha };
+  }, [sincronizarAgora]);
+
   const desligar = useCallback(async () => {
     await db.salvarSync(null);
     setStatus({ estado: 'desligada' });
   }, []);
 
-  return <Ctx.Provider value={{ status, ligar, desligar, sincronizarAgora }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={{ status, ligar, ligarComCodigo, gerarConvite, desligar, sincronizarAgora }}>{children}</Ctx.Provider>
+  );
 }
 
 export function useSincronizacao(): Api {

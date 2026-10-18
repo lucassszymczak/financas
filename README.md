@@ -48,12 +48,23 @@ O navegador pode apagar dados de sites em algumas situações (falta de espaço,
 
 ## 5. Sincronizar celular e computador
 
-O app pode manter o mesmo histórico e as mesmas configurações em todos os seus aparelhos. Os dados ficam num **Gist secreto** da sua conta do GitHub. Gist é um espaço de arquivos do próprio GitHub; o secreto não aparece em buscas nem no seu perfil.
+O app pode manter o mesmo histórico e as mesmas configurações em todos os seus aparelhos. Os dados ficam num **Gist secreto** da sua conta do GitHub. Gist é um espaço de arquivos do próprio GitHub; o secreto não aparece em buscas nem no seu perfil. A chave do GitHub só é pedida **uma vez, no primeiro aparelho**. Os outros entram com um código gerado pelo próprio app.
 
-1. No app, abra **Configurações → Sincronização entre aparelhos** e toque em **Abra esta página do GitHub**. A página já vem com a permissão **gist** marcada.
-2. Em *Expiration*, escolha *No expiration* (ou 1 ano), toque em **Generate token** e copie a chave, que começa com `ghp_`.
+**Primeiro aparelho (uma vez só):**
+1. Abra **Configurações → Sincronização entre aparelhos → Primeiro aparelho** e toque em **Abra esta página do GitHub**. A página já vem com a permissão **gist** marcada.
+2. Em *Expiration*, escolha *No expiration* (ou 1 ano), toque em **Generate token** e copie a chave (começa com `ghp_`).
 3. Cole a chave no app e toque em **Ativar sincronização**.
-4. Nos outros aparelhos, faça só os passos 1 e 3, colando **a mesma chave**. Guarde a chave num lugar seguro, como o app de senhas do celular: o GitHub só a mostra uma vez.
+
+**Outros aparelhos (com o código do app):**
+1. No aparelho já conectado, toque em **Conectar outro aparelho**. O app mostra um **QR code**, um **código** (começa com `RADAR1.`) e uma **senha de 6 números**.
+2. No aparelho novo, aponte a câmera para o QR code, ou cole o código em **Configurações → Sincronização → Tenho um código**.
+3. Digite a senha e toque em **Conectar**.
+
+Detalhes do código:
+- Ele leva a chave e o endereço do Gist cifrados (AES-256) com a senha. Sem a senha, o código não abre.
+- Pode mandar o código por mensagem para você mesmo, mas não mande a senha junto.
+- Código e senha valem por 24 horas. Depois disso, gere outro.
+- No iPhone com o app instalado na tela de início, abra o app e cole o código lá. A câmera abre o Safari, que guarda os dados separados do app instalado.
 
 Depois disso, cada aparelho sincroniza sozinho: ao abrir o app e alguns segundos depois de carregar um arquivo, apagar uma edição ou mudar uma configuração. O botão **Sincronizar agora** força na hora.
 
@@ -62,7 +73,7 @@ Como os dados de dois aparelhos se juntam:
 - **Edições apagadas:** somem também nos outros aparelhos.
 - **Configurações:** vale a alterada por último.
 
-A chave fica só no aparelho e não entra no backup. Para revogar, apague-a em github.com → Settings → Developer settings → Personal access tokens.
+A chave fica só nos aparelhos e não entra no backup. Para revogar, apague-a em github.com → Settings → Developer settings → Personal access tokens. Isso desconecta todos os aparelhos de uma vez.
 
 ## 6. Como o app funciona
 

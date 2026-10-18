@@ -18,6 +18,8 @@ import { apagarTudo, listarEdicoes, salvarEdicao } from '../lib/db';
 import { baixarArquivo, lerBackup, montarBackup } from '../lib/importar';
 import { dataHora, hojeISO, lerNumero, numero } from '../lib/formato';
 import { todosPrecos } from '../lib/precos';
+import { extrairCodigo, linkPareamento } from '../lib/pareamento';
+import qrcode from 'qrcode-generator';
 
 function mover<T>(lista: T[], i: number, delta: number): T[] {
   const j = i + delta;
@@ -277,7 +279,172 @@ function Limites({ config, salvar, nomes }: { config: Config; salvar: (c: Config
 
 const LINK_CHAVE = 'https://github.com/settings/tokens/new?scopes=gist&description=Radar%20de%20Investimentos';
 
-function Sincronizar() {
+/** QR code desenhado em SVG (sem imagem externa), para o celular abrir o link de pareamento. */
+function QrCodigo({ texto, rotulo }: { texto: string; rotulo: string }) {
+  const qr = useMemo(() => {
+    const q = qrcode(0, 'M');
+    q.addData(texto);
+    q.make();
+    return q;
+  }, [texto]);
+  const n = qr.getModuleCount();
+  let d = '';
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.isDark(y, x)) d += `M${x + 4} ${y + 4}h1v1h-1z`;
+  return (
+    <svg className="qr" viewBox={`0 0 ${n + 8} ${n + 8}`} role="img" aria-label={rotulo} shapeRendering="crispEdges">
+      <rect width={n + 8} height={n + 8} fill="#ffffff" />
+      <path d={d} fill="#14213d" />
+    </svg>
+  );
+}
+
+/** Aparelho já conectado: gera o código + senha para conectar outro. */
+function ConectarOutro() {
+  const { gerarConvite } = useSincronizacao();
+  const { aviso } = useCarregar();
+  const [convite, setConvite] = useState<{ codigo: string; senha: string } | null>(null);
+  const [erro, setErro] = useState('');
+  const [gerando, setGerando] = useState(false);
+  const gerar = async () => {
+    setErro('');
+    setGerando(true);
+    try {
+      setConvite(await gerarConvite());
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Não foi possível gerar o código.');
+    } finally {
+      setGerando(false);
+    }
+  };
+  if (!convite)
+    return (
+      <div className="botoes">
+        <button type="button" className="btn" disabled={gerando} onClick={() => void gerar()}>
+          {gerando ? 'Gerando código…' : 'Conectar outro aparelho'}
+        </button>
+        {erro && <p className="erro-sync">{erro}</p>}
+      </div>
+    );
+  const link = linkPareamento(convite.codigo);
+  const copiar = async () => {
+    try {
+      await navigator.clipboard.writeText(convite.codigo);
+      aviso('Código copiado.');
+    } catch {
+      aviso('Não foi possível copiar. Selecione o código e copie à mão.');
+    }
+  };
+  return (
+    <div className="convite" aria-live="polite">
+      <h4>Conectar outro aparelho</h4>
+      <div className="convite-corpo">
+        <QrCodigo texto={link} rotulo="QR code para conectar outro aparelho" />
+        <div className="convite-passos">
+          <p>
+            <strong>1.</strong> No outro aparelho, aponte a câmera para o QR code ou cole o código abaixo em{' '}
+            <em>Configurações → Sincronização → Tenho um código</em>.
+          </p>
+          <p>
+            <strong>2.</strong> Digite a senha:
+          </p>
+          <p className="convite-senha num" aria-label={`Senha ${convite.senha.split('').join(' ')}`}>
+            {convite.senha.slice(0, 3)} {convite.senha.slice(3)}
+          </p>
+          <p className="mudo pequeno">
+            O código e a senha valem por 24 horas. Envie o código por mensagem para você mesmo, se quiser, mas não envie a senha
+            junto: sem ela o código não abre. No iPhone com o app instalado na tela de início, abra o app e cole o código lá (a
+            câmera abre o Safari, que guarda os dados separados do app).
+          </p>
+        </div>
+      </div>
+      <textarea className="convite-codigo" readOnly value={convite.codigo} rows={3} aria-label="Código de pareamento" />
+      <div className="botoes">
+        <button type="button" className="btn btn-primario" onClick={() => void copiar()}>
+          Copiar código
+        </button>
+        {typeof navigator.share === 'function' && (
+          <button
+            type="button"
+            className="btn"
+            onClick={() => void navigator.share({ title: 'Código do Radar', text: convite.codigo }).catch(() => {})}
+          >
+            Compartilhar código
+          </button>
+        )}
+        <button type="button" className="btn" onClick={() => setConvite(null)}>
+          Fechar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Aparelho novo: entra com o código + senha gerados no aparelho já conectado. */
+function EntrarComCodigo({ codigoInicial }: { codigoInicial: string | null }) {
+  const { ligarComCodigo } = useSincronizacao();
+  const [codigo, setCodigo] = useState(codigoInicial ?? '');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const [conectando, setConectando] = useState(false);
+  const pronto = !!extrairCodigo(codigo) && /^\d{6}$/.test(senha);
+  return (
+    <form
+      className="entrar-codigo"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (!pronto) return;
+        setErro('');
+        setConectando(true);
+        try {
+          await ligarComCodigo(codigo, senha);
+        } catch (er) {
+          setErro(er instanceof Error ? er.message : 'Não foi possível conectar.');
+        } finally {
+          setConectando(false);
+        }
+      }}
+    >
+      <h4>Tenho um código de outro aparelho</h4>
+      <p className="mudo pequeno">
+        No aparelho que já sincroniza, abra Configurações → Sincronização → <strong>Conectar outro aparelho</strong>.
+      </p>
+      <label htmlFor="cfg-codigo">Código</label>
+      <textarea
+        id="cfg-codigo"
+        className="convite-codigo"
+        rows={3}
+        placeholder="RADAR1.…"
+        value={codigo}
+        onChange={(e) => setCodigo(e.target.value)}
+        autoComplete="off"
+        spellCheck={false}
+      />
+      <label htmlFor="cfg-senha">Senha de 6 números</label>
+      <div className="botoes">
+        <input
+          id="cfg-senha"
+          className="campo-senha num"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={7}
+          placeholder="000000"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value.replace(/\D/g, '').slice(0, 6))}
+        />
+        <button type="submit" className="btn btn-primario" disabled={!pronto || conectando}>
+          {conectando ? 'Conectando…' : 'Conectar'}
+        </button>
+      </div>
+      {erro && (
+        <p className="erro-sync" role="alert">
+          {erro}
+        </p>
+      )}
+    </form>
+  );
+}
+
+function Sincronizar({ codigoInicial }: { codigoInicial: string | null }) {
   const { status, ligar, desligar, sincronizarAgora } = useSincronizacao();
   const { confirmar } = useDialogo();
   const { aviso } = useCarregar();
@@ -289,45 +456,51 @@ function Sincronizar() {
       <div className="cartao calc">
         <p>
           Mantém histórico e configurações iguais no celular e no computador. Os dados ficam num <strong>Gist secreto</strong> da
-          sua conta do GitHub (não aparece em buscas nem no seu perfil). Faça uma vez em cada aparelho:
+          sua conta do GitHub (não aparece em buscas nem no seu perfil). A chave do GitHub só é pedida no primeiro aparelho; os
+          outros entram com um código gerado pelo app.
         </p>
-        <ol className="passos">
-          <li>
-            <a href={LINK_CHAVE} target="_blank" rel="noreferrer noopener">
-              Abra esta página do GitHub
-            </a>{' '}
-            (já vem com a opção <strong>gist</strong> marcada). Em <em>Expiration</em>, escolha <em>No expiration</em> ou 1 ano e
-            toque em <strong>Generate token</strong>.
-          </li>
-          <li>
-            Copie a chave (começa com <code>ghp_</code>) e cole abaixo. No outro aparelho, use a mesma chave.
-          </li>
-        </ol>
-        <form
-          className="botoes"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (chave.trim().length < 20) return;
-            void ligar(chave).then(() => setChave(''));
-          }}
-        >
-          <input
-            aria-label="Chave do GitHub"
-            placeholder="ghp_…"
-            value={chave}
-            onChange={(e) => setChave(e.target.value)}
-            autoComplete="off"
-            spellCheck={false}
-            className="campo-chave"
-          />
-          <button type="submit" className="btn btn-primario" disabled={chave.trim().length < 20}>
-            Ativar sincronização
-          </button>
-        </form>
-        <p className="mudo pequeno">
-          A chave fica guardada só neste aparelho e só dá acesso aos seus Gists. Ela não vai para o backup. Para revogar, apague-a
-          em github.com → Settings → Developer settings → Tokens.
-        </p>
+        <EntrarComCodigo codigoInicial={codigoInicial} />
+        <details className="primeiro-aparelho" open={!codigoInicial}>
+          <summary>Primeiro aparelho: conectar com a chave do GitHub</summary>
+          <ol className="passos">
+            <li>
+              <a href={LINK_CHAVE} target="_blank" rel="noreferrer noopener">
+                Abra esta página do GitHub
+              </a>{' '}
+              (já vem com a opção <strong>gist</strong> marcada). Em <em>Expiration</em>, escolha <em>No expiration</em> ou 1 ano
+              e toque em <strong>Generate token</strong>.
+            </li>
+            <li>
+              Copie a chave (começa com <code>ghp_</code>) e cole abaixo. Depois, conecte os outros aparelhos com{' '}
+              <strong>Conectar outro aparelho</strong>, sem precisar da chave.
+            </li>
+          </ol>
+          <form
+            className="botoes"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (chave.trim().length < 20) return;
+              void ligar(chave).then(() => setChave(''));
+            }}
+          >
+            <input
+              aria-label="Chave do GitHub"
+              placeholder="ghp_…"
+              value={chave}
+              onChange={(e) => setChave(e.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              className="campo-chave"
+            />
+            <button type="submit" className="btn btn-primario" disabled={chave.trim().length < 20}>
+              Ativar sincronização
+            </button>
+          </form>
+          <p className="mudo pequeno">
+            A chave fica guardada só neste aparelho e só dá acesso aos seus Gists. Ela não vai para o backup. Para revogar,
+            apague-a em github.com → Settings → Developer settings → Tokens (isso desconecta todos os aparelhos).
+          </p>
+        </details>
       </div>
     );
   }
@@ -369,6 +542,7 @@ function Sincronizar() {
           Desligar neste aparelho
         </button>
       </div>
+      <ConectarOutro />
     </div>
   );
 }
@@ -491,7 +665,11 @@ function Backup() {
   );
 }
 
-export function Config() {
+export function Config({ parear = null }: { parear?: string | null }) {
+  // Chegou pelo link/QR de pareamento: vai direto para a sincronização.
+  useEffect(() => {
+    if (parear) document.getElementById('cfg-sync')?.scrollIntoView({ block: 'start' });
+  }, [parear]);
   const { config, salvarConfig, edicoes } = useEstado();
   const salvar = (c: Config) => void salvarConfig(c);
   const nomes = useMemo(() => {
@@ -524,7 +702,7 @@ export function Config() {
         <Limites config={config} salvar={salvar} nomes={nomes} />
       </Secao>
       <Secao titulo="Sincronização entre aparelhos" id="cfg-sync">
-        <Sincronizar />
+        <Sincronizar codigoInicial={parear} />
       </Secao>
       <Secao titulo="Backup" id="cfg-backup">
         <Backup />
