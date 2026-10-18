@@ -110,3 +110,43 @@ test('chave recusada mostra o erro em português', async ({ browser }) => {
   await expect(page.getByText(/O GitHub não aceitou a chave/)).toBeVisible();
   await ctx.close();
 });
+
+test('conecta outro aparelho com o código gerado no app (sem chave do GitHub)', async ({ browser }) => {
+  const gh = githubFalso();
+  const pc = await browser.newContext();
+  const celular = await browser.newContext();
+  await gh.instalar(pc);
+  await gh.instalar(celular);
+  const a = await pc.newPage();
+  const b = await celular.newPage();
+
+  // Computador: carrega o exemplo, liga com a chave e gera o código.
+  await a.goto('./');
+  await a.getByRole('button', { name: /Ver exemplo/ }).click();
+  await expect(a.getByText('Datafolha: empate técnico')).toBeVisible();
+  await ativar(a);
+  await a.getByRole('button', { name: 'Conectar outro aparelho' }).click();
+  await expect(a.getByRole('img', { name: 'QR code para conectar outro aparelho' })).toBeVisible();
+  const codigo = await a.getByLabel('Código de pareamento').inputValue();
+  const senha = (await a.locator('.convite-senha').textContent())!.replace(/\D/g, '');
+  expect(codigo).toMatch(/^RADAR1\./);
+  expect(codigo).not.toContain('ghp_');
+  expect(senha).toMatch(/^\d{6}$/);
+
+  // Celular: abre o link do QR, que já traz o código; senha errada é recusada, a certa conecta.
+  await b.goto(`./#/config/parear/${codigo}`);
+  await expect(b.getByLabel('Código', { exact: true })).toHaveValue(codigo);
+  const errada = senha === '000000' ? '111111' : '000000';
+  await b.getByLabel('Senha de 6 números').fill(errada);
+  await b.getByRole('button', { name: 'Conectar', exact: true }).click();
+  await expect(b.getByRole('alert')).toContainText('Senha errada');
+  await b.getByLabel('Senha de 6 números').fill(senha);
+  await b.getByRole('button', { name: 'Conectar', exact: true }).click();
+  await expect(b.getByText(/Sincronização ativa/)).toBeVisible();
+  // Recebeu o histórico do computador pelo mesmo Gist.
+  await b.goto('./#/hoje');
+  await expect(b.getByText('Datafolha: empate técnico')).toBeVisible();
+  expect(gh.gists.size).toBe(1);
+  await pc.close();
+  await celular.close();
+});

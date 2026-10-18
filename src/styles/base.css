@@ -2098,6 +2098,76 @@ body.com-modal {
   font-weight: 600;
   margin: 0;
 }
+.entrar-codigo,
+.convite {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid var(--borda);
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+}
+.entrar-codigo h4,
+.convite h4 {
+  margin: 0;
+}
+.convite-codigo {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--t-sm);
+  word-break: break-all;
+  resize: vertical;
+}
+.campo-senha {
+  width: 9.5rem;
+  font-size: var(--t-xl);
+  letter-spacing: 0.25em;
+  text-align: center;
+}
+.convite-corpo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.qr {
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--borda);
+  flex: none;
+}
+.convite-passos {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.convite-passos p {
+  margin: 0 0 0.5rem;
+}
+.convite-senha {
+  font-family: var(--fonte-titulo);
+  font-size: var(--t-2xl);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--navy);
+  border-top: 2px solid var(--acento);
+  display: inline-block;
+  padding-top: 0.25rem;
+}
+.erro-sync {
+  margin: 0;
+  color: var(--perigo-texto);
+  font-weight: 600;
+}
+.primeiro-aparelho {
+  border-top: 1px solid var(--borda);
+  padding-top: 0.75rem;
+}
+.primeiro-aparelho summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 32px;
+}
 
 /* ---------- Grupos de ativos (lista limpa, recolhível, mapa) ---------- */
 .controles {
