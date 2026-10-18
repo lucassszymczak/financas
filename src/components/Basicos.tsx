@@ -91,7 +91,7 @@ export function Leitura({
   if (!texto) return null;
   return (
     <aside className={`leitura${destaque ? ' leitura-destaque' : ''}`}>
-      <strong>{destaque ? titulo : `🔎 ${titulo}`}</strong>
+      <strong>{titulo}</strong>
       <p>{texto}</p>
     </aside>
   );
@@ -121,4 +121,18 @@ export function Secao({
 
 export function Vazio({ children }: { children: ReactNode }) {
   return <p className="vazio">{children}</p>;
+}
+
+/** Ícone de lixeira monocromático (segue a cor do texto do botão). */
+export function IconeLixeira() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+      <path
+        d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v5M9.2 6.5v5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+    </svg>
+  );
 }

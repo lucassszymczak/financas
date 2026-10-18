@@ -31,7 +31,7 @@ const PARES: [string, string][] = [
   ['info-texto', 'info-fundo'],
   ['perigo-texto', 'perigo-fundo'],
   ['misto-texto', 'misto-fundo'],
-  ['laranja-texto', 'superficie'],
+  ['acento-texto', 'superficie'],
   ['destaque-texto', 'destaque'],
   ...['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'n0'].map((n): [string, string] => [`mapa-${n}-texto`, `mapa-${n}`]),
 ];
@@ -46,7 +46,12 @@ describe('contraste WCAG AA (4,5:1) nos dois temas', () => {
       expect(contraste(ca!, cb!)).toBeGreaterThanOrEqual(4.5);
     });
   }
-  it('selo laranja usa texto escuro', () => expect(contraste('#1a0d00', '#f58220')).toBeGreaterThanOrEqual(4.5));
+  it('faixa do topo: texto e altas/baixas legíveis sobre o navy', () => {
+    for (const c of ['#ffffff', '#d9dee8', '#a9c2ff', '#f5b27a']) {
+      expect(contraste(c, '#14213d')).toBeGreaterThanOrEqual(4.5);
+      expect(contraste(c, '#0b1426')).toBeGreaterThanOrEqual(4.5);
+    }
+  });
 });
 
 describe('ajuste da cor de destaque', () => {

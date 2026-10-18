@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useEstado } from '../state';
-import { Secao } from '../components/Basicos';
+import { Secao, IconeLixeira } from '../components/Basicos';
 import { useDialogo } from '../components/Dialogo';
 import { useCarregar } from '../components/Carregar';
 import { useSincronizacao } from '../components/Sincronizacao';
@@ -52,7 +52,7 @@ function Aparencia({ config, salvar }: { config: Config; salvar: (c: Config) => 
               onChange={(e) => salvar({ ...config, corDestaque: e.target.value })}
             />
             <button type="button" className="btn btn-pequeno" onClick={() => salvar({ ...config, corDestaque: COR_PADRAO })}>
-              Restaurar verde
+              Restaurar navy da marca
             </button>
           </div>
           <span className="mudo pequeno">O tom é ajustado automaticamente para manter a leitura confortável em cada tema.</span>
@@ -111,7 +111,7 @@ function Watchlist({ config, salvar, nomes }: { config: Config; salvar: (c: Conf
                 aria-label={`Remover grupo ${grupo.nome}`}
                 onClick={() => set(g.filter((_, i) => i !== gi))}
               >
-                🗑️
+                <IconeLixeira />
               </button>
             </div>
           </div>
@@ -257,7 +257,7 @@ function Limites({ config, salvar, nomes }: { config: Config; salvar: (c: Config
                 setTextos(textos.filter((_, j) => j !== i));
               }}
             >
-              🗑️
+              <IconeLixeira />
             </button>
             {nomes.get(x.id) && <span className="mudo pequeno limite-nome">{nomes.get(x.id)}</span>}
           </li>
@@ -336,9 +336,9 @@ function Sincronizar() {
   return (
     <div className="cartao calc">
       <p className="status-sync">
-        {status.estado === 'sincronizando' && <>🔄 Sincronizando…</>}
-        {status.estado === 'ociosa' && <>✅ Sincronização ativa · última vez: {quando}</>}
-        {status.estado === 'erro' && <>⚠️ {status.mensagem}</>}
+        {status.estado === 'sincronizando' && <>Sincronizando…</>}
+        {status.estado === 'ociosa' && <>Sincronização ativa · última vez: {quando}</>}
+        {status.estado === 'erro' && <>{status.mensagem}</>}
       </p>
       {status.estado === 'erro' && <p className="mudo pequeno">Última sincronização bem-sucedida: {quando}.</p>}
       <p className="mudo pequeno">
@@ -352,7 +352,7 @@ function Sincronizar() {
           disabled={ocupado}
           onClick={() => void sincronizarAgora().then(() => aviso('Sincronização concluída.'))}
         >
-          🔄 Sincronizar agora
+          Sincronizar agora
         </button>
         <button
           type="button"

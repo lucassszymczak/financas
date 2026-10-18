@@ -15,7 +15,7 @@ export function Agro({ praca = null }: { praca?: string | null }) {
   if (!todas.length) return <Vazio>Esta edição não trouxe cotações do agro.</Vazio>;
   return (
     <div className="tela">
-      <Leitura titulo="🔎 Leitura do agro" texto={leituraSecao(radar, 'agro')} destaque />
+      <Leitura titulo="Leitura do agro" texto={leituraSecao(radar, 'agro')} destaque />
       <ControlesVisao visao={visao} setVisao={setVisao} ordem={ordem} setOrdem={setOrdem} />
       {praca && (
         <p>
@@ -36,7 +36,7 @@ export function Agro({ praca = null }: { praca?: string | null }) {
               visao={visao}
               ordem={ordem}
               radares={radares}
-              topo={leitura ? <p className="grupo-leitura">🔎 {leitura}</p> : undefined}
+              topo={leitura ? <p className="grupo-leitura">{leitura}</p> : undefined}
             />
           );
         })}

@@ -18,11 +18,7 @@ export function RendaFixa({ sub }: { sub: string | null }) {
         <Categoria id={cat.id} />
       ) : (
         <>
-          <Leitura
-            titulo="🔎 Leitura dos juros"
-            texto={radar.leituras_secao?.juros ?? radar.leituras_secao?.renda_fixa}
-            destaque
-          />
+          <Leitura titulo="Leitura dos juros" texto={radar.leituras_secao?.juros ?? radar.leituras_secao?.renda_fixa} destaque />
           <div className="taxas-kpis num">
             <div className="taxa-kpi">
               <span className="taxa-rotulo">Selic meta</span>

@@ -108,7 +108,7 @@ export function App() {
         {modoLeitura && atual && (
           <div className="faixa-leitura" role="status">
             <span>
-              📖 Você está vendo a edição de <strong>{dataCurta(atual.data)}</strong> (modo leitura).
+              Você está vendo a edição de <strong>{dataCurta(atual.data)}</strong> (modo leitura).
             </span>
             <button type="button" className="btn btn-pequeno" onClick={() => abrirEdicao(null)}>
               Voltar para a mais recente
@@ -136,8 +136,7 @@ export function App() {
           const a = ABAS.find((x) => x.id === id)!;
           return (
             <a key={id} href={`#/${id}`} aria-current={aba === id ? 'page' : undefined}>
-              <span aria-hidden="true">{a.icone}</span>
-              <span>{a.nome}</span>
+              {a.nome}
             </a>
           );
         })}
@@ -148,8 +147,7 @@ export function App() {
           className={!(PRINCIPAIS as readonly string[]).includes(aba) ? 'ativo' : undefined}
           onClick={() => setMais(!mais)}
         >
-          <span aria-hidden="true">☰</span>
-          <span>Mais</span>
+          Mais
         </button>
       </nav>
       {mais && (
@@ -158,7 +156,7 @@ export function App() {
             {ABAS.filter((a) => !(PRINCIPAIS as readonly string[]).includes(a.id)).map((a) => (
               <li key={a.id}>
                 <button type="button" onClick={() => irPara(a.id)} aria-current={aba === a.id ? 'page' : undefined}>
-                  <span aria-hidden="true">{a.icone}</span> {a.nome}
+                  {a.nome}
                 </button>
               </li>
             ))}

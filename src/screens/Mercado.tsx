@@ -48,11 +48,11 @@ function VisaoGeral() {
 
   return (
     <>
-      <Leitura titulo="🔎 Leitura do mercado" texto={radar.leituras_secao?.mercado} destaque />
+      <Leitura titulo="Leitura do mercado" texto={radar.leituras_secao?.mercado} destaque />
       {acoesSemPreco.length > 0 && (
         <details className="aviso-preco">
           <summary>
-            ⚠️ {acoesSemPreco.length} {acoesSemPreco.length === 1 ? 'ação sem preço' : 'ações sem preço'} no arquivo de hoje (só
+            {acoesSemPreco.length} {acoesSemPreco.length === 1 ? 'ação sem preço' : 'ações sem preço'} no arquivo de hoje (só
             variação)
           </summary>
           <p>

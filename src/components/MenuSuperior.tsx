@@ -123,21 +123,27 @@ const Seta = () => (
   </svg>
 );
 
-export function Logo({ nome }: { nome: string }) {
-  // "Radar de Investimentos" → "Radar" + "Investimentos" pequeno embaixo.
-  const [primeira, ...resto] = nome.trim().split(/\s+/);
-  const sub = resto.join(' ').replace(/^(de|do|da)\s+/i, '');
+/**
+ * Símbolo da Oracle Capital, versão negativa (para a faixa navy): anel branco atravessado
+ * pela régua dourada. Geometria e cores exatas do arquivo do manual da marca; nunca mudar.
+ */
+export function SimboloOracle({ tamanho = 32 }: { tamanho?: number }) {
   return (
-    <a href={hrefRota('hoje')} className="logo" aria-label={`${nome}: ir para Hoje`}>
-      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-        <circle cx="13" cy="13" r="11.5" fill="none" stroke="#2E8F6C" strokeWidth="1.5" />
-        <circle cx="13" cy="13" r="6.5" fill="none" stroke="#2E8F6C" strokeWidth="1.5" />
-        <path d="M13 13 L22.5 6.5 A11.5 11.5 0 0 1 24.5 13 Z" fill="#F58220" />
-        <circle cx="13" cy="13" r="2" fill="#E7EEEA" />
-      </svg>
-      <span className="logo-nome">
-        {primeira}
-        {sub && <small>{sub}</small>}
+    <svg width={tamanho} height={tamanho} viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="36" fill="none" stroke="#FFFFFF" strokeWidth="8" />
+      <rect x="10" y="67" width="100" height="8" fill="#A67C2E" />
+    </svg>
+  );
+}
+
+/** Assinatura da marca: símbolo + "ORACLE CAPITAL" + descritor (o nome do app). */
+export function Logo({ nome }: { nome: string }) {
+  return (
+    <a href={hrefRota('hoje')} className="logo" aria-label={`Oracle Capital · ${nome}: ir para Hoje`}>
+      <SimboloOracle />
+      <span className="logo-textos" aria-hidden="true">
+        <span className="logo-marca">Oracle Capital</span>
+        <span className="logo-descritor">{nome}</span>
       </span>
     </a>
   );

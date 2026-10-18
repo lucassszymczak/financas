@@ -16,7 +16,10 @@ export type Config = {
   versaoLista?: number;
 };
 
-export const COR_PADRAO = '#005C46';
+/** navy-900 do manual da marca Oracle Capital. */
+export const COR_PADRAO = '#14213D';
+/** Padrão antigo (verde), trocado pelo navy da marca para quem nunca mudou a cor. */
+const COR_PADRAO_ANTIGA = '#005C46';
 export const LARANJA = '#F58220';
 
 const grupo = (nome: string, ids: string[]): GrupoWatch => ({ nome, itens: ids.map((id) => ({ id, ativo: true })) });
@@ -154,7 +157,12 @@ export function normalizarConfig(c: unknown): Config {
   const tema: Tema = o.tema === 'claro' || o.tema === 'escuro' ? o.tema : 'sistema';
   return {
     nomeApp: typeof o.nomeApp === 'string' && o.nomeApp.trim() ? o.nomeApp : CONFIG_PADRAO.nomeApp,
-    corDestaque: typeof o.corDestaque === 'string' && /^#[0-9a-f]{6}$/i.test(o.corDestaque) ? o.corDestaque : COR_PADRAO,
+    corDestaque:
+      typeof o.corDestaque === 'string' &&
+      /^#[0-9a-f]{6}$/i.test(o.corDestaque) &&
+      o.corDestaque.toUpperCase() !== COR_PADRAO_ANTIGA
+        ? o.corDestaque
+        : COR_PADRAO,
     tema,
     watchlist: Array.isArray(o.watchlist) ? migrarLista(o.watchlist, o.versaoLista ?? 1) : WATCHLIST_PADRAO,
     limites: Array.isArray(o.limites) ? o.limites : LIMITES_PADRAO,

@@ -1,17 +1,34 @@
 {
-  "name": "Radar de Investimentos",
+  "name": "Radar de Investimentos · Oracle Capital",
   "short_name": "Radar",
-  "description": "Painel pessoal com o Radar diário de investimentos, agro e clima.",
+  "description": "Radar diário de investimentos, agro e clima da Oracle Capital.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0b0f0e",
-  "theme_color": "#005C46",
+  "background_color": "#FFFFFF",
+  "theme_color": "#14213D",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
   ]
 }
