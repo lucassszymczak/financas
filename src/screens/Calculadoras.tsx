@@ -1,13 +1,27 @@
-import { useId, useState, type ReactNode } from 'react';
+import { createContext, useContext, useId, useMemo, useState, type ReactNode } from 'react';
 import { useRadar } from '../state';
 import type { Radar } from '../schema/radar';
-import { lerNumero, numero, pct, reais } from '../lib/formato';
-import { mapaPrecos } from '../lib/precos';
+import { diaMes, lerNumero, numero, pct, reais } from '../lib/formato';
 import { compararCdbLca } from '../lib/calc/cdb';
 import { compararTitulos } from '../lib/calc/titulos';
 import { projetarCapital } from '../lib/calc/capital';
 import { anualParaMensal, mensalParaAnual, valorFuturo } from '../lib/calc/taxas';
-import { bushelParaSacaReais, KG_ARROBA, sacaReaisParaBushel, type Grao } from '../lib/calc/conversao';
+import { bushelParaSacaReais, KG_ARROBA, sacaReaisParaBushel } from '../lib/calc/conversao';
+import {
+  buscarCotacao,
+  PROCURA_ARROBA,
+  PROCURA_CDI,
+  PROCURA_DOLAR,
+  PROCURA_IPCA,
+  PROCURA_SELIC,
+  PROCURA_TESOURO_IPCA,
+  PRODUTOS,
+  procuraBushel,
+  procuraSaca,
+  radaresAte,
+  type Cotacao,
+  type Produto,
+} from '../lib/calc/cotacoes';
 
 const CALCS = [
   { id: 'cdb', nome: 'CDB x LCA' },
@@ -27,6 +41,7 @@ function Campo({
   sufixo,
   aviso,
   dica,
+  extra,
 }: {
   rotulo: string;
   valor: string;
@@ -34,6 +49,7 @@ function Campo({
   sufixo?: string;
   aviso?: string | null;
   dica?: string;
+  extra?: ReactNode;
 }) {
   const id = useId();
   const invalido = valor.trim() !== '' && lerNumero(valor) === null;
@@ -56,6 +72,7 @@ function Campo({
           {invalido ? 'Número inválido. Use vírgula para decimais (ex.: 12,5).' : (aviso ?? dica)}
         </span>
       )}
+      {extra}
     </div>
   );
 }
@@ -75,37 +92,85 @@ const Aviso = ({ extra }: { extra?: string }) => (
   </p>
 );
 
-/** Valores do arquivo do dia usados para pré-preencher as calculadoras. */
-function taxasDoDia(r: Radar) {
-  const m = mapaPrecos(r);
-  const t = r.taxas_referencia;
-  const tesouroIpca = [...m.values()].find((p) => p.id.startsWith('TESOURO_IPCA_') && p.valor !== null && p.valor !== undefined);
-  const tesouroPre = [...m.values()].find((p) => p.id.startsWith('TESOURO_PRE_') && p.valor !== null && p.valor !== undefined);
-  const di = m.get('DI1F29');
+/**
+ * Cotações para pré-preencher as calculadoras: a mais recente de cada item, na edição aberta
+ * ou, se ela não trouxer o dado, na última edição anterior que trouxe.
+ */
+function taxasDoDia(radares: Radar[]) {
+  const b = (pr: Parameters<typeof buscarCotacao>[1]) => buscarCotacao(radares, pr);
   return {
-    cdi: t?.cdi_anual ?? null,
-    selic: t?.selic_meta ?? null,
-    ipca: t?.ipca_12m ?? null,
-    pre: tesouroPre?.valor ?? di?.valor ?? null,
-    preFonte: tesouroPre ? tesouroPre.nome : di?.valor !== null && di?.valor !== undefined ? 'DI jan/29' : null,
-    real: tesouroIpca?.valor ?? null,
-    realFonte: tesouroIpca?.nome ?? null,
-    dolar: m.get('USDBRL')?.valor ?? null,
-    sojaBu: m.get('SOJA_CBOT')?.valor ?? null,
-    sojaSaca: m.get('SOJA_PGUA')?.valor ?? null,
-    boi: m.get('BOI_CEPEA')?.valor ?? null,
+    cdi: b(PROCURA_CDI),
+    selic: b(PROCURA_SELIC),
+    ipca: b(PROCURA_IPCA),
+    pre: b({ ids: [], regra: (p) => p.id.startsWith('TESOURO_PRE_') }) ?? b({ ids: ['DI1F29'] }),
+    real: b(PROCURA_TESOURO_IPCA),
+    dolar: b(PROCURA_DOLAR),
+    arroba: b(PROCURA_ARROBA),
+    bushel: Object.fromEntries(PRODUTOS.map((g) => [g.id, b(procuraBushel(g.id))])) as Record<Produto, Cotacao | null>,
+    saca: Object.fromEntries(PRODUTOS.map((g) => [g.id, b(procuraSaca(g.id))])) as Record<Produto, Cotacao | null>,
   };
 }
 type Taxas = ReturnType<typeof taxasDoDia>;
 
-const AVISO_NULL = (nome: string) => `${nome} não verificado nesta edição: informe manualmente.`;
+/** Data da edição aberta, para avisar quando a cotação veio de uma edição anterior. */
+const EdicaoCtx = createContext('');
+
+/** Texto do campo a partir da cotação (ou vazio). */
+const doCot = (c: Cotacao | null, casas = 2) => ini(c?.valor, casas);
+
+/**
+ * Campo pré-preenchido com uma cotação do Radar. Pode ser editado à vontade; quando o valor
+ * difere da cotação, aparece um botão para voltar a ela.
+ */
+function CampoCotado({
+  cotacao,
+  faltando,
+  casas = 2,
+  dica,
+  ...props
+}: {
+  rotulo: string;
+  valor: string;
+  onChange: (v: string) => void;
+  sufixo?: string;
+  cotacao: Cotacao | null;
+  /** Aviso quando o arquivo não trouxe a cotação. */
+  faltando: string;
+  casas?: number;
+  dica?: string;
+}) {
+  const edicao = useContext(EdicaoCtx);
+  const padrao = doCot(cotacao, casas);
+  const editado = cotacao !== null && lerNumero(props.valor) !== lerNumero(padrao);
+  const origem = cotacao
+    ? `${dica ? `${dica} ` : ''}Cotação: ${cotacao.nome}${cotacao.dataRef ? `, ${diaMes(cotacao.dataRef)}` : ''}${
+        cotacao.edicao !== edicao ? ` (edição de ${diaMes(cotacao.edicao)}, a última com o dado)` : ''
+      }.`
+    : undefined;
+  return (
+    <Campo
+      {...props}
+      aviso={cotacao === null ? faltando : null}
+      dica={origem}
+      extra={
+        editado && (
+          <button type="button" className="btn-link usar-cotacao" onClick={() => props.onChange(padrao)}>
+            Usar cotação ({padrao})
+          </button>
+        )
+      }
+    />
+  );
+}
+
+const AVISO_NULL = (nome: string) => `${nome} não veio nos arquivos carregados: informe manualmente.`;
 
 function CdbLca({ tx }: { tx: Taxas }) {
   const [valor, setValor] = useState('10.000,00');
   const [dias, setDias] = useState('365');
   const [pCdb, setPCdb] = useState('100');
   const [pLca, setPLca] = useState('90');
-  const [cdi, setCdi] = useState(ini(tx.cdi));
+  const [cdi, setCdi] = useState(doCot(tx.cdi));
   const n = [valor, dias, pCdb, pLca, cdi].map(lerNumero);
   const faltando = n.some((x) => x === null) || n[1]! <= 0;
   const r = faltando
@@ -119,13 +184,13 @@ function CdbLca({ tx }: { tx: Taxas }) {
         <Campo rotulo="Prazo" sufixo="dias corridos" valor={dias} onChange={setDias} />
         <Campo rotulo="CDB/RDC" sufixo="% do CDI" valor={pCdb} onChange={setPCdb} />
         <Campo rotulo="LCA/LCI" sufixo="% do CDI" valor={pLca} onChange={setPLca} />
-        <Campo
+        <CampoCotado
           rotulo="CDI anual"
           sufixo="% a.a."
           valor={cdi}
           onChange={setCdi}
-          aviso={tx.cdi === null ? AVISO_NULL('CDI') : null}
-          dica="Do arquivo do dia."
+          cotacao={tx.cdi}
+          faltando={AVISO_NULL('CDI')}
         />
       </div>
       <Resultado faltando={!r}>
@@ -165,10 +230,10 @@ function CdbLca({ tx }: { tx: Taxas }) {
 function Titulos({ tx }: { tx: Taxas }) {
   const [valor, setValor] = useState('10.000,00');
   const [anos, setAnos] = useState('3');
-  const [pre, setPre] = useState(ini(tx.pre));
-  const [real, setReal] = useState(ini(tx.real));
-  const [infl, setInfl] = useState(ini(tx.ipca));
-  const [cdi, setCdi] = useState(ini(tx.cdi));
+  const [pre, setPre] = useState(doCot(tx.pre));
+  const [real, setReal] = useState(doCot(tx.real));
+  const [infl, setInfl] = useState(doCot(tx.ipca));
+  const [cdi, setCdi] = useState(doCot(tx.cdi));
   const [pCdi, setPCdi] = useState('100');
   const [ir, setIr] = useState(true);
   const n = [valor, anos, pre, real, infl, cdi, pCdi].map(lerNumero);
@@ -192,36 +257,38 @@ function Titulos({ tx }: { tx: Taxas }) {
       <div className="grade-campos">
         <Campo rotulo="Valor aplicado" sufixo="R$" valor={valor} onChange={setValor} />
         <Campo rotulo="Prazo" sufixo="anos" valor={anos} onChange={setAnos} />
-        <Campo
+        <CampoCotado
           rotulo="Taxa prefixada"
           sufixo="% a.a."
           valor={pre}
           onChange={setPre}
-          aviso={tx.pre === null ? AVISO_NULL('Taxa prefixada') : null}
-          dica={tx.preFonte ? `Do arquivo: ${tx.preFonte}.` : undefined}
+          cotacao={tx.pre}
+          faltando={AVISO_NULL('Taxa prefixada')}
         />
-        <Campo
+        <CampoCotado
           rotulo="Juro real do IPCA+"
           sufixo="% a.a."
           valor={real}
           onChange={setReal}
-          aviso={tx.real === null ? 'Tesouro IPCA+ não veio nesta edição: informe a taxa real.' : null}
-          dica={tx.realFonte ? `Do arquivo: ${tx.realFonte}.` : undefined}
+          cotacao={tx.real}
+          faltando="Tesouro IPCA+ não veio nos arquivos: informe a taxa real."
         />
-        <Campo
+        <CampoCotado
           rotulo="Inflação média esperada"
           sufixo="% a.a."
           valor={infl}
           onChange={setInfl}
-          aviso={tx.ipca === null ? 'IPCA 12 meses não verificado nesta edição: informe sua expectativa.' : null}
+          cotacao={tx.ipca}
+          faltando="IPCA 12 meses não verificado nos arquivos: informe sua expectativa."
           dica="Sua premissa (começa com o IPCA 12 meses)."
         />
-        <Campo
+        <CampoCotado
           rotulo="CDI médio esperado"
           sufixo="% a.a."
           valor={cdi}
           onChange={setCdi}
-          aviso={tx.cdi === null ? AVISO_NULL('CDI') : null}
+          cotacao={tx.cdi}
+          faltando={AVISO_NULL('CDI')}
         />
         <Campo rotulo="Pós-fixado" sufixo="% do CDI" valor={pCdi} onChange={setPCdi} />
         <label className="check">
@@ -274,7 +341,7 @@ function Capital({ tx }: { tx: Taxas }) {
   const [aporte, setAporte] = useState('200,00');
   const [anos, setAnos] = useState('5');
   const [pSelic, setPSelic] = useState('100');
-  const [selic, setSelic] = useState(ini(tx.selic));
+  const [selic, setSelic] = useState(doCot(tx.selic));
   const [sobras, setSobras] = useState('0');
   const [ir, setIr] = useState(true);
   const n = [inicial, aporte, anos, pSelic, selic, sobras].map(lerNumero);
@@ -304,12 +371,13 @@ function Capital({ tx }: { tx: Taxas }) {
           onChange={setPSelic}
           dica="Juros ao capital, conforme política da cooperativa."
         />
-        <Campo
+        <CampoCotado
           rotulo="Selic"
           sufixo="% a.a."
           valor={selic}
           onChange={setSelic}
-          aviso={tx.selic === null ? AVISO_NULL('Selic') : null}
+          cotacao={tx.selic}
+          faltando={AVISO_NULL('Selic')}
         />
         <Campo
           rotulo="Sobras (opcional)"
@@ -366,16 +434,23 @@ function Capital({ tx }: { tx: Taxas }) {
 
 function Juros({ tx }: { tx: Taxas }) {
   const [mensal, setMensal] = useState('1');
-  const [anual, setAnual] = useState(ini(tx.selic));
+  const [anual, setAnual] = useState(doCot(tx.selic));
   const [vi, setVi] = useState('1.000,00');
   const [ap, setAp] = useState('100,00');
   const [tx_, setTx] = useState('1');
   const [meses, setMeses] = useState('12');
-  const [dolar, setDolar] = useState(ini(tx.dolar, 3));
-  const [grao, setGrao] = useState<Grao>('soja');
-  const [bu, setBu] = useState(ini(tx.sojaBu));
-  const [saca, setSaca] = useState(ini(tx.sojaSaca));
-  const [arroba, setArroba] = useState(ini(tx.boi));
+  const [dolar, setDolar] = useState(doCot(tx.dolar, 3));
+  const [grao, setGraoEstado] = useState<Produto>('soja');
+  const [bu, setBu] = useState(doCot(tx.bushel.soja));
+  const [saca, setSaca] = useState(doCot(tx.saca.soja));
+  const [arroba, setArroba] = useState(doCot(tx.arroba));
+  // Trocar o produto traz as cotações dele (Chicago e saca); dá para editar depois.
+  const setGrao = (g: Produto) => {
+    setGraoEstado(g);
+    setBu(doCot(tx.bushel[g]));
+    setSaca(doCot(tx.saca[g]));
+  };
+  const nomeGrao = PRODUTOS.find((x) => x.id === grao)!.nome;
 
   const m = lerNumero(mensal);
   const a = lerNumero(anual);
@@ -392,13 +467,14 @@ function Juros({ tx }: { tx: Taxas }) {
         <h3>Taxa mensal ↔ anual</h3>
         <div className="grade-campos">
           <Campo rotulo="Taxa mensal" sufixo="% a.m." valor={mensal} onChange={setMensal} />
-          <Campo
+          <CampoCotado
             rotulo="Taxa anual"
             sufixo="% a.a."
             valor={anual}
             onChange={setAnual}
-            aviso={tx.selic === null ? 'Selic não verificada nesta edição: digite a taxa que quiser converter.' : null}
-            dica="Começa com a Selic do arquivo."
+            cotacao={tx.selic}
+            faltando="Selic não verificada nos arquivos: digite a taxa que quiser converter."
+            dica="Começa com a Selic."
           />
         </div>
         <p className="frase">
@@ -437,33 +513,58 @@ function Juros({ tx }: { tx: Taxas }) {
       <div className="cartao calc">
         <h3>Saca e arroba: R$ ↔ US$</h3>
         <div className="grade-campos">
-          <Campo
+          <CampoCotado
             rotulo="Dólar"
             sufixo="R$"
             valor={dolar}
             onChange={setDolar}
-            aviso={tx.dolar === null ? AVISO_NULL('Dólar') : null}
-            dica="Do arquivo do dia."
+            cotacao={tx.dolar}
+            casas={3}
+            faltando={AVISO_NULL('Dólar')}
           />
           <div className="campo">
-            <label htmlFor="grao">Produto (para o bushel)</label>
-            <select id="grao" value={grao} onChange={(e) => setGrao(e.target.value as Grao)}>
-              <option value="soja">Soja</option>
-              <option value="milho">Milho</option>
-              <option value="trigo">Trigo</option>
+            <label htmlFor="grao">Produto</label>
+            <select id="grao" value={grao} onChange={(e) => setGrao(e.target.value as Produto)}>
+              {PRODUTOS.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.nome}
+                </option>
+              ))}
             </select>
+            <span className="mudo pequeno">Troca as cotações de Chicago e da saca para o produto escolhido.</span>
           </div>
-          <Campo rotulo="Chicago" sufixo="US$/bushel" valor={bu} onChange={setBu} />
-          <Campo rotulo="Saca 60 kg" sufixo="R$" valor={saca} onChange={setSaca} />
-          <Campo rotulo="Arroba (15 kg)" sufixo="R$" valor={arroba} onChange={setArroba} />
+          <CampoCotado
+            rotulo={`${nomeGrao} Chicago`}
+            sufixo="US$/bushel"
+            valor={bu}
+            onChange={setBu}
+            cotacao={tx.bushel[grao]}
+            faltando={`${nomeGrao} em Chicago não veio nos arquivos: digite o valor.`}
+          />
+          <CampoCotado
+            rotulo={`${nomeGrao} saca 60 kg`}
+            sufixo="R$"
+            valor={saca}
+            onChange={setSaca}
+            cotacao={tx.saca[grao]}
+            faltando={`Saca de ${nomeGrao.toLowerCase()} não veio nos arquivos: digite o valor.`}
+          />
+          <CampoCotado
+            rotulo="Arroba do boi (15 kg)"
+            sufixo="R$"
+            valor={arroba}
+            onChange={setArroba}
+            cotacao={tx.arroba}
+            faltando="Arroba do boi não veio nos arquivos: digite o valor."
+          />
         </div>
         <Resultado faltando={d === null || d <= 0}>
           {d !== null && d > 0 && (
             <ul className="frase lista-conv">
               {buN !== null && (
                 <li>
-                  US$ {numero(buN, 2, 4)}/bushel de {grao} = <strong>{reais(bushelParaSacaReais(buN, d, grao))}/saca</strong> (sem
-                  prêmio nem frete).
+                  US$ {numero(buN, 2, 4)}/bushel de {nomeGrao.toLowerCase()} ={' '}
+                  <strong>{reais(bushelParaSacaReais(buN, d, grao))}/saca</strong> (sem prêmio nem frete).
                 </li>
               )}
               {sacaN !== null && (
@@ -488,24 +589,35 @@ function Juros({ tx }: { tx: Taxas }) {
 }
 
 export function Calculadoras() {
-  const { radar } = useRadar();
+  const { radar, edicoes } = useRadar();
   const [calc, setCalc] = useState<CalcId>('cdb');
-  const tx = taxasDoDia(radar);
+  const tx = useMemo(
+    () =>
+      taxasDoDia(
+        radaresAte(
+          radar,
+          edicoes.map((e) => e.radar),
+        ),
+      ),
+    [radar, edicoes],
+  );
   // A chave reinicia os campos quando outra edição é aberta.
   const k = `${calc}-${radar.edicao.data}`;
   return (
-    <div className="tela">
-      <div className="alternador" role="group" aria-label="Calculadoras">
-        {CALCS.map((c) => (
-          <button key={c.id} type="button" aria-pressed={calc === c.id} onClick={() => setCalc(c.id)}>
-            {c.nome}
-          </button>
-        ))}
+    <EdicaoCtx.Provider value={radar.edicao.data}>
+      <div className="tela">
+        <div className="alternador" role="group" aria-label="Calculadoras">
+          {CALCS.map((c) => (
+            <button key={c.id} type="button" aria-pressed={calc === c.id} onClick={() => setCalc(c.id)}>
+              {c.nome}
+            </button>
+          ))}
+        </div>
+        {calc === 'cdb' && <CdbLca key={k} tx={tx} />}
+        {calc === 'titulos' && <Titulos key={k} tx={tx} />}
+        {calc === 'capital' && <Capital key={k} tx={tx} />}
+        {calc === 'juros' && <Juros key={k} tx={tx} />}
       </div>
-      {calc === 'cdb' && <CdbLca key={k} tx={tx} />}
-      {calc === 'titulos' && <Titulos key={k} tx={tx} />}
-      {calc === 'capital' && <Capital key={k} tx={tx} />}
-      {calc === 'juros' && <Juros key={k} tx={tx} />}
-    </div>
+    </EdicaoCtx.Provider>
   );
 }

@@ -213,9 +213,38 @@ test('calculadora CDB x LCA', async ({ page }) => {
   await carregarExemplo(page);
   await page.goto('./#/calculadoras');
   // CDI vem null no exemplo: campo vazio com aviso.
-  await expect(page.getByText('CDI não verificado nesta edição')).toBeVisible();
+  await expect(page.getByText('CDI não veio nos arquivos carregados')).toBeVisible();
   await page.getByLabel('CDI anual').fill('15');
   await expect(page.getByText(/equivale a um CDB de 107,7% do CDI/)).toBeVisible();
+});
+
+test('conversões puxam a cotação do dia, trocam com o produto e aceitam outro valor', async ({ page }) => {
+  await carregarExemplo(page);
+  await page.goto('./#/calculadoras');
+  await page.getByRole('button', { name: 'Juros e conversões' }).click();
+  const dolar = page.getByLabel('Dólar', { exact: true });
+  await expect(dolar).toHaveValue('5,087');
+  await expect(page.getByLabel('Soja Chicago', { exact: true })).toHaveValue('12,63');
+  await expect(page.getByLabel('Soja saca 60 kg', { exact: true })).toHaveValue('154,70');
+  await expect(page.getByLabel('Arroba do boi (15 kg)', { exact: true })).toHaveValue('380,20');
+  await expect(page.getByText(/Cotação: Dólar comercial/)).toBeVisible();
+  // Trocar o produto troca as cotações.
+  await page.getByLabel('Produto', { exact: true }).selectOption('milho');
+  await expect(page.getByLabel('Milho Chicago', { exact: true })).toHaveValue('4,8075');
+  await expect(page.getByLabel('Milho saca 60 kg', { exact: true })).toHaveValue('65,43');
+  await expect(page.getByText(/US\$ 4,8075\/bushel de milho/)).toBeVisible();
+  // Trigo sem Chicago no arquivo: campo vazio com aviso, saca da praça regional.
+  await page.getByLabel('Produto', { exact: true }).selectOption('trigo');
+  await expect(page.getByLabel('Trigo Chicago', { exact: true })).toHaveValue('');
+  await expect(page.getByText('Trigo em Chicago não veio nos arquivos: digite o valor.')).toBeVisible();
+  await expect(page.getByLabel('Trigo saca 60 kg', { exact: true })).toHaveValue('79,00');
+  // Dá para digitar outro valor e voltar à cotação.
+  await dolar.fill('5,50');
+  await expect(page.getByText(/R\$ 380,20\/@ = US\$ 69,13\/@/)).toBeVisible();
+  await page.getByRole('button', { name: 'Usar cotação (5,087)' }).click();
+  await expect(dolar).toHaveValue('5,087');
+  await expect(page.getByRole('button', { name: /Usar cotação/ })).toHaveCount(0);
+  await semRolagemHorizontal(page);
 });
 
 test('backup: exportar e restaurar', async ({ page }) => {

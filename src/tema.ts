@@ -6,8 +6,8 @@ export type TemaEfetivo = 'claro' | 'escuro';
 
 /** Fundos de cada tema (iguais aos de tokens.css), usados para calcular o contraste do destaque. */
 const FUNDOS: Record<TemaEfetivo, { fundo: string; superficie: string }> = {
-  claro: { fundo: '#ffffff', superficie: '#ffffff' },
-  escuro: { fundo: '#0b1426', superficie: '#101b31' },
+  claro: { fundo: '#e9edf2', superficie: '#ffffff' },
+  escuro: { fundo: '#1b2843', superficie: '#101b31' },
 };
 
 function preferenciaSistema(): TemaEfetivo {

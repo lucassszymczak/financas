@@ -9,8 +9,8 @@
 :root,
 :root[data-theme='light'] {
   color-scheme: light;
-  /* Manual: paper-000, grid-100, rule-200, ink-900, ink-600 */
-  --fundo: #ffffff;
+  /* Manual: paper-000 nos cards; fundo da página um tom abaixo para os cards se destacarem */
+  --fundo: #e9edf2;
   --superficie: #ffffff;
   /* grid-100 clareado para o texto signal-contra manter 4,5:1 em linhas destacadas */
   --superficie-2: #f3f5f8;
@@ -65,8 +65,8 @@
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  /* Derivado de navy-950 / navy-900; texto em paper-000 e on-navy-200 */
-  --fundo: #0b1426;
+  /* Derivado do navy; fundo um pouco mais claro que os cards para eles se destacarem */
+  --fundo: #1b2843;
   --superficie: #101b31;
   --superficie-2: #17243f;
   --borda: #2a3a5c;

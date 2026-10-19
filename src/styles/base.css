@@ -2794,3 +2794,18 @@ body.com-modal {
     scroll-margin-top: 170px;
   }
 }
+
+/* Calculadoras: voltar à cotação depois de editar um campo */
+.usar-cotacao {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--destaque);
+  font: inherit;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
