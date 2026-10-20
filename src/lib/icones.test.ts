@@ -32,7 +32,7 @@ describe('ícone do ativo', () => {
     });
     expect(iconeAtivo({ id: 'ACUCAR_CEPEA', nome: 'Açúcar cristal SP (Cepea)', regiao: 'noroeste_paulista' }, {})).toEqual({
       tipo: 'desenho',
-      desenho: 'saca-acucar',
+      desenho: 'cubos-acucar',
     });
     expect(iconeAtivo({ id: 'GPV_FEIJAO', nome: 'Feijão preto', regiao: 'guarapuava' }, {})).toEqual({
       tipo: 'emoji',

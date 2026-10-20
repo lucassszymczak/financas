@@ -106,7 +106,7 @@ Ao lado de cada ativo (fita, KPIs, tabelas, busca, watchlist e detalhe) aparece 
 - **Ações, FIIs, ETFs e BDRs:** o logo em `public/logos/<RAIZ>.svg|png|webp`, em que RAIZ são as 4 primeiras letras do código (PETR3 e PETR4 → `PETR.svg`). Veja [public/logos/README.md](public/logos/README.md).
 - **Índices, moedas e juros de fora:** a bandeira do país (pacote `flag-icons`, MIT, empacotado no build). O mapa id → país fica em `src/data/paises.ts`. Pares contra o real mostram a moeda estrangeira (USDBRL → EUA).
 - **Índices B3, curva DI, Tesouro e taxas:** bandeira do Brasil.
-- **Commodities e agro:** ícone do produto: barra de ouro, saca de açúcar e grão de soja desenhados no app; 🛢️ ⛏️ 🫘 (feijão) 🌽 🌾 🐂 ☕ ⛽ nos demais.
+- **Commodities e agro:** ícone do produto: barra de ouro, cubos de açúcar e grão de soja desenhados no app; 🛢️ ⛏️ 🫘 (feijão) 🌽 🌾 🐂 ☕ ⛽ nos demais.
 - **Dólar turismo e Ptax:** cédula de dólar (o dólar comercial fica com a bandeira dos EUA).
 - **Sem imagem:** quadradinho com 2 letras e uma cor fixa por ativo. Nunca aparece imagem quebrada.
 
