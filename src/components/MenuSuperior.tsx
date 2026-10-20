@@ -8,6 +8,7 @@ import { nomeRegiao, todosPrecos } from '../lib/precos';
 import { useAbrirHistorico } from './HistoricoAtivo';
 import { BotaoCarregar } from './Carregar';
 import { Variacao } from './Basicos';
+import { AtivoIcone } from './AtivoIcone';
 
 type Folha = { nome: string; href: string; direita?: ReactNode };
 type Grupo = { titulo: string; itens: Folha[] };
@@ -236,9 +237,12 @@ function Busca({ radar }: { radar: Radar | null }) {
                 fechar();
               }}
             >
-              <span>
-                <span className="cod">{p.id}</span>
-                <span className="nm">{p.nome}</span>
+              <span className="busca-ativo">
+                <AtivoIcone id={p.id} grupo={p.grupo} nome={p.nome} regiao={p.regiao} />
+                <span>
+                  <span className="cod">{p.id}</span>
+                  <span className="nm">{p.nome}</span>
+                </span>
               </span>
               <Variacao item={p} />
             </button>

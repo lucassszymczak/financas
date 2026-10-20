@@ -2816,3 +2816,67 @@ body.com-modal {
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* Logos, bandeiras e ícones dos ativos */
+.ativo-icone {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  overflow: hidden;
+  line-height: 1;
+}
+img.ativo-icone {
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--borda);
+}
+img.ativo-bandeira {
+  object-fit: cover;
+}
+.ativo-iniciais {
+  color: #fff;
+    font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.ativo-emoji {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+.la-id {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+.busca-linha > span.busca-ativo {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.busca-ativo > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.kpi-nome,
+.bloco-tk,
+.titulo-ativo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.titulo-ativo {
+  gap: 10px;
+}
+.kpi-nome-txt {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+td > .ativo-icone {
+  margin-right: 6px;
+}
+.fita-item .ativo-icone {
+  box-shadow: none;
+}

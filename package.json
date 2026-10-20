@@ -13,11 +13,13 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "format": "prettier --write src e2e",
-    "check": "npm run lint && npm run typecheck && npm test"
+    "check": "npm run lint && npm run typecheck && npm test",
+    "logos:baixar": "node scripts/baixar-logos.mjs"
   },
   "dependencies": {
     "@fontsource/source-sans-3": "^5.3.1",
     "@fontsource/source-serif-4": "^5.3.1",
+    "flag-icons": "^7.6.0",
     "idb": "^8.0.4",
     "qrcode-generator": "^1.4.4",
     "react": "^19.3.1",

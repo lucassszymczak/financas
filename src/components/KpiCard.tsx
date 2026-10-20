@@ -6,6 +6,7 @@ import { limitesCruzados } from '../lib/alertas';
 import { numeroAuto } from '../lib/formato';
 import { SeloAntigo, SeloOrigem, Selo, Variacao } from './Basicos';
 import { Sparkline } from './Sparkline';
+import { AtivoIcone } from './AtivoIcone';
 
 export function KpiCard({
   item,
@@ -28,7 +29,10 @@ export function KpiCard({
       onClick={() => onAbrir?.(item.id)}
       aria-label={`${item.nome}: ver histórico`}
     >
-      <span className="kpi-nome">{item.nome}</span>
+      <span className="kpi-nome">
+        <AtivoIcone id={item.id} grupo={item.grupo} nome={item.nome} regiao={item.regiao} />
+        <span className="kpi-nome-txt">{item.nome}</span>
+      </span>
       <ValorKpi valor={item.valor} unidade={item.unidade} />
       <span className="kpi-linha">
         <Variacao item={item} grande />

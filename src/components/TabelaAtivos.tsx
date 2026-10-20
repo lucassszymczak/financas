@@ -3,6 +3,7 @@ import type { Preco } from '../schema/radar';
 import { dataCurta, valorComUnidade } from '../lib/formato';
 import { setorDe, variacaoNumero } from '../lib/categorias';
 import { dadoAntigo } from '../lib/pregao';
+import { AtivoIcone } from './AtivoIcone';
 import { Selo, SeloOrigem, textoOrigem, Variacao } from './Basicos';
 import { useAbrirHistorico } from './HistoricoAtivo';
 
@@ -86,6 +87,7 @@ export function TabelaAtivos({
           {linhas.map((p) => (
             <tr key={p.id} onClick={() => abrir(p.id)}>
               <td>
+                <AtivoIcone id={p.id} grupo={p.grupo} nome={p.nome} regiao={p.regiao} />
                 <button
                   type="button"
                   className="cod-ativo"

@@ -8,6 +8,7 @@ import { descreverRegra, ehRegra } from '../lib/config';
 import { useAbrirHistorico } from './HistoricoAtivo';
 import { Sparkline } from './Sparkline';
 import { textoOrigem } from './Basicos';
+import { AtivoIcone } from './AtivoIcone';
 
 export type Visao = 'lista' | 'mapa';
 export type Ordem = 'padrao' | 'alta' | 'baixa' | 'az';
@@ -179,10 +180,13 @@ export function GrupoAtivos({
                       onClick={() => abrir(p.id)}
                       aria-label={`${p.nome}: ver detalhes`}
                     >
-                      <span className="la-nome">
-                        <span className="la-tk">{r.principal}</span>
-                        {r.secundario && <span className="la-sub">{r.secundario}</span>}
-                        <Etiquetas p={p} edicaoData={edicaoData} />
+                      <span className="la-id">
+                        <AtivoIcone id={p.id} grupo={p.grupo} nome={p.nome} regiao={p.regiao} tamanho={22} />
+                        <span className="la-nome">
+                          <span className="la-tk">{r.principal}</span>
+                          {r.secundario && <span className="la-sub">{r.secundario}</span>}
+                          <Etiquetas p={p} edicaoData={edicaoData} />
+                        </span>
                       </span>
                       <span className="la-spark">
                         {pontos.length >= 2 && <Sparkline pontos={pontos} largura={56} altura={22} />}
@@ -210,7 +214,10 @@ export function GrupoAtivos({
                       onClick={() => abrir(p.id)}
                       aria-label={`${p.nome}: ver detalhes`}
                     >
-                      <span className="bloco-tk">{r.principal}</span>
+                      <span className="bloco-tk">
+                        <AtivoIcone id={p.id} grupo={p.grupo} nome={p.nome} regiao={p.regiao} tamanho={16} />
+                        {r.principal}
+                      </span>
                       <span className="bloco-var num">
                         {v === null
                           ? '—'

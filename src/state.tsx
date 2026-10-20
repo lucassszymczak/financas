@@ -134,3 +134,8 @@ export function useRadar(): { radar: Radar; edicoes: Edicao[]; config: Config; v
   if (!atual) throw new Error('Sem edição carregada');
   return { radar: atual.radar, edicoes, config, vista: atual };
 }
+
+/** "Mostrar logos e bandeiras" (ligado por padrão; fora do provider, também ligado). */
+export function useMostrarLogos(): boolean {
+  return useContext(Ctx)?.config.mostrarLogos ?? true;
+}

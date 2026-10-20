@@ -18,6 +18,7 @@ import {
   type EstadoFita,
 } from '../lib/fita';
 import { useAbrirHistorico } from './HistoricoAtivo';
+import { AtivoIcone } from './AtivoIcone';
 
 /** Código curto para a fita: o ticker quando houver, senão o nome curto. */
 function codigo(p: Preco): string {
@@ -37,6 +38,7 @@ function ItemFita({ p, copia, parada }: { p: Preco; copia: boolean; parada: bool
       aria-hidden={copia || undefined}
       aria-label={`${p.nome}: ver detalhes`}
     >
+      <AtivoIcone id={p.id} grupo={p.grupo} nome={p.nome} regiao={p.regiao} tamanho={18} />
       <span className="fita-cod">{codigo(p)}</span>
       {p.valor !== null && p.valor !== undefined && <span className="fita-valor">{valorComUnidade(p.valor, p.unidade)}</span>}
       <span className={`fita-var ${tom}`}>{v ? `${v.seta} ${v.texto.replace(/^[+−]/, '')}` : '—'}</span>

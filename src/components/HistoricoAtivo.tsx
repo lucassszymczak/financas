@@ -8,6 +8,7 @@ import { dadoAntigo } from '../lib/pregao';
 import { Grafico } from './Grafico';
 import { Estrelas, Leitura, Selo, SeloOrigem, Variacao } from './Basicos';
 import { Modal } from './Modal';
+import { AtivoIcone } from './AtivoIcone';
 
 /** Abre o detalhe de um ativo; `aoFechar` é chamado quando o pop-up fecha (a fita usa para voltar a rodar). */
 type Abrir = (id: string, aoFechar?: () => void) => void;
@@ -110,7 +111,12 @@ function Detalhe({ id, fechar }: { id: string; fechar: () => void }) {
   return (
     <Modal
       largo
-      titulo={item?.nome ?? id}
+      titulo={
+        <span className="titulo-ativo">
+          <AtivoIcone id={id} grupo={item?.grupo} nome={item?.nome ?? id} regiao={item?.regiao} tamanho={24} />
+          {item?.nome ?? id}
+        </span>
+      }
       onFechar={fechar}
       cabecalho={
         item && (
