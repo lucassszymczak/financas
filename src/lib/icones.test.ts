@@ -22,8 +22,39 @@ describe('ícone do ativo', () => {
   });
   it('commodities e agro viram emoji', () => {
     expect(iconeAtivo({ id: 'BRENT', grupo: 'commodities', nome: 'Petróleo Brent' }, {})).toEqual({ tipo: 'emoji', emoji: '🛢️' });
-    expect(iconeAtivo({ id: 'SOJA_CBOT', nome: 'Soja Chicago', regiao: 'chicago' }, {})).toEqual({ tipo: 'emoji', emoji: '🫘' });
+    expect(iconeAtivo({ id: 'SOJA_CBOT', nome: 'Soja Chicago', regiao: 'chicago' }, {})).toEqual({
+      tipo: 'desenho',
+      desenho: 'grao-soja',
+    });
+    expect(iconeAtivo({ id: 'OURO', grupo: 'commodities', nome: 'Ouro' }, {})).toEqual({
+      tipo: 'desenho',
+      desenho: 'barra-ouro',
+    });
+    expect(iconeAtivo({ id: 'ACUCAR_CEPEA', nome: 'Açúcar cristal SP (Cepea)', regiao: 'noroeste_paulista' }, {})).toEqual({
+      tipo: 'desenho',
+      desenho: 'saca-acucar',
+    });
+    expect(iconeAtivo({ id: 'GPV_FEIJAO', nome: 'Feijão preto', regiao: 'guarapuava' }, {})).toEqual({
+      tipo: 'emoji',
+      emoji: '🫘',
+    });
     expect(iconeAtivo({ id: 'BOI_CEPEA', nome: 'Boi gordo SP', regiao: 'brasil' }, {})).toEqual({ tipo: 'emoji', emoji: '🐂' });
+  });
+  it('dólar turismo e Ptax: cédula; dólar comercial: bandeira dos EUA', () => {
+    expect(iconeAtivo({ id: 'USDBRL_TUR', grupo: 'moedas', nome: 'Dólar turismo' }, {})).toEqual({
+      tipo: 'desenho',
+      desenho: 'cedula-dolar',
+    });
+    expect(iconeAtivo({ id: 'PTAX', grupo: 'moedas', nome: 'Dólar Ptax' }, {})).toEqual({
+      tipo: 'desenho',
+      desenho: 'cedula-dolar',
+    });
+    expect(iconeAtivo({ id: 'USDBRL_PTAX', grupo: 'moedas', nome: 'Ptax venda' }, {})).toEqual({
+      tipo: 'desenho',
+      desenho: 'cedula-dolar',
+    });
+    expect(iconeAtivo({ id: 'PTAX', grupo: 'moedas', nome: 'Ptax' }, {})).toEqual({ tipo: 'desenho', desenho: 'cedula-dolar' });
+    expect(iconeAtivo({ id: 'USDBRL', grupo: 'moedas', nome: 'Dólar comercial' }, {})).toMatchObject({ pais: 'us' });
   });
   it('sem imagem: avatar de iniciais, sempre com a mesma cor', () => {
     const a = iconeAtivo({ id: 'WEGE3', grupo: 'acoes_ibov' }, LOGOS);
