@@ -48,56 +48,58 @@ function barraOuro(p: string): ReactNode {
   );
 }
 
-function sacaAcucar(p: string): ReactNode {
+function cubosAcucar(p: string): ReactNode {
+  // Cubo em perspectiva isométrica: tampo, face esquerda e face direita, com textura de cristais.
+  const cubo = (cx: number, cy: number, l: number) => {
+    const k = 0.866 * l;
+    const tampo = `${cx},${cy - l} ${cx + k},${cy - l / 2} ${cx},${cy} ${cx - k},${cy - l / 2}`;
+    const esq = `${cx - k},${cy - l / 2} ${cx},${cy} ${cx},${cy + l} ${cx - k},${cy + l / 2}`;
+    const dir = `${cx},${cy} ${cx + k},${cy - l / 2} ${cx + k},${cy + l / 2} ${cx},${cy + l}`;
+    const borda = { stroke: '#8E97A6', strokeWidth: 0.45, strokeLinejoin: 'round' as const };
+    return (
+      <g>
+        <polygon points={esq} fill={`url(#${p}e)`} {...borda} />
+        <polygon points={dir} fill={`url(#${p}d)`} {...borda} />
+        <polygon points={tampo} fill={`url(#${p}t)`} {...borda} />
+        <polygon points={esq} fill={`url(#${p}g)`} />
+        <polygon points={dir} fill={`url(#${p}g)`} />
+        <polygon points={tampo} fill={`url(#${p}g)`} />
+        <path
+          d={`M${cx - k + 0.4} ${cy - l / 2 + 0.2} L${cx} ${cy - l + 0.25} L${cx + k - 0.4} ${cy - l / 2 + 0.2}`}
+          stroke="#FFFFFF"
+          strokeWidth="0.5"
+          fill="none"
+          opacity="0.9"
+        />
+      </g>
+    );
+  };
   return (
     <>
       <defs>
-        <radialGradient id={`${p}c`} cx="0.38" cy="0.4" r="0.75">
-          <stop offset="0" stopColor="#FBF4E2" />
-          <stop offset="0.6" stopColor="#E7D6AE" />
-          <stop offset="1" stopColor="#BFA36A" />
-        </radialGradient>
-        <linearGradient id={`${p}b`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#D9C597" />
-          <stop offset="0.5" stopColor="#F4EAD0" />
-          <stop offset="1" stopColor="#C6AC72" />
+        <linearGradient id={`${p}t`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FFFFFF" />
+          <stop offset="1" stopColor="#F4F3EF" />
         </linearGradient>
-        <pattern id={`${p}j`} width="1.6" height="1.6" patternUnits="userSpaceOnUse">
-          <path d="M0 0.8 H1.6 M0.8 0 V1.6" stroke="#A88B55" strokeWidth="0.25" opacity="0.35" />
+        <linearGradient id={`${p}e`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#EDEBE5" />
+          <stop offset="1" stopColor="#D2CFC6" />
+        </linearGradient>
+        <linearGradient id={`${p}d`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#DEDBD3" />
+          <stop offset="1" stopColor="#BDB9AE" />
+        </linearGradient>
+        <pattern id={`${p}g`} width="1.3" height="1.3" patternUnits="userSpaceOnUse">
+          <circle cx="0.35" cy="0.4" r="0.16" fill="#A9A496" opacity="0.35" />
+          <circle cx="0.95" cy="1" r="0.14" fill="#FFFFFF" opacity="0.8" />
         </pattern>
       </defs>
-      <ellipse cx="12" cy="21.4" rx="8" ry="1.2" fill="#000" opacity="0.18" />
-      {/* boca franzida acima da amarração */}
-      <path
-        d="M8.4 7.6 C8 5.6 8.6 3.6 10 2.8 C10.8 3.8 11.4 3.4 12 2.6 C12.6 3.4 13.3 3.8 14 2.8 C15.4 3.6 16 5.6 15.6 7.6 Z"
-        fill={`url(#${p}b)`}
-        stroke="#7A6038"
-        strokeWidth="0.6"
-        strokeLinejoin="round"
-      />
-      {/* corpo da saca */}
-      <path
-        d="M8.2 7.8 C5.6 9.6 4.4 13 4.6 16.4 C4.8 19.6 7.4 21 12 21 C16.6 21 19.2 19.6 19.4 16.4 C19.6 13 18.4 9.6 15.8 7.8 Z"
-        fill={`url(#${p}c)`}
-        stroke="#7A6038"
-        strokeWidth="0.7"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8.2 7.8 C5.6 9.6 4.4 13 4.6 16.4 C4.8 19.6 7.4 21 12 21 C16.6 21 19.2 19.6 19.4 16.4 C19.6 13 18.4 9.6 15.8 7.8 Z"
-        fill={`url(#${p}j)`}
-      />
-      {/* faixas impressas e etiqueta */}
-      <path d="M5.2 12.4 C9.6 13.4 14.4 13.4 18.8 12.4" stroke="#1F4E9C" strokeWidth="0.9" fill="none" />
-      <path d="M4.9 17.4 C9.6 18.4 14.4 18.4 19.1 17.4" stroke="#B3261E" strokeWidth="0.9" fill="none" />
-      <rect x="8.6" y="13.9" width="6.8" height="2.6" rx="0.4" fill="#FFFFFF" stroke="#1F4E9C" strokeWidth="0.4" />
-      <path d="M9.6 14.9 H14.4 M10.2 15.7 H13.8" stroke="#1F4E9C" strokeWidth="0.4" strokeLinecap="round" />
-      {/* amarração de corda */}
-      <path d="M7.8 7.9 C10.5 8.7 13.5 8.7 16.2 7.9" stroke="#7B4A1E" strokeWidth="1.3" strokeLinecap="round" fill="none" />
-      <path d="M12 8.4 L10.6 10.4 M12 8.4 L13.2 10.6" stroke="#7B4A1E" strokeWidth="0.8" strokeLinecap="round" />
-      {/* torrões de açúcar ao pé da saca */}
-      <rect x="17.6" y="19.2" width="2.2" height="2.2" rx="0.3" fill="#FFFFFF" stroke="#9C9384" strokeWidth="0.4" />
-      <rect x="19.9" y="19.9" width="1.8" height="1.8" rx="0.3" fill="#FAFAF7" stroke="#9C9384" strokeWidth="0.4" />
+      <ellipse cx="12" cy="21.2" rx="10.4" ry="1.3" fill="#000" opacity="0.2" />
+      {cubo(16.2, 9.4, 6)}
+      {cubo(8.2, 13, 6.8)}
+      {/* brilhos dos cristais */}
+      <path d="M8.2 8.2 l0.6 -1.2 l0.6 1.2 l-0.6 1.2 z" fill="#FFFFFF" />
+      <path d="M18 6.4 l0.45 -0.9 l0.45 0.9 l-0.45 0.9 z" fill="#FFFFFF" />
     </>
   );
 }
@@ -191,7 +193,7 @@ function cedulaDolar(p: string): ReactNode {
 
 const DESENHOS: Record<Desenho, { titulo: string; svg: (prefixo: string) => ReactNode }> = {
   'barra-ouro': { titulo: 'Barra de ouro', svg: barraOuro },
-  'saca-acucar': { titulo: 'Saca de açúcar', svg: sacaAcucar },
+  'cubos-acucar': { titulo: 'Cubos de açúcar', svg: cubosAcucar },
   'grao-soja': { titulo: 'Grão de soja', svg: graoSoja },
   'cedula-dolar': { titulo: 'Cédula de dólar', svg: cedulaDolar },
 };

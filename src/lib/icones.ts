@@ -52,11 +52,11 @@ function paisDoPar(id: string): string | null {
 }
 
 /** Ícones desenhados no próprio app (não existem como emoji): ver `components/Desenhos.tsx`. */
-export type Desenho = 'barra-ouro' | 'saca-acucar' | 'grao-soja' | 'cedula-dolar';
+export type Desenho = 'barra-ouro' | 'cubos-acucar' | 'grao-soja' | 'cedula-dolar';
 
 const DESENHOS: [RegExp, Desenho][] = [
   [/\bouro\b|gold/, 'barra-ouro'],
-  [/acucar/, 'saca-acucar'],
+  [/acucar/, 'cubos-acucar'],
   [/soja/, 'grao-soja'],
 ];
 
