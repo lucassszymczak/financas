@@ -1,7 +1,18 @@
 # Logos das empresas
 
-Coloque aqui os logos que o app mostra ao lado de ações, FIIs, ETFs e BDRs.
+Logos que o app mostra ao lado de ações, FIIs, ETFs e BDRs.
 O app **não busca nada na internet**: só usa os arquivos desta pasta.
+
+## Origem dos arquivos atuais
+
+Os cerca de 1.440 logos desta pasta vieram do repositório público [thefintz/icones-b3](https://github.com/thefintz/icones-b3).
+O repositório não declara licença; os logos são marcas das próprias empresas e são usados aqui só para identificar cada ativo.
+Cada um foi recortado, redimensionado para 64 × 64 px e salvo de novo em PNG (até ~3 KB).
+Empresas que mudaram de código usam o logo do código antigo: AXIA (ELET), EMBJ (EMBR), MOTV (CCRO),
+ISAE (TRPL), AZZA (ARZZ), ALOS (ALSO), BRAV (RRRP) e NATU (NTCO).
+
+Para trocar um logo, substitua o arquivo mantendo o nome. Os listados em `scripts/logos-essenciais.txt` ficam guardados
+no aparelho já na instalação do app; os demais, na primeira vez que aparecem na tela.
 
 ## Nome do arquivo
 

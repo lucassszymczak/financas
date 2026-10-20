@@ -62,6 +62,11 @@ test('logos e bandeiras: ícones ao lado dos ativos e opção para esconder', as
     'Estados Unidos',
   );
   await expect(page.locator('.kpi', { hasText: 'Ibovespa' }).locator('img.ativo-bandeira')).toHaveAttribute('alt', 'Brasil');
+  // Logos das ações (PETR3/PETR4 → PETR.png; código novo EMBJ com o logo da Embraer).
+  await page.goto('./#/mercado');
+  await page.getByRole('button', { name: '☰ Lista' }).click();
+  await expect(page.locator('img.ativo-logo[src$="logos/PETR.png"]').first()).toBeVisible();
+  await expect(page.locator('img.ativo-logo[src$="logos/EMBJ.png"]').first()).toBeVisible();
   // Nenhuma imagem quebrada.
   const quebradas = await page.evaluate(
     () =>

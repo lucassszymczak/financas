@@ -24,19 +24,36 @@ function lerLogos(): Record<string, string> {
   return logos;
 }
 
+/** Logos guardados já na instalação: as raízes de `scripts/logos-essenciais.txt` que existem na pasta. */
+function logosEssenciais(): string[] {
+  const lista = new URL('./scripts/logos-essenciais.txt', import.meta.url);
+  if (!existsSync(lista)) return [];
+  const logos = lerLogos();
+  return readFileSync(lista, 'utf8')
+    .split('\n')
+    .map((l) => l.trim().toUpperCase())
+    .filter((l) => l && !l.startsWith('#'))
+    .flatMap((r) => (logos[r] ? [logos[r]] : []));
+}
+
 /**
  * Gera `src/data/logos-disponiveis.ts` com os logos que existem em `public/logos/`,
  * para o app saber quais existem sem tentar carregar (e sem imagem quebrada).
  */
 function listaLogos(): Plugin {
   const gerar = () => {
-    const logos = lerLogos();
-    const corpo = Object.entries(logos)
-      .map(([k, v]) => `  ${k}: ${JSON.stringify(v)},`)
-      .join('\n');
+    const arquivos = Object.values(lerLogos());
+    // Lista compacta (são mais de mil arquivos): "PETR.png VALE.png …" → { PETR: 'PETR.png', … }.
+    const linhas: string[] = [];
+    for (let i = 0; i < arquivos.length; i += 12) linhas.push(`  '${arquivos.slice(i, i + 12).join(' ')}'`);
     const fonte = `// Gerado automaticamente pelo build (plugin "radar-logos" no vite.config.ts) a partir de public/logos/.
 // Não edite à mão: coloque o arquivo na pasta e rode \`npm run dev\` ou \`npm run build\`.
-export const LOGOS_DISPONIVEIS: Record<string, string> = {${corpo ? `\n${corpo}\n` : ''}};
+const ARQUIVOS: string[] = [${linhas.length ? `\n${linhas.join(',\n')},\n` : ''}]
+  .join(' ')
+  .split(' ')
+  .filter(Boolean);
+
+export const LOGOS_DISPONIVEIS: Record<string, string> = Object.fromEntries(ARQUIVOS.map((f) => [f.slice(0, 4), f]));
 `;
     const antes = existsSync(LISTA_LOGOS) ? readFileSync(LISTA_LOGOS, 'utf8') : '';
     if (antes !== fonte) writeFileSync(LISTA_LOGOS, fonte);
@@ -72,12 +89,14 @@ function serviceWorker(): Plugin {
         './icon-192.png',
         './icon-512.png',
         './icon-maskable-512.png',
-        // Logos de public/logos/ (as bandeiras já vêm no bundle, em `files`).
-        ...Object.values(lerLogos()).map((f) => `./logos/${f}`),
+        // Logos essenciais (Ibovespa e listas padrão); os demais ficam guardados quando aparecem.
+        // As bandeiras já vêm no bundle, em `files`.
+        ...logosEssenciais().map((f) => `./logos/${f}`),
         ...files.map((f) => `./${f}`),
       ];
       const version = Date.now().toString(36);
       const source = `const CACHE = 'radar-' + ${JSON.stringify(version)};
+const CACHE_LOGOS = 'radar-logos';
 const ASSETS = ${JSON.stringify(assets)};
 
 self.addEventListener('install', (event) => {
@@ -87,7 +106,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== CACHE_LOGOS).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -99,6 +118,23 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
   if (req.mode === 'navigate') {
     event.respondWith(fetch(req).catch(() => caches.match('./', { ignoreSearch: true })));
+    return;
+  }
+  // Logos: guardados na primeira vez que aparecem, num cache que sobrevive às atualizações do app.
+  if (url.pathname.includes('/logos/')) {
+    event.respondWith(
+      caches.match(req, { ignoreVary: true }).then(
+        (hit) =>
+          hit ||
+          fetch(req).then((resp) => {
+            if (resp.ok) {
+              const copia = resp.clone();
+              caches.open(CACHE_LOGOS).then((c) => c.put(req, copia));
+            }
+            return resp;
+          }),
+      ),
+    );
     return;
   }
   event.respondWith(caches.match(req, { ignoreVary: true }).then((hit) => hit || fetch(req)));
