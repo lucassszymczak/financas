@@ -14,6 +14,15 @@ const dataISO = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'data inválida (use AAA
 const numero = z.number().nullable().optional();
 const texto = z.string().nullable().optional();
 const nota = z.number().min(0, 'nota mínima é 0').max(5, 'nota máxima é 5').nullable().optional();
+/** "HH:MM" (horário de Brasília). */
+const hora = z
+  .string()
+  .regex(/^\d{2}:\d{2}$/, 'hora inválida (use HH:MM)')
+  .nullable()
+  .optional();
+
+/** Tipos de edição conhecidos; outros valores são aceitos e guardados separadamente. */
+export const TIPOS_EDICAO = ['manha', 'atualizacao_meio_dia'] as const;
 
 export const fonteSchema = z.object({
   nome: z.string(),
@@ -27,6 +36,10 @@ const comuns = {
   horizonte: texto,
   confianca: texto,
   fontes: z.array(fonteSchema).default([]),
+  // Edições do dia (meio-dia): horário do item e ligação com o item que ele atualiza.
+  hora,
+  atualiza_id: texto,
+  atualizado_em: hora,
 };
 
 export const destaqueSchema = z.object({
@@ -60,6 +73,9 @@ const precoComum = {
   variacao_pct: numero,
   variacao_pb: numero,
   data_ref: dataISO.nullable().optional(),
+  /** Hora da cotação intradiária ("HH:MM"); sem ela, o valor é de fechamento. */
+  hora_ref: hora,
+  observacao: texto,
   periodo: texto,
   fonte: texto,
   url: texto,
@@ -90,6 +106,7 @@ export const agroSchema = z.object({ ...precoComum, regiao: z.string() });
  */
 export const cotacoesAmplasSchema = z.object({
   data_ref: dataISO.nullable().optional(),
+  hora_ref: hora,
   fonte: texto,
   url: texto,
   nota_fonte: nota,
@@ -170,6 +187,8 @@ export const radarSchema = z.object({
     data: dataISO,
     dia_semana: texto,
     gerado_em: texto,
+    /** Ausente = "manha". Conhecidos: "manha", "atualizacao_meio_dia". */
+    tipo: texto,
     referencia_mercado: texto,
     titulo: texto,
   }),
@@ -201,4 +220,9 @@ export type AlertaClima = z.infer<typeof alertaClimaSchema>;
 export type EventoAgenda = z.infer<typeof eventoAgendaSchema>;
 
 /** Qualquer item com preço: cotação, agro ou taxa de referência. */
-export type Preco = Omit<Cotacao, 'grupo'> & { grupo?: string; regiao?: string };
+export type Preco = Omit<Cotacao, 'grupo'> & {
+  grupo?: string;
+  regiao?: string;
+  /** Preenchido na fusão do dia quando o valor veio de uma edição anterior (a nova trouxe null). */
+  herdado?: { edicao: string; hora: string | null };
+};

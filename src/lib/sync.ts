@@ -1,5 +1,5 @@
 import { normalizarConfig, type Config } from './config';
-import type { Apagadas, EdicaoSalva } from './db';
+import { migrarApagadas, normalizarSalva, type Apagadas, type EdicaoSalva } from './db';
 
 /**
  * Sincronização entre aparelhos por um Gist secreto do GitHub.
@@ -27,7 +27,7 @@ export type Lado = { config: Config; edicoes: EdicaoSalva[]; apagadas: Apagadas 
 /** Assinatura simples para saber se dois lados têm o mesmo conteúdo. */
 function assinatura(l: Lado): string {
   const ed = [...l.edicoes]
-    .map((e) => `${e.data}@${e.importadoEm}`)
+    .map((e) => `${e.chave}@${e.importadoEm}`)
     .sort()
     .join('|');
   const ap = Object.entries(l.apagadas)
@@ -43,14 +43,14 @@ export function mesclar(local: Lado, remoto: Lado): { resultado: Lado; mudouLoca
 
   const porData = new Map<string, EdicaoSalva>();
   for (const e of [...remoto.edicoes, ...local.edicoes]) {
-    const atual = porData.get(e.data);
-    if (!atual || atual.importadoEm < e.importadoEm) porData.set(e.data, e);
+    const atual = porData.get(e.chave);
+    if (!atual || atual.importadoEm < e.importadoEm) porData.set(e.chave, e);
   }
   const edicoes = [...porData.values()]
-    .filter((e) => !apagadas[e.data] || apagadas[e.data]! < e.importadoEm)
-    .sort((a, b) => a.data.localeCompare(b.data));
+    .filter((e) => !apagadas[e.chave] || apagadas[e.chave]! < e.importadoEm)
+    .sort((a, b) => a.chave.localeCompare(b.chave));
   // Marcas de apagamento antigas que já foram superadas por uma nova importação não precisam ficar.
-  for (const e of edicoes) if (apagadas[e.data]) delete apagadas[e.data];
+  for (const e of edicoes) if (apagadas[e.chave]) delete apagadas[e.chave];
 
   const config = (remoto.config.atualizadaEm ?? '') > (local.config.atualizadaEm ?? '') ? remoto.config : local.config;
   const resultado = { config, edicoes, apagadas };
@@ -68,8 +68,9 @@ export function lerPacote(texto: string): Lado {
     throw new ErroSync('O arquivo de sincronização no GitHub está corrompido.');
   return {
     config: normalizarConfig(p.config),
-    edicoes: p.edicoes.filter((e) => e && typeof e.data === 'string' && typeof e.importadoEm === 'string'),
-    apagadas: p.apagadas && typeof p.apagadas === 'object' ? p.apagadas : {},
+    // Pacotes antigos guardavam por data: cada edição vira `data#tipo` (sem tipo = manhã).
+    edicoes: p.edicoes.filter((e) => e && typeof e.data === 'string' && typeof e.importadoEm === 'string').map(normalizarSalva),
+    apagadas: p.apagadas && typeof p.apagadas === 'object' ? migrarApagadas(p.apagadas) : {},
   };
 }
 

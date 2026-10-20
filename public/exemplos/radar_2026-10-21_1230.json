@@ -1,0 +1,137 @@
+{
+ "schema_version": "1.0",
+ "edicao": {
+  "data": "2026-10-21",
+  "dia_semana": "quarta",
+  "gerado_em": "2026-10-21T12:30:00-03:00",
+  "referencia_mercado": "Fechamento de 20/10; parcial do pregão de 21/10 até 12h24",
+  "titulo": "Atualização do meio-dia · 21/10 · EXEMPLO FICTÍCIO",
+  "tipo": "atualizacao_meio_dia"
+ },
+ "termometro": {
+  "tom": "cautela",
+  "texto": "EXEMPLO FICTÍCIO (meio-dia). Bolsa devolve parte da alta da manhã e o dólar sobe com a nova pesquisa eleitoral."
+ },
+ "destaques": [],
+ "noticias": [
+  {
+   "id": "conab-1-lev-2026-27",
+   "titulo": "Conab: 1º levantamento da safra 2026/27",
+   "data": "2026-10-21",
+   "categoria": "agro",
+   "resumo": "ATUALIZADO (exemplo): Grãos em 367,1 mi t (+1,4%). Soja 181,6 mi t (+0,7%), milho 148 mi t (+2,4%), trigo 5,7 mi t (-27,2%).",
+   "por_que_importa": "Safra cheia de soja segura altas de preço; menos trigo tende a firmar o cereal.",
+   "ativos_afetados": [
+    "Soja",
+    "Milho",
+    "Trigo"
+   ],
+   "impacto": "misto",
+   "horizonte": "meses",
+   "confianca": "alta",
+   "fontes": [
+    {
+     "nome": "Conab via Agência Gov",
+     "url": "https://agenciagov.ebc.com.br/noticias/202610/primeiro-levantamento-da-safra-de-graos-2026-27-estima-producao-acima-de-367-milhoes-de-toneladas",
+     "nota": 5
+    },
+    {
+     "nome": "Fonte extra do meio-dia (exemplo)",
+     "url": "https://exemplo.com.br/atualizacao-meio-dia",
+     "nota": 3
+    }
+   ],
+   "atualiza_id": "conab-1-lev-2026-27",
+   "atualizado_em": "12:20",
+   "hora": "12:20"
+  },
+  {
+   "id": "exemplo-nova-1230",
+   "emoji": "🆕",
+   "titulo": "Notícia nova do meio-dia (exemplo fictício)",
+   "data": "2026-10-21",
+   "categoria": "mercado",
+   "resumo": "Item que só existe na edição do meio-dia, para testar o selo \"Nova · 12h05\".",
+   "por_que_importa": "Mostra como o app inclui notícias novas ao juntar as edições.",
+   "ativos_afetados": [
+    "IBOV"
+   ],
+   "impacto": "neutro",
+   "horizonte": "curto",
+   "confianca": "alta",
+   "fontes": [
+    {
+     "nome": "Exemplo",
+     "url": "https://exemplo.com.br/nova",
+     "nota": 3
+    }
+   ],
+   "hora": "12:05"
+  }
+ ],
+ "leitura_do_dia": "EXEMPLO FICTÍCIO (meio-dia). O mercado reage à pesquisa divulgada às 11h.",
+ "leituras_secao": {
+  "mercado": "Dólar e juro subiram aqui enquanto o juro americano caía: o peso veio de dentro (eleição e fiscal), não de fora.",
+  "brasil_agro": "A soja caiu em Chicago, mas subiu no porto: o dólar mais alto compensou e sustentou o preço em reais.",
+  "guarapuava": "Mercado local parado: todos os preços iguais aos do dia anterior.",
+  "noroeste_paulista": "O boi de novembro na B3 vale mais que o físico: o mercado espera arroba mais cara na entressafra."
+ },
+ "cotacoes": [
+  {
+   "id": "IBOV",
+   "nome": "Ibovespa",
+   "grupo": "indices_br",
+   "valor": 203100.5,
+   "unidade": "pts",
+   "variacao_pct": -0.6,
+   "data_ref": "2026-10-21",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4,
+   "kpi": true,
+   "hora_ref": "12:20",
+   "observacao": "intradiário"
+  },
+  {
+   "id": "USDBRL",
+   "nome": "Dólar comercial",
+   "grupo": "moedas",
+   "valor": 5.12,
+   "unidade": "R$",
+   "variacao_pct": 0.65,
+   "data_ref": "2026-10-21",
+   "fonte": "InfoMoney",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+   "nota_fonte": 4,
+   "kpi": true,
+   "hora_ref": "12:24",
+   "observacao": "intradiário"
+  },
+  {
+   "id": "BRENT",
+   "nome": "Petróleo Brent",
+   "grupo": "commodities",
+   "valor": null,
+   "unidade": "US$/barril",
+   "variacao_pct": null,
+   "data_ref": "2026-10-20",
+   "fonte": "Reuters",
+   "url": "https://tribune.com.pk/story/2635163/oil-heads-for-weekly-gain-with-mideast-supply-risks",
+   "nota_fonte": 4.5,
+   "kpi": true
+  }
+ ],
+ "agro": [],
+ "taxas_referencia": {
+  "selic_meta": null,
+  "cdi_anual": null,
+  "ipca_12m": null,
+  "observacao": "Preencher a partir do BCB/IBGE quando verificado; null = não verificado nesta edição."
+ },
+ "agenda": [],
+ "limitacoes": [
+  "Exemplo fictício: a atualização do meio-dia traz só algumas cotações; as demais continuam vindo da manhã."
+ ],
+ "aviso": "Material informativo de uso interno, não é recomendação de investimento.",
+ "cotacoes_amplas": null
+}

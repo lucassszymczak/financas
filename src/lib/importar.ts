@@ -1,5 +1,6 @@
 import { CONFIG_PADRAO, normalizarConfig, type Config } from './config';
 import type { EdicaoSalva } from './db';
+import { chaveEdicao } from './edicoes';
 import { validarRadar, validarTexto } from './validar';
 import type { Radar } from '../schema/radar';
 
@@ -13,9 +14,10 @@ export async function lerArquivo(arquivo: { name: string; text(): Promise<string
   return { nome: arquivo.name, ok: false, erros: r.erros };
 }
 
+/** Versão 2: edições com `chave` (`data#tipo`). A restauração também aceita a versão 1 (só data). */
 export type Backup = {
   app: 'radar-investimentos';
-  versao: 1;
+  versao: 2;
   exportadoEm: string;
   config: Config;
   edicoes: EdicaoSalva[];
@@ -24,10 +26,10 @@ export type Backup = {
 export function montarBackup(edicoes: EdicaoSalva[], config: Config, agora = new Date()): Backup {
   return {
     app: 'radar-investimentos',
-    versao: 1,
+    versao: 2,
     exportadoEm: agora.toISOString(),
     config,
-    edicoes: [...edicoes].sort((a, b) => a.data.localeCompare(b.data)),
+    edicoes: [...edicoes].sort((a, b) => a.chave.localeCompare(b.chave)),
   };
 }
 
@@ -52,7 +54,13 @@ export function lerBackup(texto: string): { ok: true; backup: BackupLido } | { o
   const invalidas: string[] = [];
   for (const e of b.edicoes) {
     const v = validarRadar(e?.bruto);
-    if (v.ok) edicoes.push({ data: v.radar.edicao.data, bruto: e.bruto, importadoEm: e.importadoEm ?? new Date().toISOString() });
+    if (v.ok)
+      edicoes.push({
+        chave: chaveEdicao(v.radar),
+        data: v.radar.edicao.data,
+        bruto: e.bruto,
+        importadoEm: e.importadoEm ?? new Date().toISOString(),
+      });
     else invalidas.push(`${e?.data ?? '?'}: ${v.erros[0]}`);
   }
   return { ok: true, backup: { config: b.config ? normalizarConfig(b.config) : CONFIG_PADRAO, edicoes, invalidas } };

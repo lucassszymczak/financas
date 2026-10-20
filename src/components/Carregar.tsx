@@ -4,6 +4,8 @@ import { useEstado } from '../state';
 import { lerArquivo } from '../lib/importar';
 import * as db from '../lib/db';
 import { dataCurta } from '../lib/formato';
+import { chaveEdicao, compararEdicoes, rotuloTipo } from '../lib/edicoes';
+import type { Radar } from '../schema/radar';
 import exemplo from '../schema/exemplo.json';
 
 type Api = {
@@ -34,29 +36,37 @@ export function CarregarProvider({ children }: { children: ReactNode }) {
       if (!arquivos.length) return;
       const erros: { nome: string; erros: string[] }[] = [];
       const salvas: string[] = [];
+      // Lê tudo antes de gravar e grava em ordem fixa (data, depois horário da edição):
+      // o resultado é o mesmo em qualquer ordem de arquivos.
+      const lidos: { nome: string; radar: Radar; bruto: unknown }[] = [];
       for (const arq of arquivos) {
         const lido = await lerArquivo(arq);
-        if (!lido.ok) {
-          erros.push({ nome: lido.nome, erros: lido.erros });
-          continue;
-        }
+        if (lido.ok) lidos.push(lido);
+        else erros.push({ nome: lido.nome, erros: lido.erros });
+      }
+      lidos.sort((x, y) => x.radar.edicao.data.localeCompare(y.radar.edicao.data) || compararEdicoes(x.radar, y.radar));
+      // Dois arquivos da mesma edição no mesmo lote: vale o gerado por último.
+      const porChave = new Map<string, (typeof lidos)[number]>();
+      for (const l of lidos) porChave.set(chaveEdicao(l.radar), l);
+      for (const [chave, lido] of porChave) {
         const data = lido.radar.edicao.data;
-        if (await db.existeEdicao(data)) {
+        const rotulo = `${dataCurta(data)} (${rotuloTipo(lido.radar).toLowerCase()})`;
+        if (await db.existeEdicao(chave)) {
           const sim = await confirmar({
             titulo: 'Edição já existe',
-            texto: `Já existe uma edição de ${dataCurta(data)} salva. Quer substituir pela do arquivo "${lido.nome}"?`,
+            texto: `Já existe uma edição de ${rotulo} salva. Quer substituir pela do arquivo "${lido.nome}"?`,
             ok: 'Substituir',
             cancelar: 'Manter a atual',
           });
           if (!sim) continue;
         }
-        await db.salvarEdicao({ data, bruto: lido.bruto, importadoEm: new Date().toISOString() });
-        salvas.push(data);
+        await db.salvarEdicao({ chave, data, bruto: lido.bruto, importadoEm: new Date().toISOString() });
+        salvas.push(rotulo);
       }
       if (salvas.length) {
         await recarregar();
         abrirEdicao(null);
-        aviso(salvas.length === 1 ? `Edição de ${dataCurta(salvas[0])} carregada.` : `${salvas.length} edições carregadas.`);
+        aviso(salvas.length === 1 ? `Edição de ${salvas[0]} carregada.` : `${salvas.length} edições carregadas.`);
       }
       if (erros.length) {
         await avisar({

@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import type { Fonte, Preco } from '../schema/radar';
 import { diaMes, numero, variacao as calcVariacao } from '../lib/formato';
 import { dadoAntigo } from '../lib/pregao';
+import { ehIntradiario } from '../lib/precos';
+import { horaBR } from '../lib/edicoes';
 
 export type TomSelo = 'neutro' | 'positivo' | 'negativo' | 'misto' | 'aviso' | 'info' | 'destaque';
 
@@ -70,11 +72,37 @@ export function ListaFontes({ fontes }: { fontes: Fonte[] }) {
 }
 
 /** Selo "dado de DD/MM" quando a data de referência é anterior ao último pregão esperado. */
-export function SeloAntigo({ item, edicaoData }: { item: Pick<Preco, 'data_ref' | 'periodo'>; edicaoData: string }) {
+export function SeloAntigo({ item, edicaoData }: { item: Pick<Preco, 'data_ref' | 'hora_ref' | 'periodo'>; edicaoData: string }) {
   if (!dadoAntigo(item, edicaoData)) return null;
   return (
     <Selo tom="aviso" title="Data de referência anterior ao último pregão esperado">
       dado de {diaMes(item.data_ref)}
+    </Selo>
+  );
+}
+
+/** Texto do selo de origem do valor: intradiário (com hora) ou herdado de uma edição anterior do dia. */
+export function textoOrigem(item: Pick<Preco, 'data_ref' | 'hora_ref' | 'observacao' | 'herdado'>): string | null {
+  if (item.herdado) {
+    const hora = item.herdado.hora ? ` ${horaBR(item.herdado.hora)}` : '';
+    return `valor de ${diaMes(item.data_ref)}, ${item.herdado.edicao.toLowerCase()}${hora}`;
+  }
+  if (ehIntradiario(item)) return item.hora_ref ? `intradiário · ${horaBR(item.hora_ref)}` : 'intradiário';
+  return null;
+}
+
+/** Selo "intradiário · 12h24" ou "valor de 20/10, manhã 07h15" (quando a edição nova veio sem valor). */
+export function SeloOrigem({ item }: { item: Pick<Preco, 'data_ref' | 'hora_ref' | 'observacao' | 'herdado'> }) {
+  const t = textoOrigem(item);
+  if (!t) return null;
+  return (
+    <Selo
+      tom={item.herdado ? 'aviso' : 'info'}
+      title={
+        item.herdado ? 'A edição mais recente veio sem valor; mostrando o último valor verificado' : 'Valor do meio do pregão'
+      }
+    >
+      {t}
     </Selo>
   );
 }

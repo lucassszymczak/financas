@@ -1,13 +1,14 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useEstado } from '../state';
 import type { Preco, Radar } from '../schema/radar';
-import { mapaPrecos, nomeGrupo, nomeRegiao, serie, type Ponto } from '../lib/precos';
+import { mapaPrecos, nomeGrupo, nomeRegiao, pontoIntradiario, serie, type Ponto } from '../lib/precos';
 import { dataCurta, diaMes, numero, numeroAuto, somaDias, valorComUnidade } from '../lib/formato';
 import { limitesCruzados } from '../lib/alertas';
 import { dadoAntigo } from '../lib/pregao';
 import { Grafico } from './Grafico';
-import { Estrelas, Leitura, Selo, Variacao } from './Basicos';
+import { Estrelas, Leitura, Selo, SeloOrigem, Variacao } from './Basicos';
 import { Modal } from './Modal';
+import { AtivoIcone } from './AtivoIcone';
 
 /** Abre o detalhe de um ativo; `aoFechar` é chamado quando o pop-up fecha (a fita usa para voltar a rodar). */
 type Abrir = (id: string, aoFechar?: () => void) => void;
@@ -99,7 +100,16 @@ function Detalhe({ id, fechar }: { id: string; fechar: () => void }) {
     return periodo && ultima ? todos.filter((p) => p.x >= somaDias(ultima, -periodo)) : todos;
   }, [todos, periodo]);
   const item = atual ? mapaPrecos(atual.radar).get(id) : undefined;
-  const series = useMemo(() => [{ nome: item?.nome ?? id, pontos }], [item?.nome, id, pontos]);
+  // Valor intradiário de hoje: fora do histórico, mas aparece como marcador tracejado depois do último fechamento.
+  const intradiario = useMemo(() => {
+    const p = atual ? pontoIntradiario(atual.radar, id) : null;
+    const ultimo = todos.at(-1)?.x;
+    return p && (!ultimo || p.x > ultimo) ? p : null;
+  }, [atual, id, todos]);
+  const series = useMemo(
+    () => [{ id, grupo: item?.grupo, nome: item?.nome ?? id, pontos, unidade: item?.unidade, intradiario }],
+    [item?.nome, item?.grupo, item?.unidade, id, pontos, intradiario],
+  );
   const juros = !!item && item.variacao_pb !== null && item.variacao_pb !== undefined;
   const resumo = resumoSerie(pontos, juros);
   const limites = config.limites.filter((l) => l.ativo && l.id === id);
@@ -110,7 +120,12 @@ function Detalhe({ id, fechar }: { id: string; fechar: () => void }) {
   return (
     <Modal
       largo
-      titulo={item?.nome ?? id}
+      titulo={
+        <span className="titulo-ativo">
+          <AtivoIcone id={id} grupo={item?.grupo} nome={item?.nome ?? id} regiao={item?.regiao} tamanho={24} />
+          {item?.nome ?? id}
+        </span>
+      }
       onFechar={fechar}
       cabecalho={
         item && (
@@ -158,7 +173,7 @@ function Detalhe({ id, fechar }: { id: string; fechar: () => void }) {
             <dt>Data de referência</dt>
             <dd>
               {item.periodo ? `semana ${item.periodo}` : dataCurta(item.data_ref)}{' '}
-              {atual && dadoAntigo(item, atual.data) && <Selo tom="aviso">dado antigo</Selo>}
+              {atual && dadoAntigo(item, atual.data) && <Selo tom="aviso">dado antigo</Selo>} <SeloOrigem item={item} />
             </dd>
           </div>
           {resumo && (

@@ -7,6 +7,8 @@ import { lerLocal, gravarLocal } from '../lib/local';
 import { descreverRegra, ehRegra } from '../lib/config';
 import { useAbrirHistorico } from './HistoricoAtivo';
 import { Sparkline } from './Sparkline';
+import { textoOrigem } from './Basicos';
+import { AtivoIcone } from './AtivoIcone';
 
 export type Visao = 'lista' | 'mapa';
 export type Ordem = 'padrao' | 'alta' | 'baixa' | 'az';
@@ -75,6 +77,8 @@ function Preco({ p }: { p: Preco }) {
 function Etiquetas({ p, edicaoData }: { p: Preco; edicaoData: string }) {
   if (p.periodo) return <span className="etq">semana {p.periodo}</span>;
   if (dadoAntigo(p, edicaoData)) return <span className="etq etq-antigo">dado de {diaMes(p.data_ref)}</span>;
+  const origem = textoOrigem(p);
+  if (origem) return <span className={`etq ${p.herdado ? 'etq-antigo' : 'etq-intra'}`}>{origem}</span>;
   return null;
 }
 
@@ -176,13 +180,16 @@ export function GrupoAtivos({
                       onClick={() => abrir(p.id)}
                       aria-label={`${p.nome}: ver detalhes`}
                     >
-                      <span className="la-nome">
-                        <span className="la-tk">{r.principal}</span>
-                        {r.secundario && <span className="la-sub">{r.secundario}</span>}
-                        <Etiquetas p={p} edicaoData={edicaoData} />
+                      <span className="la-id">
+                        <AtivoIcone id={p.id} grupo={p.grupo} nome={p.nome} regiao={p.regiao} tamanho={22} />
+                        <span className="la-nome">
+                          <span className="la-tk">{r.principal}</span>
+                          {r.secundario && <span className="la-sub">{r.secundario}</span>}
+                          <Etiquetas p={p} edicaoData={edicaoData} />
+                        </span>
                       </span>
                       <span className="la-spark">
-                        {pontos.length >= 2 && <Sparkline pontos={pontos} largura={56} altura={22} />}
+                        {pontos.length >= 2 && <Sparkline pontos={pontos} largura={56} altura={22} unidade={p.unidade} />}
                       </span>
                       <span className="la-valor">
                         <Preco p={p} />
@@ -207,7 +214,10 @@ export function GrupoAtivos({
                       onClick={() => abrir(p.id)}
                       aria-label={`${p.nome}: ver detalhes`}
                     >
-                      <span className="bloco-tk">{r.principal}</span>
+                      <span className="bloco-tk">
+                        <AtivoIcone id={p.id} grupo={p.grupo} nome={p.nome} regiao={p.regiao} tamanho={16} />
+                        {r.principal}
+                      </span>
                       <span className="bloco-var num">
                         {v === null
                           ? '—'

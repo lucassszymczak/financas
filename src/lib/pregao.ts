@@ -18,8 +18,14 @@ export function ehFimDeSemana(iso: string): boolean {
 /**
  * Um dado é antigo quando sua data de referência é anterior ao último pregão esperado.
  * Itens semanais (com `periodo`) e itens sem data não contam como antigos.
+ * Com `hora_ref` (valor intradiário), é antigo quando não é do dia da edição.
  */
-export function dadoAntigo(item: { data_ref?: string | null; periodo?: string | null }, edicaoData: string): boolean {
+export function dadoAntigo(
+  item: { data_ref?: string | null; hora_ref?: string | null; periodo?: string | null },
+  edicaoData: string,
+): boolean {
   if (item.periodo || !item.data_ref) return false;
+  // Valor intradiário só vale no próprio dia: um intradiário de ontem já é antigo.
+  if (item.hora_ref) return item.data_ref < edicaoData;
   return item.data_ref < ultimoPregaoEsperado(edicaoData);
 }

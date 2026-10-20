@@ -151,7 +151,7 @@ test('mercado: lista limpa, preço, grupos recolhíveis e mapa de calor', async 
 
   // Com preço no arquivo
   await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
-  await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
+  await expect(page.getByText('Edição de 20/10/2026 (manhã) carregada.')).toBeVisible();
   await page.goto('./#/mercado');
   await page.getByRole('button', { name: '☰ Lista' }).click();
   await page.getByRole('button', { name: /Blue chips/ }).click();
@@ -189,7 +189,7 @@ test('detalhe do ativo pelo ticker: gráfico, estatísticas e notícias', async 
 test('busca no universo amplo de cotações e mostra os dados do pregão', async ({ page }) => {
   await carregarExemplo(page);
   await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
-  await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
+  await expect(page.getByText('Edição de 20/10/2026 (manhã) carregada.')).toBeVisible();
   await page.goto('./#/mercado');
   await page.getByLabel('Buscar ativo', { exact: true }).fill('wege');
   await expect(page.getByRole('button', { name: /Resultados \(1\)/ })).toBeVisible();
@@ -285,7 +285,7 @@ test('menu superior, busca do topo, setores e fita', async ({ page }, info) => {
   const celular = info.project.name === 'celular';
   await carregarExemplo(page);
   await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
-  await expect(page.getByText('Edição de 20/10/2026 carregada.')).toBeVisible();
+  await expect(page.getByText('Edição de 20/10/2026 (manhã) carregada.')).toBeVisible();
 
   // Menu: no celular o ☰ abre a lista em tela cheia; no computador o submenu abre ao passar o mouse.
   if (celular) await page.getByRole('button', { name: 'Abrir menu' }).click();

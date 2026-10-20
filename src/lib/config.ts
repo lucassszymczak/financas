@@ -8,6 +8,8 @@ export type Config = {
   nomeApp: string;
   corDestaque: string;
   tema: Tema;
+  /** Logos de empresas e bandeiras ao lado dos ativos. */
+  mostrarLogos: boolean;
   watchlist: GrupoWatch[];
   limites: Limite[];
   /** Quando a configuração mudou pela última vez (a sincronização fica com a mais nova). */
@@ -146,6 +148,7 @@ export const CONFIG_PADRAO: Config = {
   nomeApp: 'Radar de Investimentos',
   corDestaque: COR_PADRAO,
   tema: 'sistema',
+  mostrarLogos: true,
   watchlist: WATCHLIST_PADRAO,
   limites: LIMITES_PADRAO,
   versaoLista: VERSAO_LISTA,
@@ -164,6 +167,7 @@ export function normalizarConfig(c: unknown): Config {
         ? o.corDestaque
         : COR_PADRAO,
     tema,
+    mostrarLogos: o.mostrarLogos !== false,
     watchlist: Array.isArray(o.watchlist) ? migrarLista(o.watchlist, o.versaoLista ?? 1) : WATCHLIST_PADRAO,
     limites: Array.isArray(o.limites) ? o.limites : LIMITES_PADRAO,
     ...(typeof o.atualizadaEm === 'string' ? { atualizadaEm: o.atualizadaEm } : {}),

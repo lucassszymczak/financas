@@ -20,6 +20,7 @@ import { dataHora, hojeISO, lerNumero, numero } from '../lib/formato';
 import { todosPrecos } from '../lib/precos';
 import { extrairCodigo, linkPareamento } from '../lib/pareamento';
 import qrcode from 'qrcode-generator';
+import { AtivoIcone } from '../components/AtivoIcone';
 
 function mover<T>(lista: T[], i: number, delta: number): T[] {
   const j = i + delta;
@@ -66,6 +67,17 @@ function Aparencia({ config, salvar }: { config: Config; salvar: (c: Config) => 
             <option value="escuro">Escuro (homebroker)</option>
             <option value="claro">Claro (institucional)</option>
           </select>
+        </div>
+        <div className="campo">
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={config.mostrarLogos}
+              onChange={(e) => salvar({ ...config, mostrarLogos: e.target.checked })}
+            />
+            <span>Mostrar logos e bandeiras</span>
+          </label>
+          <span className="mudo pequeno">Imagens guardadas no próprio app (pasta public/logos); funcionam sem internet.</span>
         </div>
       </div>
     </div>
@@ -129,7 +141,8 @@ function Watchlist({ config, salvar, nomes }: { config: Config; salvar: (c: Conf
                       onChange={(e) => atualiza(grupo.itens.map((x, j) => (j === ii ? { ...x, ativo: e.target.checked } : x)))}
                     />
                     <span>
-                      <strong>{it.id}</strong> {nomes.get(it.id) && <span className="mudo">{nomes.get(it.id)}</span>}
+                      {!ehRegra(it.id) && <AtivoIcone id={it.id} nome={nomes.get(it.id)} />} <strong>{it.id}</strong>{' '}
+                      {nomes.get(it.id) && <span className="mudo">{nomes.get(it.id)}</span>}
                       {ehRegra(it.id) && <span className="mudo"> ({descreverRegra(it.id)})</span>}
                     </span>
                   </label>

@@ -30,10 +30,10 @@ async function ladoLocal(): Promise<Lado> {
 
 /** Grava no aparelho o resultado da mescla, sem disparar uma nova sincronização. */
 async function aplicarLocal(local: Lado, resultado: Lado) {
-  const manter = new Set(resultado.edicoes.map((e) => e.data));
-  for (const e of local.edicoes) if (!manter.has(e.data)) await db.apagarEdicao(e.data, true);
-  const atuais = new Map(local.edicoes.map((e) => [e.data, e.importadoEm]));
-  for (const e of resultado.edicoes) if (atuais.get(e.data) !== e.importadoEm) await db.salvarEdicao(e, true);
+  const manter = new Set(resultado.edicoes.map((e) => e.chave));
+  for (const e of local.edicoes) if (!manter.has(e.chave)) await db.apagarEdicao(e.chave, true);
+  const atuais = new Map(local.edicoes.map((e) => [e.chave, e.importadoEm]));
+  for (const e of resultado.edicoes) if (atuais.get(e.chave) !== e.importadoEm) await db.salvarEdicao(e, true);
   await db.salvarApagadas(resultado.apagadas);
   if (resultado.config.atualizadaEm !== local.config.atualizadaEm) await db.salvarConfig(resultado.config, true);
 }

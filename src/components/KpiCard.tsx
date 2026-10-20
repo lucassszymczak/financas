@@ -4,8 +4,9 @@ import type { Ponto } from '../lib/precos';
 import type { Limite } from '../lib/config';
 import { limitesCruzados } from '../lib/alertas';
 import { numeroAuto } from '../lib/formato';
-import { SeloAntigo, Selo, Variacao } from './Basicos';
+import { SeloAntigo, SeloOrigem, Selo, Variacao } from './Basicos';
 import { Sparkline } from './Sparkline';
+import { AtivoIcone } from './AtivoIcone';
 
 export function KpiCard({
   item,
@@ -28,14 +29,18 @@ export function KpiCard({
       onClick={() => onAbrir?.(item.id)}
       aria-label={`${item.nome}: ver histórico`}
     >
-      <span className="kpi-nome">{item.nome}</span>
+      <span className="kpi-nome">
+        <AtivoIcone id={item.id} grupo={item.grupo} nome={item.nome} regiao={item.regiao} />
+        <span className="kpi-nome-txt">{item.nome}</span>
+      </span>
       <ValorKpi valor={item.valor} unidade={item.unidade} />
       <span className="kpi-linha">
         <Variacao item={item} grande />
-        <Sparkline pontos={serie} />
+        <Sparkline pontos={serie} unidade={item.unidade} />
       </span>
       <span className="kpi-rodape">
         <span className="mudo">{item.periodo ? `semana ${item.periodo}` : `ref. ${diaMes(item.data_ref)}`}</span>
+        <SeloOrigem item={item} />
         <SeloAntigo item={item} edicaoData={edicaoData} />
         {cruzados.map((l) => (
           <Selo key={l.tipo} tom="destaque">

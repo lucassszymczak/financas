@@ -1,5 +1,7 @@
 import type { Preco, Radar } from '../schema/radar';
 import { humanizar } from './formato';
+import { normalizar } from './busca';
+import { compararEdicoes } from './edicoes';
 
 export const GRUPO_TAXAS = 'taxas_referencia';
 
@@ -26,6 +28,7 @@ export function cotacoesAmplas(r: Radar): Preco[] {
       ...i,
       nome: i.nome ?? i.id,
       data_ref: i.data_ref ?? b.data_ref ?? null,
+      hora_ref: i.hora_ref ?? b.hora_ref ?? null,
       fonte: i.fonte ?? b.fonte ?? null,
       url: i.url ?? b.url ?? null,
       nota_fonte: i.nota_fonte ?? b.nota_fonte ?? null,
@@ -58,6 +61,11 @@ export function mapaPrecos(r: Radar): Map<string, Preco> {
     cacheMapa.set(r, m);
   }
   return m;
+}
+
+/** Valor do meio do pregão: tem `hora_ref` ou vem marcado como "intradiário". */
+export function ehIntradiario(p: { hora_ref?: string | null; observacao?: string | null }): boolean {
+  return !!p.hora_ref || normalizar(p.observacao ?? '').trim() === 'intradiario';
 }
 
 /** Juros são exibidos em pb e têm a cor neutra. */
@@ -125,19 +133,35 @@ export function leituraSecao(r: Radar, ...chaves: string[]): string | null {
   return null;
 }
 
-export type Ponto = { x: string; y: number };
+/** Ponto de série: data, valor e, quando o arquivo trouxer, a variação do dia (vp em %, vb em pb). */
+export type Ponto = { x: string; y: number; vp?: number; vb?: number };
 
 /**
  * Série histórica de um id a partir das edições salvas (ordenadas ou não).
  * O eixo usa `data_ref` quando existir; se várias edições trazem a mesma data, vale a mais recente.
+ * Só entram fechamentos: valores intradiários (com `hora_ref`) ficam fora do histórico.
  */
 export function serie(edicoes: Radar[], id: string): Ponto[] {
-  const ordenadas = [...edicoes].sort((a, b) => a.edicao.data.localeCompare(b.edicao.data));
-  const porData = new Map<string, number>();
+  const ordenadas = [...edicoes].sort((a, b) => a.edicao.data.localeCompare(b.edicao.data) || compararEdicoes(a, b));
+  const porData = new Map<string, Ponto>();
   for (const r of ordenadas) {
     const p = mapaPrecos(r).get(id);
-    if (!p || p.valor === null || p.valor === undefined) continue;
-    porData.set(p.data_ref ?? r.edicao.data, p.valor);
+    if (!p || p.valor === null || p.valor === undefined || ehIntradiario(p) || p.herdado) continue;
+    const x = p.data_ref ?? r.edicao.data;
+    const pt: Ponto = { x, y: p.valor };
+    if (typeof p.variacao_pct === 'number') pt.vp = p.variacao_pct;
+    if (typeof p.variacao_pb === 'number') pt.vb = p.variacao_pb;
+    porData.set(x, pt);
   }
-  return [...porData.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([x, y]) => ({ x, y }));
+  return [...porData.values()].sort((a, b) => a.x.localeCompare(b.x));
+}
+
+/** Valor intradiário do item na edição aberta (fica fora do histórico; o gráfico mostra à parte, tracejado). */
+export function pontoIntradiario(r: Radar, id: string): (Ponto & { hora: string | null }) | null {
+  const p = mapaPrecos(r).get(id);
+  if (!p || p.valor === null || p.valor === undefined || !ehIntradiario(p) || p.herdado) return null;
+  const pt: Ponto & { hora: string | null } = { x: p.data_ref ?? r.edicao.data, y: p.valor, hora: p.hora_ref ?? null };
+  if (typeof p.variacao_pct === 'number') pt.vp = p.variacao_pct;
+  if (typeof p.variacao_pb === 'number') pt.vb = p.variacao_pb;
+  return pt;
 }
