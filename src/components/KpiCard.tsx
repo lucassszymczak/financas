@@ -4,7 +4,7 @@ import type { Ponto } from '../lib/precos';
 import type { Limite } from '../lib/config';
 import { limitesCruzados } from '../lib/alertas';
 import { numeroAuto } from '../lib/formato';
-import { SeloAntigo, Selo, Variacao } from './Basicos';
+import { SeloAntigo, SeloOrigem, Selo, Variacao } from './Basicos';
 import { Sparkline } from './Sparkline';
 
 export function KpiCard({
@@ -36,6 +36,7 @@ export function KpiCard({
       </span>
       <span className="kpi-rodape">
         <span className="mudo">{item.periodo ? `semana ${item.periodo}` : `ref. ${diaMes(item.data_ref)}`}</span>
+        <SeloOrigem item={item} />
         <SeloAntigo item={item} edicaoData={edicaoData} />
         {cruzados.map((l) => (
           <Selo key={l.tipo} tom="destaque">

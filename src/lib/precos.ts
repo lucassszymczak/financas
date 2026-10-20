@@ -1,5 +1,7 @@
 import type { Preco, Radar } from '../schema/radar';
 import { humanizar } from './formato';
+import { normalizar } from './busca';
+import { compararEdicoes } from './edicoes';
 
 export const GRUPO_TAXAS = 'taxas_referencia';
 
@@ -26,6 +28,7 @@ export function cotacoesAmplas(r: Radar): Preco[] {
       ...i,
       nome: i.nome ?? i.id,
       data_ref: i.data_ref ?? b.data_ref ?? null,
+      hora_ref: i.hora_ref ?? b.hora_ref ?? null,
       fonte: i.fonte ?? b.fonte ?? null,
       url: i.url ?? b.url ?? null,
       nota_fonte: i.nota_fonte ?? b.nota_fonte ?? null,
@@ -58,6 +61,11 @@ export function mapaPrecos(r: Radar): Map<string, Preco> {
     cacheMapa.set(r, m);
   }
   return m;
+}
+
+/** Valor do meio do pregão: tem `hora_ref` ou vem marcado como "intradiário". */
+export function ehIntradiario(p: { hora_ref?: string | null; observacao?: string | null }): boolean {
+  return !!p.hora_ref || normalizar(p.observacao ?? '').trim() === 'intradiario';
 }
 
 /** Juros são exibidos em pb e têm a cor neutra. */
@@ -130,13 +138,14 @@ export type Ponto = { x: string; y: number };
 /**
  * Série histórica de um id a partir das edições salvas (ordenadas ou não).
  * O eixo usa `data_ref` quando existir; se várias edições trazem a mesma data, vale a mais recente.
+ * Só entram fechamentos: valores intradiários (com `hora_ref`) ficam fora do histórico.
  */
 export function serie(edicoes: Radar[], id: string): Ponto[] {
-  const ordenadas = [...edicoes].sort((a, b) => a.edicao.data.localeCompare(b.edicao.data));
+  const ordenadas = [...edicoes].sort((a, b) => a.edicao.data.localeCompare(b.edicao.data) || compararEdicoes(a, b));
   const porData = new Map<string, number>();
   for (const r of ordenadas) {
     const p = mapaPrecos(r).get(id);
-    if (!p || p.valor === null || p.valor === undefined) continue;
+    if (!p || p.valor === null || p.valor === undefined || ehIntradiario(p) || p.herdado) continue;
     porData.set(p.data_ref ?? r.edicao.data, p.valor);
   }
   return [...porData.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([x, y]) => ({ x, y }));

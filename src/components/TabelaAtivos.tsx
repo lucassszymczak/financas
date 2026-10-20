@@ -3,7 +3,7 @@ import type { Preco } from '../schema/radar';
 import { dataCurta, valorComUnidade } from '../lib/formato';
 import { setorDe, variacaoNumero } from '../lib/categorias';
 import { dadoAntigo } from '../lib/pregao';
-import { Selo, Variacao } from './Basicos';
+import { Selo, SeloOrigem, textoOrigem, Variacao } from './Basicos';
 import { useAbrirHistorico } from './HistoricoAtivo';
 
 type Coluna = 'id' | 'nome' | 'setor' | 'valor' | 'var' | 'data';
@@ -112,6 +112,12 @@ export function TabelaAtivos({
                   <>
                     {' '}
                     <Selo tom="aviso">antigo</Selo>
+                  </>
+                )}
+                {textoOrigem(p) && (
+                  <>
+                    {' '}
+                    <SeloOrigem item={p} />
                   </>
                 )}
               </td>

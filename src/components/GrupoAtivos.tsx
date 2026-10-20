@@ -7,6 +7,7 @@ import { lerLocal, gravarLocal } from '../lib/local';
 import { descreverRegra, ehRegra } from '../lib/config';
 import { useAbrirHistorico } from './HistoricoAtivo';
 import { Sparkline } from './Sparkline';
+import { textoOrigem } from './Basicos';
 
 export type Visao = 'lista' | 'mapa';
 export type Ordem = 'padrao' | 'alta' | 'baixa' | 'az';
@@ -75,6 +76,8 @@ function Preco({ p }: { p: Preco }) {
 function Etiquetas({ p, edicaoData }: { p: Preco; edicaoData: string }) {
   if (p.periodo) return <span className="etq">semana {p.periodo}</span>;
   if (dadoAntigo(p, edicaoData)) return <span className="etq etq-antigo">dado de {diaMes(p.data_ref)}</span>;
+  const origem = textoOrigem(p);
+  if (origem) return <span className={`etq ${p.herdado ? 'etq-antigo' : 'etq-intra'}`}>{origem}</span>;
   return null;
 }
 

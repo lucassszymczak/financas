@@ -3,18 +3,40 @@ import type { Radar } from './schema/radar';
 import { CONFIG_PADRAO, type Config } from './lib/config';
 import * as db from './lib/db';
 import { validarRadar } from './lib/validar';
+import { chaveEdicao, compararEdicoes } from './lib/edicoes';
+import { fundirDia } from './lib/fusao';
 
-export type Edicao = { data: string; radar: Radar; importadoEm: string };
+/** Uma edição salva (manhã, meio-dia…). */
+export type Edicao = { chave: string; data: string; radar: Radar; importadoEm: string };
+
+/** Um dia: suas edições (da mais antiga para a mais recente) e o Radar do dia completo (fusão). */
+export type Dia = { data: string; edicoes: Edicao[]; radar: Radar };
+
+/**
+ * O que está na tela: o dia completo (fusão das edições) ou uma edição específica aberta no Histórico.
+ * `radar` é o que as telas usam; `doDia` são as edições que entraram nele.
+ */
+export type Vista = {
+  data: string;
+  radar: Radar;
+  importadoEm: string;
+  /** null = dia completo; senão, a chave da edição aberta. */
+  chave: string | null;
+  doDia: Edicao[];
+};
 
 type Estado = {
   carregando: boolean;
   /** Todas as edições salvas, da mais recente para a mais antiga. */
   edicoes: Edicao[];
-  /** Edição em exibição (a mais recente ou uma aberta no Histórico). */
-  atual: Edicao | null;
-  /** true quando o usuário abriu uma edição antiga no Histórico. */
+  /** Dias com edições, do mais recente para o mais antigo. */
+  dias: Dia[];
+  /** O que está em exibição: o dia mais recente completo, ou um dia/edição aberto no Histórico. */
+  atual: Vista | null;
+  /** true quando o usuário abriu um dia antigo ou uma edição específica no Histórico. */
   modoLeitura: boolean;
-  abrirEdicao: (data: string | null) => void;
+  /** `null` = dia mais recente; uma data = aquele dia completo; uma chave (`data#tipo`) = só aquela edição. */
+  abrirEdicao: (selecao: string | null) => void;
   config: Config;
   salvarConfig: (c: Config) => Promise<void>;
   recarregar: () => Promise<void>;
@@ -33,9 +55,10 @@ export function EstadoProvider({ children }: { children: ReactNode }) {
     const lista: Edicao[] = [];
     for (const s of salvas) {
       const v = validarRadar(s.bruto);
-      if (v.ok) lista.push({ data: s.data, radar: v.radar, importadoEm: s.importadoEm });
+      if (v.ok)
+        lista.push({ chave: chaveEdicao(v.radar), data: v.radar.edicao.data, radar: v.radar, importadoEm: s.importadoEm });
     }
-    lista.sort((a, b) => b.data.localeCompare(a.data));
+    lista.sort((a, b) => b.data.localeCompare(a.data) || compararEdicoes(b.radar, a.radar));
     setEdicoes(lista);
     setConfig(await db.lerConfig());
   }, []);
@@ -52,20 +75,49 @@ export function EstadoProvider({ children }: { children: ReactNode }) {
     await db.salvarConfig(nova);
   }, []);
 
+  const dias = useMemo<Dia[]>(() => {
+    const m = new Map<string, Edicao[]>();
+    for (const e of edicoes) m.set(e.data, [...(m.get(e.data) ?? []), e]);
+    return [...m.entries()].map(([data, eds]) => {
+      const asc = [...eds].sort((a, b) => compararEdicoes(a.radar, b.radar));
+      return { data, edicoes: asc, radar: fundirDia(asc.map((e) => e.radar)) };
+    });
+  }, [edicoes]);
+
   const valor = useMemo<Estado>(() => {
-    const escolhida = selecionada ? edicoes.find((e) => e.data === selecionada) : undefined;
-    const atual = escolhida ?? edicoes[0] ?? null;
+    let atual: Vista | null = null;
+    const especifica = selecionada?.includes('#') ? edicoes.find((e) => e.chave === selecionada) : undefined;
+    if (especifica) {
+      atual = {
+        data: especifica.data,
+        radar: especifica.radar,
+        importadoEm: especifica.importadoEm,
+        chave: especifica.chave,
+        doDia: [especifica],
+      };
+    } else {
+      const dia = (selecionada ? dias.find((d) => d.data === selecionada) : undefined) ?? dias[0];
+      if (dia)
+        atual = {
+          data: dia.data,
+          radar: dia.radar,
+          importadoEm: dia.edicoes.at(-1)!.importadoEm,
+          chave: null,
+          doDia: dia.edicoes,
+        };
+    }
     return {
       carregando,
       edicoes,
+      dias,
       atual,
-      modoLeitura: !!escolhida && escolhida !== edicoes[0],
+      modoLeitura: !!atual && (atual.chave !== null || atual.data !== dias[0]?.data),
       abrirEdicao: setSelecionada,
       config,
       salvarConfig,
       recarregar,
     };
-  }, [carregando, edicoes, selecionada, config, salvarConfig, recarregar]);
+  }, [carregando, edicoes, dias, selecionada, config, salvarConfig, recarregar]);
 
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>;
 }
@@ -77,8 +129,8 @@ export function useEstado(): Estado {
 }
 
 /** Edição em exibição; só use em telas que aparecem quando já há dados. */
-export function useRadar(): { radar: Radar; edicoes: Edicao[]; config: Config } {
+export function useRadar(): { radar: Radar; edicoes: Edicao[]; config: Config; vista: Vista } {
   const { atual, edicoes, config } = useEstado();
   if (!atual) throw new Error('Sem edição carregada');
-  return { radar: atual.radar, edicoes, config };
+  return { radar: atual.radar, edicoes, config, vista: atual };
 }

@@ -6,7 +6,7 @@ import { dataCurta, diaMes, numero, numeroAuto, somaDias, valorComUnidade } from
 import { limitesCruzados } from '../lib/alertas';
 import { dadoAntigo } from '../lib/pregao';
 import { Grafico } from './Grafico';
-import { Estrelas, Leitura, Selo, Variacao } from './Basicos';
+import { Estrelas, Leitura, Selo, SeloOrigem, Variacao } from './Basicos';
 import { Modal } from './Modal';
 
 /** Abre o detalhe de um ativo; `aoFechar` é chamado quando o pop-up fecha (a fita usa para voltar a rodar). */
@@ -158,7 +158,7 @@ function Detalhe({ id, fechar }: { id: string; fechar: () => void }) {
             <dt>Data de referência</dt>
             <dd>
               {item.periodo ? `semana ${item.periodo}` : dataCurta(item.data_ref)}{' '}
-              {atual && dadoAntigo(item, atual.data) && <Selo tom="aviso">dado antigo</Selo>}
+              {atual && dadoAntigo(item, atual.data) && <Selo tom="aviso">dado antigo</Selo>} <SeloOrigem item={item} />
             </dd>
           </div>
           {resumo && (

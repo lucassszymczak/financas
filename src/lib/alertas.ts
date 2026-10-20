@@ -2,7 +2,8 @@ import type { Preco, Radar } from '../schema/radar';
 import type { Limite } from './config';
 import { diaMes, numeroAuto, valorComUnidade } from './formato';
 import { dadoAntigo } from './pregao';
-import { precosCurados, todosPrecos } from './precos';
+import { ehIntradiario, precosCurados, todosPrecos } from './precos';
+import { horaBR } from './edicoes';
 
 export type NivelAlerta = 'info' | 'atencao' | 'alerta' | 'perigo';
 
@@ -64,6 +65,12 @@ export const NOMES_NIVEL: Record<NivelAlerta, string> = {
   perigo: 'Perigo',
 };
 
+/** Referência do valor no texto do alerta: intradiário com hora ou data de fechamento. */
+function refValor(p: Preco): string {
+  if (ehIntradiario(p)) return `intradiário${p.hora_ref ? ` ${horaBR(p.hora_ref)}` : ''} de ${diaMes(p.data_ref)}`;
+  return `fechamento, ref. ${diaMes(p.data_ref)}`;
+}
+
 /** Todos os alertas de uma edição: limites de preço, clima e (em resumo) dados antigos. */
 export function calcularAlertas(r: Radar, limites: Limite[]): Alerta[] {
   const alertas: Alerta[] = [];
@@ -77,7 +84,7 @@ export function calcularAlertas(r: Radar, limites: Limite[]): Alerta[] {
         nivel: 'alerta',
         icone: l.tipo === 'acima' ? '📈' : '📉',
         titulo: `${p.nome} ${l.tipo === 'acima' ? 'acima de' : 'abaixo de'} ${numeroAuto(l.valor)}`,
-        texto: `Valor no arquivo: ${valorComUnidade(p.valor, p.unidade)} (ref. ${diaMes(p.data_ref)}).`,
+        texto: `Valor no arquivo: ${valorComUnidade(p.valor, p.unidade)} (${refValor(p)}).`,
         id: p.id,
       });
     }

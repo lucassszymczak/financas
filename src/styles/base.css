@@ -2309,6 +2309,13 @@ body.com-modal {
   align-self: flex-start;
   margin-top: 2px;
 }
+.etq-intra {
+  color: var(--info-texto);
+  background: var(--info-fundo);
+  padding: 0 0.3rem;
+  align-self: flex-start;
+  margin-top: 2px;
+}
 .la-spark {
   display: flex;
   justify-content: center;

@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { Destaque, Noticia } from '../schema/radar';
+import type { VersaoAnterior } from '../lib/noticias';
+import { horaBR } from '../lib/edicoes';
 import { diaMes, humanizar } from '../lib/formato';
 import { ListaFontes, Selo, type TomSelo } from './Basicos';
 import { Modal } from './Modal';
@@ -7,7 +9,11 @@ import { Modal } from './Modal';
 const TOM_IMPACTO: Record<string, TomSelo> = { positivo: 'positivo', negativo: 'negativo', misto: 'misto', neutro: 'neutro' };
 const ROTULO_CONFIANCA: Record<string, string> = { alta: 'alta', media: 'média', baixa: 'baixa' };
 
-type Props = { item: Destaque } | { item: Noticia; noticia: true };
+/** Extras da fusão do dia: selo ("Nova · 12h30", "Atualizada às 12h45") e versões anteriores. */
+type Extras = { selo?: ReactNode; anteriores?: VersaoAnterior[] };
+type Props = ({ item: Destaque } | { item: Noticia; noticia: true }) & Extras;
+
+const textoDe = (v: VersaoAnterior) => (v.tipo === 'noticia' ? v.item.resumo : v.item.o_que);
 
 /** Card de destaque ou notícia. Ao tocar, o detalhe abre num pop-up. */
 export function CardNoticia(props: Props) {
@@ -25,6 +31,7 @@ export function CardNoticia(props: Props) {
 
   const selosResumo = (
     <span className="selos">
+      {props.selo}
       {item.categoria && <Selo>{humanizar(item.categoria)}</Selo>}
       {item.impacto && <Selo tom={TOM_IMPACTO[item.impacto] ?? 'neutro'}>impacto {item.impacto}</Selo>}
       {data && <Selo>{diaMes(data)}</Selo>}
@@ -95,6 +102,16 @@ export function CardNoticia(props: Props) {
                 <ListaFontes fontes={item.fontes} />
               </div>
             )}
+            {props.anteriores?.map((v) => (
+              <details key={`${v.edicao}-${v.hora}`} className="versao-anterior">
+                <summary>Versão das {horaBR(v.hora)}</summary>
+                <p>
+                  <strong>{v.item.titulo}</strong>
+                </p>
+                <p>{textoDe(v)}</p>
+                {v.item.impacto && <p className="mudo pequeno">Impacto: {v.item.impacto}</p>}
+              </details>
+            ))}
           </div>
         </Modal>
       )}

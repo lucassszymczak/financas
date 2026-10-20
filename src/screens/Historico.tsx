@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useEstado } from '../state';
+import { useEstado, type Edicao } from '../state';
+import { horaBR, horaEdicao, rotuloTipo } from '../lib/edicoes';
 import { Secao, Vazio, IconeLixeira } from '../components/Basicos';
 import { useDialogo } from '../components/Dialogo';
 import { useCarregar } from '../components/Carregar';
@@ -31,7 +32,7 @@ export function normalizar(pontos: { x: string; y: number }[]): { x: string; y: 
 }
 
 export function Historico() {
-  const { edicoes, atual, abrirEdicao, recarregar } = useEstado();
+  const { edicoes, dias, atual, abrirEdicao, recarregar } = useEstado();
   const { confirmar } = useDialogo();
   const { aviso } = useCarregar();
   const radares = useMemo(() => edicoes.map((e) => e.radar), [edicoes]);
@@ -58,26 +59,31 @@ export function Historico() {
 
   const temGrafico = series.some((s) => s.pontos.length >= 2);
   const meses = useMemo(() => {
-    const m = new Map<string, typeof edicoes>();
-    for (const e of edicoes) {
-      const k = e.data.slice(0, 7);
-      m.set(k, [...(m.get(k) ?? []), e]);
+    const m = new Map<string, typeof dias>();
+    for (const d of dias) {
+      const k = d.data.slice(0, 7);
+      m.set(k, [...(m.get(k) ?? []), d]);
     }
     return [...m.entries()];
-  }, [edicoes]);
+  }, [dias]);
 
-  const apagar = async (data: string) => {
+  const apagar = async (e: Edicao) => {
+    const nome = `${dataCurta(e.data)} (${rotuloTipo(e.radar).toLowerCase()})`;
     const ok = await confirmar({
       titulo: 'Apagar edição',
-      texto: `Apagar a edição de ${dataCurta(data)} deste aparelho? Isso não pode ser desfeito (a não ser por um backup).`,
+      texto: `Apagar a edição de ${nome} deste aparelho? Isso não pode ser desfeito (a não ser por um backup).`,
       ok: 'Apagar',
       perigo: true,
     });
     if (!ok) return;
-    await apagarEdicao(data);
-    if (atual?.data === data) abrirEdicao(null);
+    await apagarEdicao(e.chave);
+    if (atual?.data === e.data) abrirEdicao(null);
     await recarregar();
-    aviso(`Edição de ${dataCurta(data)} apagada.`);
+    aviso(`Edição de ${nome} apagada.`);
+  };
+  const abrir = (selecao: string | null) => {
+    abrirEdicao(selecao);
+    irPara('hoje');
   };
 
   if (!edicoes.length) return <Vazio>Nenhuma edição salva.</Vazio>;
@@ -147,38 +153,77 @@ export function Historico() {
           <div key={mes} className="cartao">
             <h3 className="mes">{nomeMes(mes)}</h3>
             <ul className="lista-edicoes">
-              {lista.map((e) => (
-                <li key={e.data} className={atual?.data === e.data ? 'atual' : undefined}>
-                  <div className="edicao-info">
-                    <strong>
-                      {dataCurta(e.data)} <span className="mudo">({diaSemanaCurto(e.data)})</span>
-                    </strong>
-                    <span className="mudo pequeno">
-                      {e.radar.termometro?.tom ? `Tom: ${e.radar.termometro.tom} · ` : ''}importada em {dataHora(e.importadoEm)}
-                    </span>
-                  </div>
-                  <div className="botoes">
-                    <button
-                      type="button"
-                      className="btn btn-pequeno"
-                      onClick={() => {
-                        abrirEdicao(e.data === edicoes[0]?.data ? null : e.data);
-                        irPara('hoje');
-                      }}
-                    >
-                      Abrir
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-pequeno btn-icone"
-                      aria-label={`Apagar edição de ${dataCurta(e.data)}`}
-                      onClick={() => void apagar(e.data)}
-                    >
-                      <IconeLixeira />
-                    </button>
-                  </div>
-                </li>
-              ))}
+              {lista.map((d) => {
+                const maisRecente = d.data === dias[0]?.data;
+                const vendoDia = atual?.data === d.data && atual.chave === null;
+                return (
+                  <li key={d.data} className={atual?.data === d.data ? 'atual' : undefined}>
+                    <div className="edicao-info">
+                      <strong>
+                        {dataCurta(d.data)} <span className="mudo">({diaSemanaCurto(d.data)})</span>
+                      </strong>
+                      <span className="mudo pequeno">
+                        {d.radar.termometro?.tom ? `Tom: ${d.radar.termometro.tom} · ` : ''}
+                        {d.edicoes.map((e) => `${rotuloTipo(e.radar)} ${horaBR(horaEdicao(e.radar))}`).join(' · ')}
+                      </span>
+                    </div>
+                    <div className="botoes">
+                      {d.edicoes.length > 1 ? (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-pequeno"
+                            aria-pressed={vendoDia}
+                            onClick={() => abrir(maisRecente ? null : d.data)}
+                          >
+                            Dia completo
+                          </button>
+                          {d.edicoes.map((e) => (
+                            <span key={e.chave} className="edicao-botoes">
+                              <button
+                                type="button"
+                                className="btn btn-pequeno"
+                                aria-pressed={atual?.chave === e.chave}
+                                title={`Importada em ${dataHora(e.importadoEm)}`}
+                                onClick={() => abrir(e.chave)}
+                              >
+                                {rotuloTipo(e.radar)} {horaBR(horaEdicao(e.radar))}
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-pequeno btn-icone"
+                                aria-label={`Apagar edição de ${dataCurta(e.data)} (${rotuloTipo(e.radar).toLowerCase()})`}
+                                onClick={() => void apagar(e)}
+                              >
+                                <IconeLixeira />
+                              </button>
+                            </span>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-pequeno"
+                            title={`Importada em ${dataHora(d.edicoes[0]!.importadoEm)}`}
+                            onClick={() => abrir(maisRecente ? null : d.data)}
+                          >
+                            Abrir
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-pequeno btn-icone"
+                            aria-label={`Apagar edição de ${dataCurta(d.data)}`}
+                            onClick={() => void apagar(d.edicoes[0]!)}
+                          >
+                            <IconeLixeira />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}

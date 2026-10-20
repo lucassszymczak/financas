@@ -1,8 +1,25 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import { normalizarConfig, type Config } from './config';
+import { chaveMigrada, TIPO_MANHA } from './edicoes';
 
-/** Edição salva: o JSON original fica guardado inteiro (inclusive campos que esta versão do app ignora). */
-export type EdicaoSalva = { data: string; bruto: unknown; importadoEm: string };
+/**
+ * Edição salva: o JSON original fica guardado inteiro (inclusive campos que esta versão do app ignora).
+ * `chave` = `data#tipo` (ex.: `2026-10-21#manha`), para o dia poder ter manhã e meio-dia.
+ */
+export type EdicaoSalva = { chave: string; data: string; bruto: unknown; importadoEm: string };
+
+/** Chave de uma edição a partir do JSON bruto (sem validar): mesma regra de `chaveEdicao`. */
+export function chaveDoBruto(bruto: unknown, data: string): string {
+  const ed = (bruto as { edicao?: { tipo?: unknown; gerado_em?: unknown } } | null)?.edicao;
+  const tipo = typeof ed?.tipo === 'string' && ed.tipo.trim() ? ed.tipo.trim() : TIPO_MANHA;
+  const base = `${data}#${tipo}`;
+  return tipo === TIPO_MANHA || tipo === 'atualizacao_meio_dia' ? base : `${base}@${typeof ed?.gerado_em === 'string' ? ed.gerado_em : ''}`;
+}
+
+/** Edição de um backup ou pacote antigo (sem `chave`) no formato novo. */
+export function normalizarSalva(e: { chave?: string; data: string; bruto: unknown; importadoEm: string }): EdicaoSalva {
+  return { chave: e.chave ?? chaveDoBruto(e.bruto, e.data), data: e.data, bruto: e.bruto, importadoEm: e.importadoEm };
+}
 
 interface RadarDB extends DBSchema {
   edicoes: { key: string; value: EdicaoSalva };
@@ -11,7 +28,7 @@ interface RadarDB extends DBSchema {
 
 let conexao: Promise<IDBPDatabase<RadarDB>> | null = null;
 
-/** Datas de edições apagadas e quando (para a sincronização não trazê-las de volta). */
+/** Chaves de edições apagadas e quando (para a sincronização não trazê-las de volta). */
 export type Apagadas = Record<string, string>;
 
 // Avisos de mudança local (a sincronização escuta para enviar as alterações).
@@ -24,11 +41,30 @@ const avisar = (silencioso?: boolean) => {
   if (!silencioso) ouvintes.forEach((f) => f());
 };
 
+/** Apagadas antigas eram por data: viram a edição da manhã. */
+export function migrarApagadas(a: Apagadas): Apagadas {
+  const r: Apagadas = {};
+  for (const [k, t] of Object.entries(a)) r[chaveMigrada(k)] = t;
+  return r;
+}
+
 function db() {
-  conexao ??= openDB<RadarDB>('radar-investimentos', 1, {
-    upgrade(d) {
-      d.createObjectStore('edicoes', { keyPath: 'data' });
-      d.createObjectStore('config');
+  conexao ??= openDB<RadarDB>('radar-investimentos', 2, {
+    async upgrade(d, versaoAntiga, _nova, tx) {
+      if (versaoAntiga < 1) {
+        d.createObjectStore('edicoes', { keyPath: 'chave' });
+        d.createObjectStore('config');
+        return;
+      }
+      if (versaoAntiga < 2) {
+        // v1 guardava por data. Cada edição antiga vira `data#manha`, sem perder nada.
+        const antigas = (await tx.objectStore('edicoes').getAll()) as unknown as Omit<EdicaoSalva, 'chave'>[];
+        const ap = await tx.objectStore('config').get('apagadas');
+        d.deleteObjectStore('edicoes');
+        const nova = d.createObjectStore('edicoes', { keyPath: 'chave' });
+        for (const e of antigas) await nova.put(normalizarSalva(e));
+        if (ap && typeof ap === 'object') await tx.objectStore('config').put(migrarApagadas(ap as Apagadas), 'apagadas');
+      }
     },
   });
   return conexao;
@@ -38,25 +74,25 @@ export async function listarEdicoes(): Promise<EdicaoSalva[]> {
   return (await db()).getAll('edicoes');
 }
 
-export async function existeEdicao(data: string): Promise<boolean> {
-  return (await (await db()).getKey('edicoes', data)) !== undefined;
+export async function existeEdicao(chave: string): Promise<boolean> {
+  return (await (await db()).getKey('edicoes', chave)) !== undefined;
 }
 
 export async function salvarEdicao(e: EdicaoSalva, silencioso = false): Promise<void> {
   const d = await db();
   await d.put('edicoes', e);
   const ap = await lerApagadas();
-  if (ap[e.data] && ap[e.data]! < e.importadoEm) {
-    delete ap[e.data];
+  if (ap[e.chave] && ap[e.chave]! < e.importadoEm) {
+    delete ap[e.chave];
     await d.put('config', ap, 'apagadas');
   }
   avisar(silencioso);
 }
 
-export async function apagarEdicao(data: string, silencioso = false): Promise<void> {
+export async function apagarEdicao(chave: string, silencioso = false): Promise<void> {
   const d = await db();
-  await d.delete('edicoes', data);
-  if (!silencioso) await marcarApagadas([data]);
+  await d.delete('edicoes', chave);
+  if (!silencioso) await marcarApagadas([chave]);
   avisar(silencioso);
 }
 
@@ -70,7 +106,7 @@ export async function apagarTudo(): Promise<void> {
 
 export async function lerApagadas(): Promise<Apagadas> {
   const v = await (await db()).get('config', 'apagadas');
-  return v && typeof v === 'object' ? { ...(v as Apagadas) } : {};
+  return v && typeof v === 'object' ? migrarApagadas(v as Apagadas) : {};
 }
 
 export async function salvarApagadas(a: Apagadas): Promise<void> {

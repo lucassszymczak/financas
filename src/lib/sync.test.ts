@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CONFIG_PADRAO } from './config';
 import { clienteGist, lerPacote, mesclar, montarPacote, type Lado } from './sync';
 
-const ed = (data: string, importadoEm: string) => ({ data, importadoEm, bruto: { data } });
+const ed = (data: string, importadoEm: string) => ({ chave: `${data}#manha`, data, importadoEm, bruto: { data } });
 const lado = (p: Partial<Lado> = {}): Lado => ({ config: CONFIG_PADRAO, edicoes: [], apagadas: {}, ...p });
 
 describe('mescla da sincronização', () => {
@@ -25,18 +25,18 @@ describe('mescla da sincronização', () => {
 
   it('edição apagada em um aparelho some do outro', () => {
     const r = mesclar(
-      lado({ edicoes: [], apagadas: { '2026-10-16': '2026-10-17T09:00' } }),
+      lado({ edicoes: [], apagadas: { '2026-10-16#manha': '2026-10-17T09:00' } }),
       lado({ edicoes: [ed('2026-10-16', '2026-10-16T08:00')] }),
     );
     expect(r.resultado.edicoes).toEqual([]);
-    expect(r.resultado.apagadas['2026-10-16']).toBe('2026-10-17T09:00');
+    expect(r.resultado.apagadas['2026-10-16#manha']).toBe('2026-10-17T09:00');
     expect(r.mudouRemoto).toBe(true);
   });
 
   it('reimportar depois de apagar traz a edição de volta', () => {
     const r = mesclar(
       lado({ edicoes: [ed('2026-10-16', '2026-10-18T09:00')] }),
-      lado({ apagadas: { '2026-10-16': '2026-10-17T09:00' } }),
+      lado({ apagadas: { '2026-10-16#manha': '2026-10-17T09:00' } }),
     );
     expect(r.resultado.edicoes).toHaveLength(1);
     expect(r.resultado.apagadas).toEqual({});
@@ -57,7 +57,7 @@ describe('mescla da sincronização', () => {
   });
 
   it('pacote vai e volta', () => {
-    const l = lado({ edicoes: [ed('2026-10-16', 'T1')], apagadas: { '2026-10-01': 'T0' } });
+    const l = lado({ edicoes: [ed('2026-10-16', 'T1')], apagadas: { '2026-10-01#manha': 'T0' } });
     expect(lerPacote(JSON.stringify(montarPacote(l)))).toEqual(l);
     expect(() => lerPacote('{"x":1}')).toThrow(/corrompido/);
   });
