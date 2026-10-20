@@ -39,7 +39,7 @@ describe('série histórica', () => {
     outra.edicao.data = '2026-10-19';
     outra.cotacoes[0]!.data_ref = '2026-10-16';
     outra.cotacoes[0]!.valor = 205000;
-    expect(serie([outra, radar], 'IBOV')).toEqual([
+    expect(serie([outra, radar], 'IBOV').map(({ x, y }) => ({ x, y }))).toEqual([
       { x: '2026-10-15', y: 204324.26 },
       { x: '2026-10-16', y: 205000 },
     ]);

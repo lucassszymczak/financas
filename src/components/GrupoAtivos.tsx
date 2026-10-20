@@ -189,7 +189,7 @@ export function GrupoAtivos({
                         </span>
                       </span>
                       <span className="la-spark">
-                        {pontos.length >= 2 && <Sparkline pontos={pontos} largura={56} altura={22} />}
+                        {pontos.length >= 2 && <Sparkline pontos={pontos} largura={56} altura={22} unidade={p.unidade} />}
                       </span>
                       <span className="la-valor">
                         <Preco p={p} />

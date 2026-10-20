@@ -36,7 +36,7 @@ export function KpiCard({
       <ValorKpi valor={item.valor} unidade={item.unidade} />
       <span className="kpi-linha">
         <Variacao item={item} grande />
-        <Sparkline pontos={serie} />
+        <Sparkline pontos={serie} unidade={item.unidade} />
       </span>
       <span className="kpi-rodape">
         <span className="mudo">{item.periodo ? `semana ${item.periodo}` : `ref. ${diaMes(item.data_ref)}`}</span>

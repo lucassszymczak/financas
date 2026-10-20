@@ -38,11 +38,17 @@ export function Historico() {
   const radares = useMemo(() => edicoes.map((e) => e.radar), [edicoes]);
 
   // Ativos disponíveis: todos os ids com valor numérico em alguma edição.
-  const ativos = useMemo(() => {
-    const m = new Map<string, string>();
-    for (const r of radares) for (const p of todosPrecos(r)) if (p.valor !== null && p.valor !== undefined) m.set(p.id, p.nome);
-    return [...m.entries()].sort((a, b) => a[1].localeCompare(b[1], 'pt-BR'));
+  const infoAtivos = useMemo(() => {
+    const m = new Map<string, { nome: string; grupo?: string; unidade?: string | null }>();
+    for (const r of radares)
+      for (const p of todosPrecos(r))
+        if (p.valor !== null && p.valor !== undefined) m.set(p.id, { nome: p.nome, grupo: p.grupo ?? p.regiao, unidade: p.unidade });
+    return m;
   }, [radares]);
+  const ativos = useMemo(
+    () => [...infoAtivos.entries()].map(([id, i]) => [id, i.nome] as const).sort((a, b) => a[1].localeCompare(b[1], 'pt-BR')),
+    [infoAtivos],
+  );
 
   const [escolhidos, setEscolhidos] = useState<string[]>(() => ['IBOV', 'USDBRL'].filter((id) => ativos.some(([a]) => a === id)));
   const [periodo, setPeriodo] = useState(30);
@@ -53,9 +59,17 @@ export function Historico() {
     const inicio = periodo && ultima ? somaDias(ultima, -periodo) : '';
     return escolhidos.map((id) => {
       const pts = serie(radares, id).filter((p) => p.x >= inicio);
-      return { nome: ativos.find(([a]) => a === id)?.[1] ?? id, pontos: modo === 'normalizado' ? normalizar(pts) : pts };
+      const info = infoAtivos.get(id);
+      return {
+        id,
+        grupo: info?.grupo,
+        unidade: info?.unidade,
+        nome: info?.nome ?? id,
+        pontos: modo === 'normalizado' ? normalizar(pts) : pts,
+        reais: pts,
+      };
     });
-  }, [escolhidos, periodo, modo, radares, edicoes, ativos]);
+  }, [escolhidos, periodo, modo, radares, edicoes, infoAtivos]);
 
   const temGrafico = series.some((s) => s.pontos.length >= 2);
   const meses = useMemo(() => {
@@ -134,7 +148,12 @@ export function Historico() {
             </div>
           </div>
           {temGrafico ? (
-            <Grafico series={series} rotulo="Comparação de ativos" formatar={modo === 'normalizado' ? umaCasa : undefined} />
+            <Grafico
+              series={series}
+              rotulo="Comparação de ativos"
+              formatar={modo === 'normalizado' ? umaCasa : undefined}
+              normalizado={modo === 'normalizado'}
+            />
           ) : (
             <Vazio>
               {escolhidos.length
@@ -167,7 +186,7 @@ export function Historico() {
                         {d.edicoes.map((e) => `${rotuloTipo(e.radar)} ${horaBR(horaEdicao(e.radar))}`).join(' · ')}
                       </span>
                     </div>
-                    <div className="botoes">
+                    <div className={`botoes${d.edicoes.length > 1 ? ' botoes-multi' : ''}`}>
                       {d.edicoes.length > 1 ? (
                         <>
                           <button

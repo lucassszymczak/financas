@@ -133,7 +133,8 @@ export function leituraSecao(r: Radar, ...chaves: string[]): string | null {
   return null;
 }
 
-export type Ponto = { x: string; y: number };
+/** Ponto de série: data, valor e, quando o arquivo trouxer, a variação do dia (vp em %, vb em pb). */
+export type Ponto = { x: string; y: number; vp?: number; vb?: number };
 
 /**
  * Série histórica de um id a partir das edições salvas (ordenadas ou não).
@@ -142,11 +143,25 @@ export type Ponto = { x: string; y: number };
  */
 export function serie(edicoes: Radar[], id: string): Ponto[] {
   const ordenadas = [...edicoes].sort((a, b) => a.edicao.data.localeCompare(b.edicao.data) || compararEdicoes(a, b));
-  const porData = new Map<string, number>();
+  const porData = new Map<string, Ponto>();
   for (const r of ordenadas) {
     const p = mapaPrecos(r).get(id);
     if (!p || p.valor === null || p.valor === undefined || ehIntradiario(p) || p.herdado) continue;
-    porData.set(p.data_ref ?? r.edicao.data, p.valor);
+    const x = p.data_ref ?? r.edicao.data;
+    const pt: Ponto = { x, y: p.valor };
+    if (typeof p.variacao_pct === 'number') pt.vp = p.variacao_pct;
+    if (typeof p.variacao_pb === 'number') pt.vb = p.variacao_pb;
+    porData.set(x, pt);
   }
-  return [...porData.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([x, y]) => ({ x, y }));
+  return [...porData.values()].sort((a, b) => a.x.localeCompare(b.x));
+}
+
+/** Valor intradiário do item na edição aberta (fica fora do histórico; o gráfico mostra à parte, tracejado). */
+export function pontoIntradiario(r: Radar, id: string): (Ponto & { hora: string | null }) | null {
+  const p = mapaPrecos(r).get(id);
+  if (!p || p.valor === null || p.valor === undefined || !ehIntradiario(p) || p.herdado) return null;
+  const pt: Ponto & { hora: string | null } = { x: p.data_ref ?? r.edicao.data, y: p.valor, hora: p.hora_ref ?? null };
+  if (typeof p.variacao_pct === 'number') pt.vp = p.variacao_pct;
+  if (typeof p.variacao_pb === 'number') pt.vb = p.variacao_pb;
+  return pt;
 }

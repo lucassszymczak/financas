@@ -2880,3 +2880,187 @@ td > .ativo-icone {
 .fita-item .ativo-icone {
   box-shadow: none;
 }
+
+/* Dica dos gráficos (uPlot + conteúdo próprio) */
+.grafico-caixa {
+  position: relative;
+}
+.grafico:focus-visible {
+  outline: 2px solid var(--foco, var(--destaque));
+  outline-offset: 2px;
+}
+.grafico .u-cursor-x {
+  border-right: 1px dashed var(--texto-mudo);
+}
+.dica-grafico {
+  position: absolute;
+  top: 4px;
+  z-index: 5;
+  min-width: 170px;
+  max-width: min(320px, 90%);
+  padding: 8px 10px;
+  background: var(--superficie);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.18);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  pointer-events: none;
+}
+.dica-dir {
+  transform: translateX(14px);
+}
+.dica-esq {
+  transform: translateX(calc(-100% - 14px));
+}
+.dica-titulo {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--texto-mudo);
+}
+.dica-linha {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  column-gap: 8px;
+  align-items: baseline;
+}
+.dica-linha + .dica-linha {
+  margin-top: 4px;
+}
+.dica-linha:not(:has(.dica-cor)) {
+  grid-template-columns: auto 1fr;
+}
+.dica-cor {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  align-self: center;
+}
+.dica-nome {
+  grid-column: 2 / -1;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dica-linha:has(.dica-cor) .dica-valor {
+  grid-column: 2;
+}
+.dica-valor {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.dica-var {
+  text-align: right;
+  white-space: nowrap;
+}
+.dica-var.var-alta {
+  color: var(--alta);
+}
+.dica-var.var-baixa {
+  color: var(--baixa);
+}
+.dica-var.var-estavel,
+.dica-calc,
+.dica-extra {
+  color: var(--texto-mudo);
+}
+.dica-extra {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+}
+.dica-linha:has(.dica-cor) .dica-extra {
+  grid-column: 2 / -1;
+}
+.grafico-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+}
+.grafico-legenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+@media (max-width: 600px), (pointer: coarse) {
+  /* No celular a dica fica presa no topo do gráfico, ocupando a largura. */
+  .dica-grafico {
+    left: 0 !important;
+    right: 0;
+    top: 0;
+    max-width: none;
+    transform: none;
+  }
+}
+.spark-guia {
+  stroke: var(--texto-mudo);
+}
+.spark .spark-sel {
+  fill: var(--superficie);
+  stroke: var(--texto);
+  stroke-width: 1.5;
+}
+.dica-spark {
+  position: fixed;
+  z-index: 50;
+  transform: translate(-50%, calc(-100% - 6px));
+  padding: 3px 8px;
+  background: var(--superficie);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Várias edições por dia */
+.atualizado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 6px 0;
+  font-size: var(--t-xs, 0.78rem);
+}
+.ver-manha summary {
+  cursor: pointer;
+  color: var(--link, var(--destaque));
+  text-decoration: underline;
+}
+.ver-manha[open] {
+  flex-basis: 100%;
+  padding: 8px 10px;
+  border-left: 3px solid var(--borda);
+  color: var(--texto-mudo);
+}
+.filtro-noticias {
+  margin: 0 0 12px;
+  flex-wrap: wrap;
+}
+.versao-anterior {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--borda);
+}
+.versao-anterior summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.lista-edicoes .botoes.botoes-multi {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.edicao-botoes {
+  display: inline-flex;
+  gap: 4px;
+}
+.limitacoes h4 {
+  margin: 10px 0 4px;
+  font-size: 0.85rem;
+}
