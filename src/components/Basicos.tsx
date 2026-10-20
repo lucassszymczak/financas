@@ -72,13 +72,7 @@ export function ListaFontes({ fontes }: { fontes: Fonte[] }) {
 }
 
 /** Selo "dado de DD/MM" quando a data de referência é anterior ao último pregão esperado. */
-export function SeloAntigo({
-  item,
-  edicaoData,
-}: {
-  item: Pick<Preco, 'data_ref' | 'hora_ref' | 'periodo'>;
-  edicaoData: string;
-}) {
+export function SeloAntigo({ item, edicaoData }: { item: Pick<Preco, 'data_ref' | 'hora_ref' | 'periodo'>; edicaoData: string }) {
   if (!dadoAntigo(item, edicaoData)) return null;
   return (
     <Selo tom="aviso" title="Data de referência anterior ao último pregão esperado">
@@ -104,7 +98,9 @@ export function SeloOrigem({ item }: { item: Pick<Preco, 'data_ref' | 'hora_ref'
   return (
     <Selo
       tom={item.herdado ? 'aviso' : 'info'}
-      title={item.herdado ? 'A edição mais recente veio sem valor; mostrando o último valor verificado' : 'Valor do meio do pregão'}
+      title={
+        item.herdado ? 'A edição mais recente veio sem valor; mostrando o último valor verificado' : 'Valor do meio do pregão'
+      }
     >
       {t}
     </Selo>

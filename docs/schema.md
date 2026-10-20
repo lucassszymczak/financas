@@ -9,7 +9,7 @@ Este documento é o contrato entre a rotina que gera o Radar e o app. O app vali
 | Regra | Detalhe |
 |---|---|
 | Codificação | UTF-8, JSON puro (sem comentários, sem vírgula sobrando no fim). |
-| Nome do arquivo | `radar_AAAA-MM-DD.json` (recomendado). O app usa `edicao.data`, não o nome, como chave. |
+| Nome do arquivo | `radar_AAAA-MM-DD.json` (manhã) e `radar_AAAA-MM-DD_1230.json` (atualização do meio-dia), recomendados. O app usa `edicao.data` + `edicao.tipo`, não o nome, como chave. |
 | Datas | Texto `AAAA-MM-DD` (ex.: `"2026-10-16"`). |
 | Horas | Texto `HH:MM`, 24 horas (ex.: `"09:00"`). |
 | Data e hora completas | ISO 8601 com fuso (ex.: `"2026-10-16T07:21:00-03:00"`). |
@@ -17,7 +17,7 @@ Este documento é o contrato entre a rotina que gera o Radar e o app. O app vali
 | `null` | Sempre aceito em campos marcados como "pode ser null". Significa **não verificado**: o app mostra "—" e não inventa valor. |
 | Campos desconhecidos | São ignorados. A rotina pode mandar campos extras sem quebrar o app; o JSON original fica guardado no histórico. |
 | Listas ausentes | Viram lista vazia. Seções opcionais ausentes simplesmente não aparecem. |
-| Mesma data | Importar outro arquivo com a mesma `edicao.data` faz o app perguntar se substitui. |
+| Mesma edição | A chave de cada edição é `data#tipo` (ex.: `2026-10-21#manha`). Importar de novo a **mesma data e o mesmo tipo** faz o app perguntar se substitui. A edição do meio-dia **nunca** substitui nem apaga a da manhã: as duas ficam salvas e o app junta as duas no "dia completo" (ver [Várias edições no mesmo dia](#varias-edicoes-no-mesmo-dia)). |
 
 Legenda das tabelas: **Obrig.** = obrigatório. "Pode ser null" = aceita `null`. Campos opcionais podem ser omitidos.
 
@@ -47,7 +47,8 @@ Legenda das tabelas: **Obrig.** = obrigatório. "Pode ser null" = aceita `null`.
 |---|---|---|---|
 | `data` | data | **sim** | `"2026-10-16"`: chave da edição no histórico e base da regra de "dado antigo". |
 | `dia_semana` | texto | não | `"sexta"` |
-| `gerado_em` | data e hora | não | `"2026-10-16T07:21:00-03:00"` |
+| `tipo` | texto | não | `"manha"` (padrão quando falta) ou `"atualizacao_meio_dia"`. Outros valores são aceitos e viram edições separadas (a chave inclui o `gerado_em`). |
+| `gerado_em` | data e hora | não | `"2026-10-16T07:21:00-03:00"`. Ordena as edições do dia e dá a hora mostrada nos selos ("atualizado às 12h30"). |
 | `referencia_mercado` | texto | não | `"Fechamento de 15/10; Ásia e Brent da madrugada de 16/10"` |
 | `titulo` | texto | não | `"Radar Diário de Investimentos · 16/10 (sexta)"` |
 
@@ -76,6 +77,9 @@ Cada item vira um card expansível. Visível: `titulo` + `o_que`. Ao expandir: `
 | `horizonte` | texto | não | `"dias"`, `"semanas"`, `"meses"` |
 | `confianca` | texto | não | `"alta"`, `"media"`, `"baixa"` |
 | `fontes` | lista de [fonte](#fonte) | não | |
+| `hora` | hora | não, pode ser null | `"12:05"`: hora da notícia. Sem ela, o app usa a hora do `gerado_em` da edição (em Brasília) e, sem isso, 07h15. |
+| `atualiza_id` | texto | não, pode ser null | Numa edição posterior, o `id` do item da manhã que este atualiza. Normalmente o item mantém o mesmo `id` e traz também `atualiza_id`. |
+| `atualizado_em` | hora | não, pode ser null | `"12:20"`: hora da atualização, mostrada no selo "Atualizada às 12h20". |
 
 ## `noticias`
 
@@ -91,6 +95,7 @@ Mesmo card dos destaques, com outros nomes de campo.
 | `resumo` | texto | **sim** | Texto visível do card. |
 | `por_que_importa` | texto | não, pode ser null | Aparece ao expandir. |
 | `ativos_afetados`, `impacto`, `horizonte`, `confianca`, `fontes` | | não | Iguais aos de `destaques`. |
+| `hora`, `atualiza_id`, `atualizado_em` | | não | Iguais aos de `destaques`. |
 
 ### `fonte`
 
@@ -125,6 +130,8 @@ Cada item é um ativo. Aparece na fita de cotações do topo, nas tabelas do Mer
 | `variacao_pct` | número | não, pode ser null | Variação em % no dia (`-1.06`). |
 | `variacao_pb` | número | não, pode ser null | Variação em pontos-base, **para juros** (`25`). Se vier, o app mostra em pb e ignora `variacao_pct`. |
 | `data_ref` | data | não, pode ser null | Data do preço (`"2026-10-15"`). Base da regra de "dado antigo". |
+| `hora_ref` | hora | não, pode ser null | `"12:24"`: **valor intradiário** (do meio do pregão). O app mostra o selo "intradiário · 12h24" e **não** usa o valor no histórico nem nos gráficos de linha (só fechamentos). |
+| `observacao` | texto | não, pode ser null | `"intradiário"` também marca o valor como intradiário (mesmo sem `hora_ref`). |
 | `periodo` | texto | não | Para dado semanal (`"05 a 09/10"`). Itens com período nunca são marcados como antigos. |
 | `fonte` | texto | não, pode ser null | |
 | `url` | texto | não, pode ser null | |
@@ -176,6 +183,7 @@ Se um `id` aparecer em `cotacoes`/`agro` **e** em `cotacoes_amplas`, vale o do R
 | Campo | Tipo | Obrig. | Observação |
 |---|---|---|---|
 | `data_ref` | data | não, pode ser null | Data padrão dos itens (normalmente o último pregão). |
+| `hora_ref` | hora | não, pode ser null | Hora padrão dos itens: se vier, todo o bloco é intradiário. |
 | `fonte`, `url` | texto | não, pode ser null | Fonte padrão dos itens. |
 | `nota_fonte` | número 0 a 5 | não, pode ser null | Nota padrão. |
 | `itens` | lista | não | Mesmos campos de [cotacoes](#cotacoes); `nome` pode faltar (o app usa o `id`). Cada item pode sobrescrever `data_ref`, `fonte`, `url` e `nota_fonte`. |
@@ -265,9 +273,38 @@ Viram os ativos `SELIC`, `CDI` e `IPCA12M` no Mercado e pré-preenchem as calcul
 | `relevancia` | texto | não, pode ser null | `"alta"`, `"media"`, `"baixa"` |
 | `fonte`, `url` | texto | não, pode ser null | |
 
+## Várias edições no mesmo dia
+
+Cada dia útil pode ter a edição da **manhã** (07h15, `radar_AAAA-MM-DD.json`) e a **atualização do meio-dia** (12h30, `radar_AAAA-MM-DD_1230.json`, com `edicao.tipo: "atualizacao_meio_dia"`). As duas ficam salvas. A tela Hoje mostra o **dia completo**, que junta as edições em ordem de `gerado_em`. No Histórico dá para abrir cada edição sozinha, sem fusão.
+
+**Notícias e destaques.** O app monta uma lista única com os itens de todas as edições do dia. Um item de uma edição posterior é **a mesma notícia** que um item anterior quando vale a primeira regra abaixo, em ordem de prioridade:
+
+1. o `atualiza_id` de um é o `id` do outro;
+2. os dois têm o mesmo `id`;
+3. têm alguma URL em comum nas `fontes`. A URL é comparada normalizada: minúsculas, sem `http(s)://`, sem `www.`, sem `?…` nem `#…` e sem barra final;
+4. os títulos são muito parecidos **e** a `categoria` é a mesma. A semelhança é o índice de Jaccard ≥ 0,6 sobre as palavras do título, comparadas em minúsculas, sem acento, sem palavras vazias do português (de, a, o, para…) e mantendo os números. O limiar fica na constante `LIMIAR_TITULO` em `src/lib/noticias.ts`.
+
+Quando é a mesma notícia:
+
+- o app mostra a versão mais recente;
+- junta as fontes sem repetir URL;
+- guarda a hora da primeira aparição;
+- põe o selo **"Atualizada às HHhMM"**, com a hora de `atualizado_em` ou, sem ela, a hora da edição;
+- deixa as versões anteriores num "Versão das HHhMM" recolhido.
+
+Notícias que só aparecem numa edição posterior recebem **"Nova · HHhMM"**.
+
+A hora de cada item é `hora`; sem ela, a do `gerado_em` da edição; sem ele, 07h15. A ordem é destaques primeiro e, dentro de cada grupo, os mais recentes no topo. Se o mesmo assunto mudou de destaque para notícia (ou o contrário), vale a classificação da edição mais recente.
+
+**Textos.** Termômetro, Leitura do dia e leituras de seção mostram o texto da edição mais recente que trouxer cada um, com "atualizado às HHhMM" e um link "ver da manhã". As `limitacoes` aparecem separadas por edição.
+
+**Cotações.** A fusão é por `id`, campo a campo; vale a edição mais recente. Um `null` na edição nova **não apaga** um valor verificado de uma edição anterior: o app mantém o valor antigo e mostra de quando ele é ("valor de 20/10, manhã 07h15"). Itens que só existem na edição da manhã continuam aparecendo. O histórico e os gráficos usam **só fechamentos** (itens sem `hora_ref`). O valor intradiário de hoje aparece no gráfico do ativo como um ponto à parte, ligado por uma linha tracejada.
+
+Arquivos antigos, sem nenhum desses campos, continuam funcionando: viram a edição da manhã.
+
 ## Regra de "dado antigo"
 
-O último pregão esperado é o **dia útil anterior** a `edicao.data` (segunda olha sexta; feriados não são considerados). Uma cotação ou item agro com `data_ref` **anterior** a esse dia recebe o selo "dado de DD/MM". Itens com `periodo` ou sem `data_ref` não são marcados.
+O último pregão esperado é o **dia útil anterior** a `edicao.data` (segunda olha sexta; feriados não são considerados). Uma cotação ou item agro com `data_ref` **anterior** a esse dia recebe o selo "dado de DD/MM". Itens com `periodo` ou sem `data_ref` não são marcados. Um valor **intradiário** (com `hora_ref`) só vale no próprio dia: se o `data_ref` for anterior a `edicao.data`, ele é marcado como antigo.
 
 ## Erros de validação
 

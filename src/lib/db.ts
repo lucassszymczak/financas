@@ -13,7 +13,9 @@ export function chaveDoBruto(bruto: unknown, data: string): string {
   const ed = (bruto as { edicao?: { tipo?: unknown; gerado_em?: unknown } } | null)?.edicao;
   const tipo = typeof ed?.tipo === 'string' && ed.tipo.trim() ? ed.tipo.trim() : TIPO_MANHA;
   const base = `${data}#${tipo}`;
-  return tipo === TIPO_MANHA || tipo === 'atualizacao_meio_dia' ? base : `${base}@${typeof ed?.gerado_em === 'string' ? ed.gerado_em : ''}`;
+  return tipo === TIPO_MANHA || tipo === 'atualizacao_meio_dia'
+    ? base
+    : `${base}@${typeof ed?.gerado_em === 'string' ? ed.gerado_em : ''}`;
 }
 
 /** Edição de um backup ou pacote antigo (sem `chave`) no formato novo. */

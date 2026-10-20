@@ -30,11 +30,13 @@ Instalado, ele abre em tela cheia e funciona offline com os dados já carregados
 
 ## 3. Carregar o Radar do dia
 
-1. Salve o arquivo `radar_AAAA-MM-DD.json` que chega pela manhã (no celular, em Arquivos/Downloads).
+1. Salve o arquivo `radar_AAAA-MM-DD.json` que chega pela manhã e, se houver, o `radar_AAAA-MM-DD_1230.json` da atualização do meio-dia (no celular, em Arquivos/Downloads).
 2. No app, toque em **📥** (no topo, ao lado do botão de tema; também em **Mais**) e escolha o arquivo. Dá para escolher vários de uma vez.
 3. No computador, também dá para **arrastar o arquivo** para a janela.
 
-O app valida o arquivo antes de salvar. Se algo estiver errado, ele mostra qual campo tem problema (por exemplo, `cotacoes[3].valor: esperado número, veio texto`) e não salva nada daquele arquivo. Se já existir uma edição com a mesma data, o app pergunta se você quer substituir.
+O app valida o arquivo antes de salvar. Se algo estiver errado, ele mostra qual campo tem problema (por exemplo, `cotacoes[3].valor: esperado número, veio texto`) e não salva nada daquele arquivo. Se já existir uma edição com a mesma data **e o mesmo tipo** (manhã ou meio-dia), o app pergunta se você quer substituir. A atualização do meio-dia nunca apaga a da manhã: as duas ficam salvas e a tela Hoje junta as duas (notícias novas e atualizadas com selo, cotações intradiárias com a hora). A regra completa está em [docs/schema.md](docs/schema.md#varias-edicoes-no-mesmo-dia).
+
+**Para testar com um par de exemplo:** em `public/exemplos/` há `radar_2026-10-21.json` (manhã) e `radar_2026-10-21_1230.json` (meio-dia), fictícios. Carregue os dois (em qualquer ordem). Hoje mostra a notícia da Conab com "Atualizada às 12h20", uma notícia "Nova · 12h05", o dólar com "intradiário · 12h24" e o Brent com o valor da manhã (a edição do meio-dia veio sem ele). No Histórico, o dia 21/10 aparece com **Dia completo**, **Manhã 07h15** e **Meio-dia 12h30**.
 
 Na primeira abertura, sem dados, o botão **👀 Ver exemplo** carrega a edição de 16/10/2026 para você conhecer o app. Ela pode ser apagada depois em **Histórico**.
 
@@ -43,7 +45,7 @@ Na primeira abertura, sem dados, o botão **👀 Ver exemplo** carrega a ediçã
 O navegador pode apagar dados de sites em algumas situações (falta de espaço, limpeza de dados, iPhone sem usar o site por muito tempo). Por isso:
 
 - **Configurações → Backup → Exportar backup** gera um único arquivo `radar-backup_AAAA-MM-DD.json` com todo o histórico e as configurações. Guarde-o no iCloud, Google Drive ou e-mail.
-- **Importar backup** restaura esse arquivo. Edições com a mesma data são substituídas e as outras são mantidas.
+- **Importar backup** restaura esse arquivo. Edições com a mesma data e o mesmo tipo são substituídas e as outras são mantidas. Backups antigos (de antes das edições do meio-dia) continuam sendo aceitos.
 - Se aparecer o botão **Pedir armazenamento persistente**, toque nele. Instalar o app (PWA) também ajuda a proteger os dados.
 
 ## 5. Sincronizar celular e computador
@@ -97,6 +99,24 @@ No alto fica uma barra escura com o conteúdo centralizado (até 1280 px) e o fu
 
 No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra do menu fica fixa; taxas e fita sobem junto com a página.
 
+### Logos e bandeiras
+
+Ao lado de cada ativo (fita, KPIs, tabelas, busca, watchlist e detalhe) aparece um ícone de 20 a 24 px, sempre de arquivos do próprio app (funciona sem internet):
+
+- **Ações, FIIs, ETFs e BDRs:** o logo em `public/logos/<RAIZ>.svg|png|webp`, em que RAIZ são as 4 primeiras letras do código (PETR3 e PETR4 → `PETR.svg`). Veja [public/logos/README.md](public/logos/README.md).
+- **Índices, moedas e juros de fora:** a bandeira do país (pacote `flag-icons`, MIT, empacotado no build). O mapa id → país fica em `src/data/paises.ts`. Pares contra o real mostram a moeda estrangeira (USDBRL → EUA).
+- **Índices B3, curva DI, Tesouro e taxas:** bandeira do Brasil.
+- **Commodities e agro:** ícone do produto (🛢️ 🥇 ⛏️ 🫘 🌽 🌾 🐂 ☕ 🍬 ⛽).
+- **Sem imagem:** quadradinho com 2 letras e uma cor fixa por ativo. Nunca aparece imagem quebrada.
+
+**Como colocar os logos:** salve os arquivos em `public/logos/` com o nome da raiz (`PETR.svg`, `VALE.png`…), quadrados, com pelo menos 64 × 64 px e fundo transparente, e rode `npm run build` (ou `npm run dev`). O build gera `src/data/logos-disponiveis.ts` com a lista do que existe e o service worker guarda os arquivos para uso offline. Para baixar de uma lista sua, preencha `scripts/logos-fontes.json` (RAIZ → URL) e rode **`npm run logos:baixar`** no seu computador: ele salva cada logo em `public/logos/` (até 10 KB cada). Esse script nunca roda no build nem no navegador.
+
+Dá para esconder os ícones em **Configurações → Mostrar logos e bandeiras**.
+
+### Gráficos
+
+Ao passar o mouse (ou com o gráfico em foco e as setas ← →), aparece uma linha-guia e uma dica com a data ("ter, 20/10/2026"), o valor na unidade do ativo e a variação do dia (▲ verde, ▼ vermelho, "estável" cinza; juros em pb). Se o arquivo não trouxe a variação, ela é calculada contra o dia anterior e marcada "(calculada)". Na comparação do Histórico, a dica lista cada ativo com sua cor; no modo normalizado, mostra o valor real e a variação desde o início do período. Os mini-gráficos dos KPIs mostram uma dica de uma linha. No celular, a dica fica presa no topo do gráfico.
+
 ### Telas
 
 | Tela | O que mostra |
@@ -108,8 +128,8 @@ No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra d
 | 🌦️ **Clima** | ENSO, previsão por dia, alertas e "No campo". |
 | 📅 **Agenda** | Eventos por dia em horário de Brasília. O dia de hoje fica destacado e os eventos passados ficam ocultos (há uma opção para mostrá-los). |
 | 🧮 **Calculadoras** | CDB x LCA, Pré x IPCA+ x Pós (break-even), capital social, juros compostos e conversões saca/arroba/bushel. Os campos já vêm com as taxas do arquivo do dia; se o dado veio `null`, o campo fica vazio com um aviso. |
-| 🗂️ **Histórico** | Edições salvas por mês; **Abrir** mostra uma edição antiga em modo leitura. Comparação de até 3 ativos (normalizado em base 100 ou em valor) em 7, 30 ou 90 dias, ou em todo o período. |
-| ⚙️ **Configurações** | Nome do app, cor de destaque, tema, watchlist (marcar, reordenar, adicionar), limites de preço, backup e sincronização. |
+| 🗂️ **Histórico** | Edições salvas por mês, agrupadas por dia (Manhã 07h15 · Meio-dia 12h30); **Abrir** ou **Dia completo** mostra o dia com as edições juntas, e cada botão de edição abre só aquela edição, em modo leitura. Comparação de até 3 ativos (normalizado em base 100 ou em valor) em 7, 30 ou 90 dias, ou em todo o período. |
+| ⚙️ **Configurações** | Nome do app, cor de destaque, tema, logos e bandeiras, watchlist (marcar, reordenar, adicionar), limites de preço, backup e sincronização. |
 
 **Setores:** o setor vem do campo `setor` de cada ação. Para as ações da carteira do Ibovespa que chegarem sem esse campo, o app usa o setor B3 conhecido delas. As médias são simples (cada ação pesa igual) e ignoram as ações sem variação no dia.
 

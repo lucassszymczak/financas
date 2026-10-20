@@ -2,12 +2,26 @@ import { describe, expect, it } from 'vitest';
 import manha from '../../public/exemplos/radar_2026-10-21.json';
 import meioDia from '../../public/exemplos/radar_2026-10-21_1230.json';
 import { radarSchema, type Noticia } from '../schema/radar';
-import { fundirNoticias, filtrarNoticias, jaccard, LIMIAR_TITULO, mesmaNoticia, motivoMesma, normalizarUrl, palavrasTitulo } from './noticias';
+import {
+  fundirNoticias,
+  filtrarNoticias,
+  jaccard,
+  LIMIAR_TITULO,
+  mesmaNoticia,
+  motivoMesma,
+  normalizarUrl,
+  palavrasTitulo,
+} from './noticias';
 
 const rM = radarSchema.parse(manha);
 const rT = radarSchema.parse(meioDia);
 
-const n = (p: Partial<Noticia> & { id: string; titulo: string }): Noticia => ({ resumo: '', ativos_afetados: [], fontes: [], ...p });
+const n = (p: Partial<Noticia> & { id: string; titulo: string }): Noticia => ({
+  resumo: '',
+  ativos_afetados: [],
+  fontes: [],
+  ...p,
+});
 
 describe('mesmaNoticia (regra de fusão)', () => {
   it('1: atualiza_id aponta para o id da outra', () => {
@@ -30,7 +44,12 @@ describe('mesmaNoticia (regra de fusão)', () => {
     expect(mesmaNoticia(a, { ...b, categoria: 'politica' })).toBe(false);
   });
   it('títulos diferentes não fundem', () => {
-    expect(mesmaNoticia(n({ id: 'a', titulo: 'Dólar sobe', categoria: 'c' }), n({ id: 'b', titulo: 'Soja cai em Chicago', categoria: 'c' }))).toBe(false);
+    expect(
+      mesmaNoticia(
+        n({ id: 'a', titulo: 'Dólar sobe', categoria: 'c' }),
+        n({ id: 'b', titulo: 'Soja cai em Chicago', categoria: 'c' }),
+      ),
+    ).toBe(false);
   });
   it('palavras: sem acento, sem stopwords, números mantidos', () => {
     expect([...palavrasTitulo('A Petrobras é a maior do Brasil em 2026')]).toEqual(['petrobras', 'maior', 'brasil', '2026']);
@@ -70,7 +89,11 @@ describe('fusão das notícias do dia', () => {
     const primeiraNoticia = lista.findIndex((x) => x.tipo === 'noticia');
     expect(lista.slice(0, primeiraNoticia).every((x) => x.tipo === 'destaque')).toBe(true);
     expect(lista.slice(primeiraNoticia).every((x) => x.tipo === 'noticia')).toBe(true);
-    expect(filtrarNoticias(lista, 'novas').map((x) => x.status).sort()).toEqual(['atualizada', 'nova']);
+    expect(
+      filtrarNoticias(lista, 'novas')
+        .map((x) => x.status)
+        .sort(),
+    ).toEqual(['atualizada', 'nova']);
     expect(filtrarNoticias(lista, 'meio_dia')).toHaveLength(2);
     expect(filtrarNoticias(lista, 'manha').some((x) => x.item.id === 'exemplo-nova-1230')).toBe(false);
   });

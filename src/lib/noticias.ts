@@ -168,9 +168,7 @@ export function fundirNoticias(edicoes: Radar[]): NoticiaFundida[] {
     }
   });
   // Destaques primeiro, depois as demais; dentro de cada grupo, as mais recentes no topo.
-  return lista.sort(
-    (a, b) => (a.tipo === b.tipo ? 0 : a.tipo === 'destaque' ? -1 : 1) || b.hora.localeCompare(a.hora) || 0,
-  );
+  return lista.sort((a, b) => (a.tipo === b.tipo ? 0 : a.tipo === 'destaque' ? -1 : 1) || b.hora.localeCompare(a.hora) || 0);
 }
 
 export type FiltroNoticias = 'todas' | 'manha' | 'meio_dia' | 'novas';

@@ -71,7 +71,7 @@ test('sincroniza edições e configurações entre dois aparelhos', async ({ bro
 
   // Computador carrega outra edição e muda o nome do app; o celular recebe as duas coisas.
   await b.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-19.json');
-  await expect(b.getByText('Edição de 19/10/2026 carregada.')).toBeVisible();
+  await expect(b.getByText('Edição de 19/10/2026 (manhã) carregada.')).toBeVisible();
   await b.goto('./#/config');
   await b.getByLabel('Nome do app').fill('Radar do Lucas');
   await b.getByLabel('Nome do app').blur();

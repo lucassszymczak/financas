@@ -141,7 +141,8 @@ function Watchlist({ config, salvar, nomes }: { config: Config; salvar: (c: Conf
                       onChange={(e) => atualiza(grupo.itens.map((x, j) => (j === ii ? { ...x, ativo: e.target.checked } : x)))}
                     />
                     <span>
-                      {!ehRegra(it.id) && <AtivoIcone id={it.id} nome={nomes.get(it.id)} />} <strong>{it.id}</strong> {nomes.get(it.id) && <span className="mudo">{nomes.get(it.id)}</span>}
+                      {!ehRegra(it.id) && <AtivoIcone id={it.id} nome={nomes.get(it.id)} />} <strong>{it.id}</strong>{' '}
+                      {nomes.get(it.id) && <span className="mudo">{nomes.get(it.id)}</span>}
                       {ehRegra(it.id) && <span className="mudo"> ({descreverRegra(it.id)})</span>}
                     </span>
                   </label>

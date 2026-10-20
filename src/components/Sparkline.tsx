@@ -67,7 +67,10 @@ export function Sparkline({
         <span
           className="dica-spark"
           aria-hidden="true"
-          style={{ left: Math.min(Math.max(sel.esq, 110), (typeof window !== 'undefined' ? window.innerWidth : 1e4) - 110), top: sel.topo }}
+          style={{
+            left: Math.min(Math.max(sel.esq, 110), (typeof window !== 'undefined' ? window.innerWidth : 1e4) - 110),
+            top: sel.topo,
+          }}
         >
           {dica}
         </span>

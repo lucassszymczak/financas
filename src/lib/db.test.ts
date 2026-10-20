@@ -46,7 +46,12 @@ describe('backup', () => {
     expect(novo.versao).toBe(2);
     const lido = lerBackup(JSON.stringify(novo));
     expect(lido.ok && lido.backup.edicoes.map((e) => e.chave)).toEqual(['2026-10-21#atualizacao_meio_dia', '2026-10-21#manha']);
-    const antigo = { app: 'radar-investimentos', versao: 1, config: CONFIG_PADRAO, edicoes: [{ data: '2026-10-21', bruto: manha, importadoEm: 'T1' }] };
+    const antigo = {
+      app: 'radar-investimentos',
+      versao: 1,
+      config: CONFIG_PADRAO,
+      edicoes: [{ data: '2026-10-21', bruto: manha, importadoEm: 'T1' }],
+    };
     const lidoAntigo = lerBackup(JSON.stringify(antigo));
     expect(lidoAntigo.ok && lidoAntigo.backup.edicoes[0]!.chave).toBe('2026-10-21#manha');
   });

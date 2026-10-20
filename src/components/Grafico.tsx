@@ -39,7 +39,12 @@ type LinhaDica = { nome: string; cor: string; valor: string; dia: VariacaoDica |
 type Dica = { titulo: string; linhas: LinhaDica[]; esquerda: number; lado: 'dir' | 'esq' };
 
 /** Conteúdo da dica no índice `idx` do eixo de datas. */
-function montarDica(series: SerieGrafico[], datas: string[], idx: number, normalizado: boolean): Omit<Dica, 'esquerda' | 'lado'> | null {
+function montarDica(
+  series: SerieGrafico[],
+  datas: string[],
+  idx: number,
+  normalizado: boolean,
+): Omit<Dica, 'esquerda' | 'lado'> | null {
   const x = datas[idx];
   if (!x) return null;
   let intradiario: { hora: string | null } | null = null;
@@ -105,10 +110,7 @@ export function Grafico({
   );
   // Dias em que alguma série tem valor (o teclado pula os demais).
   const comValor = useMemo(
-    () =>
-      datas.map((d) =>
-        series.some((s) => s.pontos.some((p) => p.x === d) || s.intradiario?.x === d) ? 1 : null,
-      ),
+    () => datas.map((d) => (series.some((s) => s.pontos.some((p) => p.x === d) || s.intradiario?.x === d) ? 1 : null)),
     [datas, series],
   );
 
@@ -125,9 +127,7 @@ export function Grafico({
     const intra = series.length === 1 ? series[0]!.intradiario : null;
     const ultimoFech = series[0]?.pontos.at(-1);
     const yIntra =
-      intra && ultimoFech
-        ? datas.map((d) => (d === intra.x ? intra.y : d === ultimoFech.x ? ultimoFech.y : null))
-        : null;
+      intra && ultimoFech ? datas.map((d) => (d === intra.x ? intra.y : d === ultimoFech.x ? ultimoFech.y : null)) : null;
     const texto = cor('--texto-mudo', el);
     const grade = cor('--borda', el);
     const atualizar = (u: uPlot) => {
@@ -234,11 +234,7 @@ export function Grafico({
         onBlur={() => plot.current?.setCursor({ left: -10, top: -10 })}
       />
       {dica && (
-        <div
-          className={`dica-grafico dica-${dica.lado}`}
-          style={{ left: dica.esquerda }}
-          aria-hidden="true"
-        >
+        <div className={`dica-grafico dica-${dica.lado}`} style={{ left: dica.esquerda }} aria-hidden="true">
           <div className="dica-titulo">{dica.titulo}</div>
           {dica.linhas.map((l) => (
             <div key={l.nome} className="dica-linha">

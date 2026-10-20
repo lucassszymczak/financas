@@ -2837,7 +2837,8 @@ img.ativo-bandeira {
 }
 .ativo-iniciais {
   color: #fff;
-    font-weight: 700;
+  box-shadow: 0 0 0 1px var(--borda);
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 .ativo-emoji {

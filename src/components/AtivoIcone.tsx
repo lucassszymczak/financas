@@ -7,13 +7,7 @@ import { useMostrarLogos } from '../state';
  * Logo da empresa, bandeira do país, ícone da commodity ou avatar com iniciais, à esquerda do nome do ativo.
  * Nunca mostra imagem quebrada: se o arquivo falhar, cai no avatar.
  */
-export function AtivoIcone({
-  id,
-  grupo,
-  nome,
-  regiao,
-  tamanho = 20,
-}: AtivoBase & { tamanho?: number }) {
+export function AtivoIcone({ id, grupo, nome, regiao, tamanho = 20 }: AtivoBase & { tamanho?: number }) {
   const mostrar = useMostrarLogos();
   const [falhou, setFalhou] = useState(false);
   if (!mostrar) return null;
@@ -44,7 +38,11 @@ export function AtivoIcone({
   }
   const a = icone.tipo === 'iniciais' ? icone : avatar(id);
   return (
-    <span className="ativo-icone ativo-iniciais" aria-hidden="true" style={{ ...estilo, background: a.cor, fontSize: tamanho * 0.42 }}>
+    <span
+      className="ativo-icone ativo-iniciais"
+      aria-hidden="true"
+      style={{ ...estilo, background: a.cor, fontSize: tamanho * 0.42 }}
+    >
       {a.texto}
     </span>
   );

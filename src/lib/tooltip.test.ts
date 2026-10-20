@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { dataDica, ehTaxa, indiceValido, proximoValido, textoVariacao, tituloDica, valorDica, variacaoDia, variacaoPeriodo } from './tooltip';
+import {
+  dataDica,
+  ehTaxa,
+  indiceValido,
+  proximoValido,
+  textoVariacao,
+  tituloDica,
+  valorDica,
+  variacaoDia,
+  variacaoPeriodo,
+} from './tooltip';
 
 describe('dica dos gráficos', () => {
   it('data e valor no formato brasileiro', () => {

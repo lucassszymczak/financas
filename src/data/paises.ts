@@ -60,7 +60,15 @@ export const PAIS_POR_MOEDA: Record<string, string> = {
 };
 
 /** Grupos brasileiros: índices B3, curva DI, Tesouro e taxas levam a bandeira do Brasil. */
-export const GRUPOS_BRASIL = new Set(['indices_br', 'indices_setoriais', 'juros_br', 'curva_di', 'tesouro', 'renda_fixa', 'taxas_referencia']);
+export const GRUPOS_BRASIL = new Set([
+  'indices_br',
+  'indices_setoriais',
+  'juros_br',
+  'curva_di',
+  'tesouro',
+  'renda_fixa',
+  'taxas_referencia',
+]);
 
 /** Ids brasileiros fora desses grupos. */
 export const IDS_BRASIL = new Set(['IBOV', 'SELIC', 'CDI', 'IPCA12M', 'IFIX', 'SMLL', 'IDIV']);

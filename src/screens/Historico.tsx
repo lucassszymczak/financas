@@ -42,7 +42,8 @@ export function Historico() {
     const m = new Map<string, { nome: string; grupo?: string; unidade?: string | null }>();
     for (const r of radares)
       for (const p of todosPrecos(r))
-        if (p.valor !== null && p.valor !== undefined) m.set(p.id, { nome: p.nome, grupo: p.grupo ?? p.regiao, unidade: p.unidade });
+        if (p.valor !== null && p.valor !== undefined)
+          m.set(p.id, { nome: p.nome, grupo: p.grupo ?? p.regiao, unidade: p.unidade });
     return m;
   }, [radares]);
   const ativos = useMemo(
