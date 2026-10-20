@@ -13,6 +13,7 @@ export type Icone =
   | { tipo: 'logo'; src: string; raiz: string }
   | { tipo: 'bandeira'; src: string; pais: string; nomePais: string }
   | { tipo: 'emoji'; emoji: string }
+  | { tipo: 'desenho'; desenho: Desenho }
   | { tipo: 'iniciais'; texto: string; cor: string };
 
 const GRUPOS_TICKER = /^(acoes|fiis?$|etfs?$|bdrs?$)/;
@@ -50,24 +51,40 @@ function paisDoPar(id: string): string | null {
   return PAIS_POR_MOEDA[a] ?? null;
 }
 
+/** Ícones desenhados no próprio app (não existem como emoji): ver `components/Desenhos.tsx`. */
+export type Desenho = 'barra-ouro' | 'saca-acucar' | 'grao-soja' | 'cedula-dolar';
+
+const DESENHOS: [RegExp, Desenho][] = [
+  [/\bouro\b|gold/, 'barra-ouro'],
+  [/acucar/, 'saca-acucar'],
+  [/soja/, 'grao-soja'],
+];
+
 const EMOJIS: [RegExp, string][] = [
   [/petroleo|brent|\bwti\b|oleo/, '🛢️'],
   [/gasolina|diesel|etanol|combustiv/, '⛽'],
-  [/\bouro\b|gold/, '🥇'],
   [/minerio|ferro|cobre|niquel|aluminio|prata|zinco|litio|metal/, '⛏️'],
-  [/soja|feijao/, '🫘'],
+  [/feijao/, '🫘'],
   [/milho/, '🌽'],
   [/trigo/, '🌾'],
   [/\bboi\b|bezerro|arroba|vaca|gado/, '🐂'],
   [/cafe/, '☕'],
-  [/acucar/, '🍬'],
 ];
 
-function emojiDe(a: AtivoBase): string | null {
-  const t = normalizar(`${a.id.replace(/_/g, ' ')} ${a.nome ?? ''}`);
-  for (const [re, e] of EMOJIS) if (re.test(t)) return e;
+const textoAtivo = (a: AtivoBase) => normalizar(`${a.id.replace(/_/g, ' ')} ${a.nome ?? ''}`);
+
+function emojiDe(a: AtivoBase): Icone | null {
+  const t = textoAtivo(a);
+  for (const [re, d] of DESENHOS) if (re.test(t)) return { tipo: 'desenho', desenho: d };
+  for (const [re, e] of EMOJIS) if (re.test(t)) return { tipo: 'emoji', emoji: e };
   return null;
 }
+
+/** Dólar turismo e Ptax: cédula de dólar (o comercial, USDBRL, fica com a bandeira dos EUA). */
+const ehCedulaDolar = (a: AtivoBase) => {
+  const t = textoAtivo(a);
+  return (/ptax/.test(t) && !/\beur|euro/.test(t)) || (/turismo/.test(t) && /dolar|usd/.test(t));
+};
 
 const bandeira = (pais: string): Icone | null => {
   const src = BANDEIRAS[pais];
@@ -85,6 +102,7 @@ export function iconeAtivo(a: AtivoBase, logos: Record<string, string>, base = '
     if (arquivo) return { tipo: 'logo', src: `${base}logos/${arquivo}`, raiz: raizTicker(id) };
     return { tipo: 'iniciais', ...avatar(id) };
   }
+  if (ehCedulaDolar(a)) return { tipo: 'desenho', desenho: 'cedula-dolar' };
   const pais =
     PAIS_POR_ID[id] ??
     ((a.grupo ?? '').startsWith('moedas') || /^[A-Z]{3}_?[A-Z]{3}$/.test(id) ? paisDoPar(id) : null) ??
@@ -94,7 +112,7 @@ export function iconeAtivo(a: AtivoBase, logos: Record<string, string>, base = '
   const b = pais ? bandeira(pais) : null;
   if (b) return b;
   const e = emojiDe(a);
-  if (e) return { tipo: 'emoji', emoji: e };
+  if (e) return e;
   if (a.regiao) {
     const r = bandeira(normalizar(a.regiao) === 'chicago' ? 'us' : 'br');
     if (r) return r;

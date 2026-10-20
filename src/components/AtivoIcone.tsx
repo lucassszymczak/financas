@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LOGOS_DISPONIVEIS } from '../data/logos-disponiveis';
 import { avatar, iconeAtivo, type AtivoBase } from '../lib/icones';
 import { useMostrarLogos } from '../state';
+import { DesenhoAtivo } from './Desenhos';
 
 /**
  * Logo da empresa, bandeira do país, ícone da commodity ou avatar com iniciais, à esquerda do nome do ativo.
@@ -29,6 +30,7 @@ export function AtivoIcone({ id, grupo, nome, regiao, tamanho = 20 }: AtivoBase 
       />
     );
   }
+  if (icone.tipo === 'desenho') return <DesenhoAtivo desenho={icone.desenho} tamanho={tamanho} />;
   if (icone.tipo === 'emoji') {
     return (
       <span className="ativo-icone ativo-emoji" aria-hidden="true" style={{ ...estilo, fontSize: tamanho * 0.8 }}>
