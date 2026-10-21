@@ -1,75 +1,137 @@
-:root {
-  --bg: #edf1ef;
-  --surface: #ffffff;
-  --surface-2: #f5f8f6;
-  --ink: #15231e;
-  --ink-2: #5a6a64;
-  --line: #d3dcd8;
-  --accent: #2346b8;
-  --accent-ink: #ffffff;
-  --accent-soft: #e3e9fa;
-  --pos: #1d7748;
-  --pos-soft: #e1f1e8;
-  --neg: #b0301d;
-  --neg-soft: #f8e4e0;
-  --warn: #9a6200;
-  --warn-soft: #f7ecd6;
-
-  --font-title: 'Sora', system-ui, sans-serif;
-  --font-text: 'Source Sans 3', system-ui, sans-serif;
-
-  --radius: 14px;
-  --radius-sm: 10px;
-  --gap: 16px;
-  --touch: 44px;
-  --shadow: 0 1px 2px rgb(21 35 30 / 0.06), 0 2px 8px rgb(21 35 30 / 0.05);
-
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
-
+/*
+ * Identidade visual da Oracle Capital (manual da marca, projeto Oracle Capital).
+ * Tema "Papel" (claro) usa os tokens do manual com os mesmos valores; o tema "Noite"
+ * (escuro) é derivado do navy da marca para leitura em tela à noite.
+ * O destaque (--destaque) é calculado em tema.ts a partir da cor das Configurações
+ * (padrão navy-900), já ajustado para contraste AA no tema em uso.
+ * Os pares texto/fundo abaixo têm contraste ≥ 4,5:1 (conferido em cor.test.ts).
+ */
+:root,
+:root[data-theme='light'] {
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #0f1714;
-    --surface: #18231f;
-    --surface-2: #1e2b26;
-    --ink: #e6eeea;
-    --ink-2: #9aaba4;
-    --line: #2d3b36;
-    --accent: #8aa2f2;
-    --accent-ink: #0f1714;
-    --accent-soft: #1f2a4a;
-    --pos: #5bc48a;
-    --pos-soft: #17322a;
-    --neg: #f08572;
-    --neg-soft: #3a1f1a;
-    --warn: #e0a93b;
-    --warn-soft: #3a2e15;
-    --shadow: none;
-    color-scheme: dark;
-  }
+  /* Manual: paper-000 nos cards; fundo da página um tom abaixo para os cards se destacarem */
+  --fundo: #e9edf2;
+  --superficie: #ffffff;
+  /* grid-100 clareado para o texto signal-contra manter 4,5:1 em linhas destacadas */
+  --superficie-2: #f3f5f8;
+  --borda: #d5d9e0;
+  --texto: #1a1f2b;
+  --texto-mudo: #4a5263;
+  /* Manual: signal-favor (alta) e signal-contra (baixa), sempre com ▲/▼ ou sinal ao lado */
+  --alta: #1d4ed8;
+  --baixa: #b45309;
+  --estavel: #4a5263;
+  /* Manual: gold-600, só em linhas e formas (3,8:1); texto de acento usa navy-900 */
+  --acento: #a67c2e;
+  --acento-texto: #14213d;
+  --navy: #14213d;
+  --aviso-fundo: #faeee2;
+  --aviso-texto: #7c3a06;
+  --info-fundo: #e3e7ef;
+  --info-texto: #14213d;
+  --perigo-fundo: #f8e3d6;
+  --perigo-texto: #6f2a05;
+  --positivo-fundo: #e6edfb;
+  --negativo-fundo: #fdf5ee;
+  --misto-fundo: #eceff3;
+  --misto-texto: #4a5263;
+  --sombra: none;
+  --sombra-menu: none;
+  /* Gráficos: navy, dourado e um terceiro tom que se distingue pela luminosidade */
+  --serie-1: #14213d;
+  --serie-2: #a67c2e;
+  --serie-3: #6e7fa3;
+  --grade: #eceff3;
+  --faixa: #c9d2e0;
+  --destaque: #14213d;
+  --destaque-texto: #ffffff;
+  --destaque-suave: #e3e7ef;
+  /* Mapa de calor: azul (alta) e laranja (baixa), intensidade pela variação */
+  --mapa-a3: #1d4ed8;
+  --mapa-a3-texto: #ffffff;
+  --mapa-a2: #c9d7f8;
+  --mapa-a2-texto: #14213d;
+  --mapa-a1: #e6edfb;
+  --mapa-a1-texto: #14213d;
+  --mapa-b1: #faeee2;
+  --mapa-b1-texto: #5c2a05;
+  --mapa-b2: #f2c9a1;
+  --mapa-b2-texto: #4a2204;
+  --mapa-b3: #b45309;
+  --mapa-b3-texto: #ffffff;
+  --mapa-n0: #eceff3;
+  --mapa-n0-texto: #4a5263;
 }
 
 :root[data-theme='dark'] {
-  --bg: #0f1714;
-  --surface: #18231f;
-  --surface-2: #1e2b26;
-  --ink: #e6eeea;
-  --ink-2: #9aaba4;
-  --line: #2d3b36;
-  --accent: #8aa2f2;
-  --accent-ink: #0f1714;
-  --accent-soft: #1f2a4a;
-  --pos: #5bc48a;
-  --pos-soft: #17322a;
-  --neg: #f08572;
-  --neg-soft: #3a1f1a;
-  --warn: #e0a93b;
-  --warn-soft: #3a2e15;
-  --shadow: none;
   color-scheme: dark;
+  /* Derivado do navy; fundo um pouco mais claro que os cards para eles se destacarem */
+  --fundo: #1b2843;
+  --superficie: #101b31;
+  --superficie-2: #17243f;
+  --borda: #2a3a5c;
+  --texto: #f2f4f8;
+  --texto-mudo: #b4bdcf;
+  --alta: #93b4ff;
+  --baixa: #f2a65e;
+  --estavel: #b4bdcf;
+  --acento: #c49a4a;
+  --acento-texto: #e3c48a;
+  --navy: #d9dee8;
+  --aviso-fundo: #3a2410;
+  --aviso-texto: #f5c896;
+  --info-fundo: #1b2a4a;
+  --info-texto: #d9dee8;
+  --perigo-fundo: #3d1d0c;
+  --perigo-texto: #ffc4a0;
+  --positivo-fundo: #142a55;
+  --negativo-fundo: #3a2410;
+  --misto-fundo: #1b2a4a;
+  --misto-texto: #d9dee8;
+  --sombra: none;
+  --sombra-menu: none;
+  --serie-1: #d9dee8;
+  --serie-2: #c49a4a;
+  --serie-3: #7f9ee0;
+  --grade: #1b2a4a;
+  --faixa: #2a3a5c;
+  --destaque: #d9dee8;
+  --destaque-texto: #0b1426;
+  --destaque-suave: #1b2a4a;
+  --mapa-a3: #2f5fe0;
+  --mapa-a3-texto: #ffffff;
+  --mapa-a2: #1f3c7a;
+  --mapa-a2-texto: #e6edfb;
+  --mapa-a1: #162c58;
+  --mapa-a1-texto: #d9e3fb;
+  --mapa-b1: #3a2410;
+  --mapa-b1-texto: #fbe3cc;
+  --mapa-b2: #5a3210;
+  --mapa-b2-texto: #fff0e0;
+  --mapa-b3: #9a4a0a;
+  --mapa-b3-texto: #ffffff;
+  --mapa-n0: #17243f;
+  --mapa-n0-texto: #b4bdcf;
+}
+
+/* Faixa navy do topo (igual nos dois temas), fontes e escala tipográfica do manual. */
+:root {
+  --nav: #14213d;
+  --nav-2: #0b1426;
+  --nav-line: #2a3a5c;
+  --nav-fg: #ffffff;
+  --nav-muted: #d9dee8;
+  --nav-up: #a9c2ff;
+  --nav-down: #f5b27a;
+  --ouro: #a67c2e;
+  --fonte-ui: 'Source Sans 3', 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --fonte-titulo: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --fonte-codigo: 'Source Sans 3', 'Helvetica Neue', Arial, system-ui, sans-serif;
+  /* label/caption 12 · table 13 · body 15 · 16 · title 20 · display 32 (nada abaixo de 12px) */
+  --t-xs: 12px;
+  --t-sm: 13px;
+  --t-md: 15px;
+  --t-lg: 16px;
+  --t-xl: 20px;
+  --t-2xl: 32px;
 }
