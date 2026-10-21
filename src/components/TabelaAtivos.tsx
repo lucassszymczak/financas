@@ -1,13 +1,16 @@
 import { useMemo, useState } from 'react';
 import type { Preco } from '../schema/radar';
 import { dataCurta, valorComUnidade } from '../lib/formato';
-import { setorDe, variacaoNumero } from '../lib/categorias';
+import { ehFii, setorDe, tipoFii, variacaoNumero } from '../lib/categorias';
 import { dadoAntigo } from '../lib/pregao';
 import { AtivoIcone } from './AtivoIcone';
 import { Selo, SeloOrigem, textoOrigem, Variacao } from './Basicos';
 import { useAbrirHistorico } from './HistoricoAtivo';
 
 type Coluna = 'id' | 'nome' | 'setor' | 'valor' | 'var' | 'data';
+
+/** Setor B3 das ações ou tipo dos FIIs. */
+const grupoDe = (p: Preco) => (ehFii(p) ? tipoFii(p) : setorDe(p));
 
 const valorDe = (p: Preco, c: Coluna): string | number | null => {
   switch (c) {
@@ -16,7 +19,7 @@ const valorDe = (p: Preco, c: Coluna): string | number | null => {
     case 'nome':
       return p.nome;
     case 'setor':
-      return setorDe(p);
+      return grupoDe(p);
     case 'valor':
       return p.valor ?? null;
     case 'var':
@@ -42,10 +45,13 @@ export function ordenarAtivos(itens: Preco[], coluna: Coluna | null, sentido: 1 
 export function TabelaAtivos({
   itens,
   comSetor = false,
+  comTipoFii = false,
   edicaoData,
 }: {
   itens: Preco[];
   comSetor?: boolean;
+  /** Coluna "Tipo" com o tipo de cada FII (Logística, Lajes, Recebíveis…). */
+  comTipoFii?: boolean;
   edicaoData: string;
 }) {
   const abrir = useAbrirHistorico();
@@ -54,7 +60,7 @@ export function TabelaAtivos({
   const colunas: [Coluna, string, boolean][] = [
     ['id', 'Ativo', false],
     ['nome', 'Nome', false],
-    ...(comSetor ? ([['setor', 'Setor', false]] as [Coluna, string, boolean][]) : []),
+    ...(comSetor || comTipoFii ? ([['setor', comTipoFii ? 'Tipo' : 'Setor', false]] as [Coluna, string, boolean][]) : []),
     ['valor', 'Último', true],
     ['var', 'Variação', true],
     ['data', 'Data', true],
@@ -101,7 +107,7 @@ export function TabelaAtivos({
                 </button>
               </td>
               <td className="nome-ativo">{p.nome}</td>
-              {comSetor && <td className="nome-ativo">{setorDe(p) ?? '—'}</td>}
+              {(comSetor || comTipoFii) && <td className="nome-ativo">{grupoDe(p) ?? '—'}</td>}
               <td className="dir">{valorComUnidade(p.valor, p.unidade)}</td>
               <td className="dir">
                 <span className="etiqueta-var">

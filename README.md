@@ -104,9 +104,9 @@ No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra d
 Ao lado de cada ativo (fita, KPIs, tabelas, busca, watchlist e detalhe) aparece um ícone de 20 a 24 px, sempre de arquivos do próprio app (funciona sem internet):
 
 - **Ações, FIIs, ETFs e BDRs:** o logo em `public/logos/<RAIZ>.svg|png|webp`, em que RAIZ são as 4 primeiras letras do código (PETR3 e PETR4 → `PETR.svg`). Veja [public/logos/README.md](public/logos/README.md).
-- **Índices, moedas e juros de fora:** a bandeira do país (pacote `flag-icons`, MIT, empacotado no build). O mapa id → país fica em `src/data/paises.ts`. Pares contra o real mostram a moeda estrangeira (USDBRL → EUA).
+- **Índices, moedas e juros de fora:** a bandeira do país (pacote `flag-icons`, MIT, empacotado no build). O país vem do código (mapa em `src/data/paises.ts`) ou, se o código for desconhecido, do nome (Nikkei → Japão, FTSE → Reino Unido, Treasury → EUA, peso mexicano → México…). Pares contra o real mostram a moeda estrangeira (USDBRL → EUA).
 - **Índices B3, curva DI, Tesouro e taxas:** bandeira do Brasil.
-- **Commodities e agro:** ícone do produto: barra de ouro, cubos de açúcar e grão de soja desenhados no app; 🛢️ ⛏️ 🫘 (feijão) 🌽 🌾 🐂 ☕ ⛽ nos demais.
+- **Commodities e agro:** ícone do produto, com uma bandeirinha no canto indicando a praça (Chicago → EUA; Cepea, B3 e praças regionais → Brasil): barra de ouro, cubos de açúcar e grão de soja desenhados no app; 🛢️ ⛏️ 🫘 (feijão) 🌽 🌾 🐂 ☕ ⛽ nos demais.
 - **Dólar turismo e Ptax:** cédula de dólar (o dólar comercial fica com a bandeira dos EUA).
 - **Sem imagem:** quadradinho com 2 letras e uma cor fixa por ativo. Nunca aparece imagem quebrada.
 
@@ -131,6 +131,8 @@ Ao passar o mouse (ou com o gráfico em foco e as setas ← →), aparece uma li
 | 🧮 **Calculadoras** | CDB x LCA, Pré x IPCA+ x Pós (break-even), capital social, juros compostos e conversões saca/arroba/bushel. Os campos já vêm com as taxas do arquivo do dia; se o dado veio `null`, o campo fica vazio com um aviso. |
 | 🗂️ **Histórico** | Edições salvas por mês, agrupadas por dia (Manhã 07h15 · Meio-dia 12h30); **Abrir** ou **Dia completo** mostra o dia com as edições juntas, e cada botão de edição abre só aquela edição, em modo leitura. Comparação de até 3 ativos (normalizado em base 100 ou em valor) em 7, 30 ou 90 dias, ou em todo o período. |
 | ⚙️ **Configurações** | Nome do app, cor de destaque, tema, logos e bandeiras, watchlist (marcar, reordenar, adicionar), limites de preço, backup e sincronização. |
+
+**FIIs por tipo:** a aba **FIIs** mostra um cartão por tipo (Logística, Lajes corporativas, Shoppings, Recebíveis, Híbrido, Fundo de fundos, Renda urbana…), com a variação média do dia, e a tabela de todos os fundos com a coluna **Tipo**; tocar num tipo mostra só os fundos dele. Os tipos também aparecem no menu **Setores** e no seletor da fita. O tipo vem do campo `setor` de cada FII (nomes como "Papel", "Títulos e Val. Mob.", "FOF" ou "Galpões" são reconhecidos); sem ele, o app usa uma lista dos FIIs mais negociados, e os demais ficam em "Outros FIIs".
 
 **Setores:** o setor vem do campo `setor` de cada ação. Para as ações da carteira do Ibovespa que chegarem sem esse campo, o app usa o setor B3 conhecido delas. As médias são simples (cada ação pesa igual) e ignoram as ações sem variação no dia.
 

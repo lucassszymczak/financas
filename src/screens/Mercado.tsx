@@ -8,7 +8,7 @@ import { montarWatchlist } from '../lib/watchlist';
 import { gravarLocal, lerLocal } from '../lib/local';
 import { categoria } from '../lib/categorias';
 import { Abas, ABAS_MERCADO } from '../components/Abas';
-import { Setores } from './Setores';
+import { FiisPorTipo, Setores } from './Setores';
 import { Categoria } from './Categoria';
 
 /** Mercado: abas Visão geral (minha lista / todos os grupos), Setores e uma lista por categoria. */
@@ -18,7 +18,15 @@ export function Mercado({ sub = null, arg = null }: { sub?: string | null; arg?:
   return (
     <div className="tela">
       <Abas aba="mercado" itens={ABAS_MERCADO} atual={atual} />
-      {sub === 'setores' ? <Setores setor={arg} /> : cat ? <Categoria key={cat.id} id={cat.id} /> : <VisaoGeral />}
+      {sub === 'setores' ? (
+        <Setores setor={arg} />
+      ) : sub === 'fiis' ? (
+        <FiisPorTipo tipo={arg} />
+      ) : cat ? (
+        <Categoria key={cat.id} id={cat.id} />
+      ) : (
+        <VisaoGeral />
+      )}
     </div>
   );
 }

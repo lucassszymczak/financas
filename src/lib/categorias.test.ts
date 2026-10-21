@@ -3,6 +3,8 @@ import fixture from '../../e2e/fixtures/radar_2026-10-20.json';
 import { radarSchema, type Preco } from '../schema/radar';
 import {
   agruparSetores,
+  agruparTiposFii,
+  tipoFii,
   buscarSetores,
   itensCategoria,
   itensFita,
@@ -74,5 +76,43 @@ describe('categorias e fita', () => {
     expect(itensFita(radar, 'setor:Bens industriais').map((p) => p.id)).toContain('WEGE3');
     expect(itensFita(radar, 'juros').every((p) => (p.grupo ?? '').startsWith('juros'))).toBe(true);
     expect(itensFita(radar, 'agro')).toEqual(radar.agro);
+  });
+});
+
+describe('FIIs por tipo', () => {
+  const fii = (id: string, variacao_pct: number | null, setor?: string): Preco => ({
+    id,
+    nome: id,
+    grupo: 'fiis',
+    valor: 100,
+    variacao_pct,
+    ...(setor ? { setor } : {}),
+  });
+  it('usa o tipo do arquivo (com sinônimos) e, sem ele, a lista conhecida', () => {
+    expect(tipoFii(fii('HGLG11', 1))).toBe('Logística');
+    expect(tipoFii(fii('KNCR11', 1))).toBe('Recebíveis (papel)');
+    expect(tipoFii(fii('XPML11', 1))).toBe('Shoppings');
+    expect(tipoFii(fii('HGLG11', 1, 'Lajes Corporativas'))).toBe('Lajes corporativas');
+    expect(tipoFii(fii('ABCD11', 1, 'Títulos e Val. Mob.'))).toBe('Recebíveis (papel)');
+    expect(tipoFii(fii('ABCD11', 1, 'FOF'))).toBe('Fundo de fundos');
+    expect(tipoFii(fii('ABCD11', 1, 'Galpões logísticos'))).toBe('Logística');
+    expect(tipoFii(fii('ZZZZ11', 1))).toBe('Outros FIIs');
+  });
+  it('agrupa com média, altas e baixas; "Outros FIIs" por último; ações ficam de fora', () => {
+    const g = agruparTiposFii([
+      fii('HGLG11', 1),
+      fii('BTLG11', -0.5),
+      fii('KNCR11', 0.2),
+      fii('ZZZZ11', 0.1),
+      { id: 'PETR4', nome: 'Petrobras', grupo: 'acoes_ibov', valor: 30, variacao_pct: 1 },
+    ]);
+    expect(g.map((t) => t.setor)).toEqual(['Logística', 'Recebíveis (papel)', 'Outros FIIs']);
+    expect(g[0]).toMatchObject({ altas: 1, baixas: 1, media: 0.25 });
+  });
+  it('a fita ganha "Todos os FIIs" e uma opção por tipo', () => {
+    const r = radarSchema.parse(fixture);
+    const opcoes = opcoesFita(r).filter((o) => o.grupo === 'FIIs');
+    expect(opcoes.map((o) => o.valor)).toEqual(['fiis', 'fii:Recebíveis (papel)']);
+    expect(itensFita(r, 'fii:Recebíveis (papel)').map((p) => p.id)).toEqual(['MXRF11']);
   });
 });

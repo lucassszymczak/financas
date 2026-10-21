@@ -79,3 +79,18 @@ test('logos e bandeiras: ícones ao lado dos ativos e opção para esconder', as
   await page.goto('./#/hoje');
   await expect(page.locator('.ativo-icone')).toHaveCount(0);
 });
+
+test('FIIs por tipo: cartões, tabela do tipo e coluna Tipo', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: /Ver exemplo/ }).click();
+  await page.getByTestId('input-arquivo').first().setInputFiles('e2e/fixtures/radar_2026-10-20.json');
+  await expect(page.getByText('Edição de 20/10/2026 (manhã) carregada.')).toBeVisible();
+  await page.goto('./#/mercado/fiis');
+  await expect(page.getByRole('heading', { name: /Todos os FIIs/ })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Tipo' })).toBeVisible();
+  await page.locator('a.setor', { hasText: 'Recebíveis (papel)' }).click();
+  await expect(page.getByRole('heading', { name: 'Recebíveis (papel)', level: 2 })).toBeVisible();
+  await expect(page.locator('.painel-setor').getByText('MXRF11')).toBeVisible();
+  await page.getByRole('link', { name: 'Ver todos os FIIs' }).click();
+  await expect(page.getByRole('heading', { name: /Todos os FIIs/ })).toBeVisible();
+});

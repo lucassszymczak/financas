@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { Radar } from '../schema/radar';
 import { hrefRota, ir, type Rota } from '../router';
-import { CATEGORIAS, buscarSetores, itensCategoria, setoresDoRadar } from '../lib/categorias';
+import { CATEGORIAS, buscarSetores, itensCategoria, setoresDoRadar, tiposFiiDoRadar } from '../lib/categorias';
 import { buscarAtivos } from '../lib/busca';
 import { numero } from '../lib/formato';
 import { nomeRegiao, todosPrecos } from '../lib/precos';
@@ -19,7 +19,7 @@ const PRACAS = ['chicago', 'brasil', 'guarapuava', 'noroeste_paulista'];
 
 /** Item do topo que fica sublinhado em laranja para a rota atual. */
 export function itemAtivo(r: Rota): string {
-  if (r.aba === 'mercado') return r.sub === 'setores' ? 'setores' : 'mercado';
+  if (r.aba === 'mercado') return r.sub === 'setores' || (r.sub === 'fiis' && r.arg) ? 'setores' : 'mercado';
   if (r.aba === 'historico' || r.aba === 'config') return 'mais';
   return r.aba;
 }
@@ -41,6 +41,7 @@ function montarMenu(radar: Radar | null): ItemMenu[] {
     return { nome: nome ?? c.nome, href: hrefRota(c.area, id), direita: conta(id) };
   };
   const setores = radar ? setoresDoRadar(radar) : [];
+  const tiposFii = radar ? tiposFiiDoRadar(radar) : [];
   const regioes = radar ? [...new Set(radar.agro.map((a) => a.regiao))] : PRACAS;
   regioes.sort((a, b) => (PRACAS.indexOf(a) + 1 || 99) - (PRACAS.indexOf(b) + 1 || 99));
   return [
@@ -60,7 +61,7 @@ function montarMenu(radar: Radar | null): ItemMenu[] {
     {
       id: 'setores',
       nome: 'Setores',
-      largo: setores.length > 4,
+      largo: setores.length + tiposFii.length > 4,
       grupos: [
         {
           titulo: 'Ações por setor B3',
@@ -73,6 +74,21 @@ function montarMenu(radar: Radar | null): ItemMenu[] {
             })),
           ],
         },
+        ...(tiposFii.length
+          ? [
+              {
+                titulo: 'Fundos imobiliários por tipo',
+                itens: [
+                  { nome: 'Todos os FIIs', href: hrefRota('mercado', 'fiis') },
+                  ...tiposFii.map((t) => ({
+                    nome: t.setor,
+                    href: hrefRota('mercado', 'fiis', t.setor),
+                    direita: mediaTexto(t.media),
+                  })),
+                ],
+              },
+            ]
+          : []),
       ],
     },
     {
