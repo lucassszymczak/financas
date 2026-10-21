@@ -30,11 +30,31 @@ export function AtivoIcone({ id, grupo, nome, regiao, tamanho = 20 }: AtivoBase 
       />
     );
   }
-  if (icone.tipo === 'desenho') return <DesenhoAtivo desenho={icone.desenho} tamanho={tamanho} />;
-  if (icone.tipo === 'emoji') {
+  if (icone.tipo === 'desenho' || icone.tipo === 'emoji') {
+    const produto =
+      icone.tipo === 'desenho' ? (
+        <DesenhoAtivo desenho={icone.desenho} tamanho={tamanho} />
+      ) : (
+        <span className="ativo-icone ativo-emoji" aria-hidden="true" style={{ ...estilo, fontSize: tamanho * 0.8 }}>
+          {icone.emoji}
+        </span>
+      );
+    if (!icone.selo) return produto;
+    // Bandeirinha da praça no canto (soja de Chicago → EUA; boi Cepea → Brasil).
+    const lado = Math.max(8, Math.round(tamanho * 0.5));
     return (
-      <span className="ativo-icone ativo-emoji" aria-hidden="true" style={{ ...estilo, fontSize: tamanho * 0.8 }}>
-        {icone.emoji}
+      <span className="ativo-icone ativo-com-selo" style={estilo} title={icone.selo.nomePais}>
+        {produto}
+        <img
+          className="ativo-selo"
+          src={icone.selo.src}
+          width={lado}
+          height={lado}
+          loading="lazy"
+          decoding="async"
+          alt={icone.selo.nomePais}
+          style={{ width: lado, height: lado }}
+        />
       </span>
     );
   }

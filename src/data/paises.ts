@@ -57,7 +57,91 @@ export const PAIS_POR_MOEDA: Record<string, string> = {
   AUD: 'au',
   HKD: 'hk',
   KRW: 'kr',
+  CLP: 'cl',
+  COP: 'co',
+  PEN: 'pe',
+  INR: 'in',
+  ZAR: 'za',
+  TRY: 'tr',
+  RUB: 'ru',
+  NZD: 'nz',
+  SEK: 'se',
+  NOK: 'no',
+  DKK: 'dk',
+  SGD: 'sg',
+  TWD: 'tw',
+  ILS: 'il',
+  PLN: 'pl',
 };
+
+/**
+ * País pelo nome do ativo (índices, juros e moedas de fora), para ids que não estão em `PAIS_POR_ID`.
+ * O texto é comparado sem acento e em minúsculas; a ordem importa (o mais específico vem antes).
+ */
+export const PAIS_POR_NOME: [RegExp, string][] = [
+  // Moedas pelo nome (antes de "dólar" genérico)
+  [/dolar australiano/, 'au'],
+  [/dolar canadense/, 'ca'],
+  [/dolar neozelandes/, 'nz'],
+  [/dolar de hong kong|dolar hk/, 'hk'],
+  [/dolar de singapura/, 'sg'],
+  [/peso argentino/, 'ar'],
+  [/peso mexicano/, 'mx'],
+  [/peso chileno/, 'cl'],
+  [/peso colombiano/, 'co'],
+  [/franco suico/, 'ch'],
+  [/lira turca/, 'tr'],
+  [/\b(iene|yen)\b/, 'jp'],
+  [/\b(yuan|renminbi)\b/, 'cn'],
+  [/\brupia\b/, 'in'],
+  [/\brand\b/, 'za'],
+  [/\bwon\b/, 'kr'],
+  [/\brublo\b/, 'ru'],
+  [/\blibra\b/, 'gb'],
+  // Índices e juros
+  [/ftse mib|\bbtp\b|italia/, 'it'],
+  [/euro ?stoxx|stoxx|zona do euro|europa/, 'eu'],
+  [/\basx\b|australia/, 'au'],
+  [/\btsx\b|canada/, 'ca'],
+  [
+    /s ?& ?p 500|\bs&p\b|sp ?500|nasdaq|dow jones|russell|\bvix\b|treasur|t-note|t-bond|nyse|wall street|estados unidos|\beua\b|\bfed\b/,
+    'us',
+  ],
+  [/nikkei|topix|japao|\bjgb\b/, 'jp'],
+  [/\bdax\b|alemanha|\bbund\b/, 'de'],
+  [/ftse|reino unido|londres|\bgilt\b/, 'gb'],
+  [/\bcac\b|franca|\boat\b/, 'fr'],
+  [/hang seng|hong kong/, 'hk'],
+  [/shanghai|shenzhen|csi ?300|china/, 'cn'],
+  [/kospi|coreia/, 'kr'],
+  [/merval|argentina/, 'ar'],
+  [/mexbol|\bipc\b|mexico|\bbmv\b/, 'mx'],
+  [/\bipsa\b|chile/, 'cl'],
+  [/colcap|colombia/, 'co'],
+  [/\bbvl\b|peru/, 'pe'],
+  [/nifty|sensex|india/, 'in'],
+  [/taiex|taiwan/, 'tw'],
+  [/straits|singapura/, 'sg'],
+  [/\bibex\b|espanha/, 'es'],
+  [/\baex\b|holanda|paises baixos/, 'nl'],
+  [/\bsmi\b|suica/, 'ch'],
+  [/\bomx\b|suecia/, 'se'],
+  [/africa do sul|\bjse\b/, 'za'],
+  [/turquia|\bbist\b/, 'tr'],
+  [/ibovespa|\bb3\b|brasil|\bifix\b|\bselic\b|\bcdi\b|\bipca\b|tesouro (direto|selic|ipca|prefixado)/, 'br'],
+  // Por último, as moedas mais comuns (o par já foi tratado pelo código)
+  [/\bdolar\b/, 'us'],
+  [/\beuro\b/, 'eu'],
+];
+
+/** Grupos em que vale procurar o país pelo nome. */
+export const GRUPOS_COM_PAIS = /^(indices|moedas|juros|curva|tesouro|renda_fixa|taxas)/;
+
+/** Praça ou bolsa de um produto do agro/commodity → país do selinho no canto do ícone. */
+export const PAIS_POR_PRACA: [RegExp, string][] = [
+  [/chicago|cbot|\bcme\b|nova york|\bnymex\b|\bcomex\b|\bice us\b/, 'us'],
+  [/cepea|\bb3\b|paranagua|guarapuava|noroeste paulista|aracatuba|barretos|brasil|\bsp\b|\bpr\b|\bmt\b|\bgo\b|\bms\b/, 'br'],
+];
 
 /** Grupos brasileiros: índices B3, curva DI, Tesouro e taxas levam a bandeira do Brasil. */
 export const GRUPOS_BRASIL = new Set([

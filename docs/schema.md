@@ -137,7 +137,7 @@ Cada item é um ativo. Aparece na fita de cotações do topo, nas tabelas do Mer
 | `url` | texto | não, pode ser null | |
 | `nota_fonte` | número 0 a 5 | não, pode ser null | |
 | `kpi` | verdadeiro/falso | não | `true` = vira card grande na tela Hoje (com mini-gráfico). Padrão: `false`. |
-| `setor` | texto | não | Setor B3 (ex.: `"Financeiro"`, `"Bens industriais"`). Monta o **Mapa setorial**, o menu Setores, os chips de Ações e as opções da fita; também entra na busca e no detalhe. Use sempre o mesmo nome para o mesmo setor. |
+| `setor` | texto | não | Ações: setor B3 (ex.: `"Financeiro"`, `"Bens industriais"`). FIIs: o tipo do fundo (`"Logística"`, `"Lajes corporativas"`, `"Shoppings"`, `"Recebíveis"`/`"Papel"`, `"Híbrido"`, `"Fundo de fundos"`, `"Renda urbana"`…), que monta a divisão por tipo na aba FIIs. Monta o **Mapa setorial**, o menu Setores, os chips de Ações e as opções da fita; também entra na busca e no detalhe. Use sempre o mesmo nome para o mesmo setor. |
 | `abertura`, `maxima`, `minima`, `fechamento_anterior` | número | não, pode ser null | Preços do pregão do `data_ref`, na mesma unidade de `valor`. |
 | `volume_financeiro` | número | não, pode ser null | Em R$ (ex.: `612000000`). O app abrevia para "R$ 612,0 mi". |
 | `var_semana_pct`, `var_mes_pct`, `var_ano_pct`, `var_12m_pct` | número | não, pode ser null | Variação acumulada em % (ex.: `-5.4`). |

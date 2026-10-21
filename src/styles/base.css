@@ -2844,6 +2844,20 @@ img.ativo-bandeira {
 .ativo-emoji {
   font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
 }
+.ativo-com-selo {
+  position: relative;
+  overflow: visible;
+}
+.ativo-com-selo > .ativo-icone {
+  box-shadow: none;
+}
+.ativo-selo {
+  position: absolute;
+  right: -3px;
+  bottom: -2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1.5px var(--superficie);
+}
 .la-id {
   display: flex;
   align-items: center;

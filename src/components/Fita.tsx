@@ -50,7 +50,7 @@ function ItemFita({ p, copia, parada }: { p: Preco; copia: boolean; parada: bool
 export function LinhaTaxas({ radar, filtro, setFiltro }: { radar: Radar; filtro: string; setFiltro: (f: string) => void }) {
   const t = radar.taxas_referencia;
   const opcoes = useMemo(() => opcoesFita(radar), [radar]);
-  const grupos = (['Geral', 'Setores', 'Outros'] as const).map((g) => [g, opcoes.filter((o) => o.grupo === g)] as const);
+  const grupos = (['Geral', 'Setores', 'FIIs', 'Outros'] as const).map((g) => [g, opcoes.filter((o) => o.grupo === g)] as const);
   const taxa = (v: number | null | undefined) => (v === null || v === undefined ? '—' : `${numero(v, 2)}%`);
   return (
     <div className="taxas-faixa">
