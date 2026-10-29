@@ -7,11 +7,13 @@ import { Fita, LinhaTaxas } from './components/Fita';
 import { useTemaEfetivo } from './tema';
 import { dataCurta, diaMes } from './lib/formato';
 import { categoria, opcoesFita } from './lib/categorias';
+import { editoria, ehEditoria } from './dominio/editorias';
 import { gravarLocal, lerLocal } from './lib/local';
 import { nomeRegiao } from './lib/precos';
 import type { Radar } from './schema/radar';
 import { BoasVindas } from './screens/BoasVindas';
 import { Hoje } from './screens/Hoje';
+import { Noticias } from './screens/Noticias';
 import { Mercado } from './screens/Mercado';
 import { RendaFixa } from './screens/RendaFixa';
 import { Agro } from './screens/Agro';
@@ -27,6 +29,8 @@ function Tela({ rota }: { rota: Rota }): ReactNode {
   switch (rota.aba) {
     case 'hoje':
       return <Hoje />;
+    case 'noticias':
+      return <Noticias sub={rota.sub} />;
     case 'mercado':
       return <Mercado sub={rota.sub} arg={rota.arg} />;
     case 'renda-fixa':
@@ -53,6 +57,11 @@ export function tituloRota(r: Rota, radar: Radar | null): { caminho: string; tit
   switch (r.aba) {
     case 'hoje':
       return { caminho: 'Hoje', titulo: radar ? `Radar de ${diaMes(radar.edicao.data)}` : 'Hoje' };
+    case 'noticias':
+      return {
+        caminho: 'Notícias',
+        titulo: ehEditoria(r.sub) ? `${editoria(r.sub).icone} ${editoria(r.sub).rotulo}` : 'Todas as notícias',
+      };
     case 'mercado':
       if (r.sub === 'setores') return { caminho: 'Mercado › Setores', titulo: r.arg ?? 'Mapa setorial' };
       return { caminho: 'Mercado', titulo: cat?.nome ?? 'Visão geral' };

@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { Radar } from '../schema/radar';
 import { hrefRota, ir, type Rota } from '../router';
 import { CATEGORIAS, buscarSetores, itensCategoria, setoresDoRadar, tiposFiiDoRadar } from '../lib/categorias';
-import { buscarAtivos } from '../lib/busca';
+import { contarPorEditoria, EDITORIAS, editoriaDe } from '../dominio/editorias';
+import { BadgeEditoria } from './CardNoticia';
+import { buscarAtivos, normalizar } from '../lib/busca';
 import { numero } from '../lib/formato';
 import { nomeRegiao, todosPrecos } from '../lib/precos';
 import { useAbrirHistorico } from './HistoricoAtivo';
@@ -10,7 +12,7 @@ import { BotaoCarregar } from './Carregar';
 import { Variacao } from './Basicos';
 import { AtivoIcone } from './AtivoIcone';
 
-type Folha = { nome: string; href: string; direita?: ReactNode };
+type Folha = { nome: string; href: string; direita?: ReactNode; mudo?: boolean };
 type Grupo = { titulo: string; itens: Folha[] };
 type ItemMenu = { id: string; nome: string; href?: string; largo?: boolean; grupos?: Grupo[]; extra?: ReactNode };
 
@@ -21,6 +23,7 @@ const PRACAS = ['chicago', 'brasil', 'guarapuava', 'noroeste_paulista'];
 export function itemAtivo(r: Rota): string {
   if (r.aba === 'mercado') return r.sub === 'setores' || (r.sub === 'fiis' && r.arg) ? 'setores' : 'mercado';
   if (r.aba === 'historico' || r.aba === 'config') return 'mais';
+  if (r.aba === 'noticias') return 'noticias';
   return r.aba;
 }
 
@@ -42,10 +45,37 @@ function montarMenu(radar: Radar | null): ItemMenu[] {
   };
   const setores = radar ? setoresDoRadar(radar) : [];
   const tiposFii = radar ? tiposFiiDoRadar(radar) : [];
+  const porEditoria = radar ? contarPorEditoria([...radar.destaques, ...radar.noticias].map((item) => ({ item }))) : null;
   const regioes = radar ? [...new Set(radar.agro.map((a) => a.regiao))] : PRACAS;
   regioes.sort((a, b) => (PRACAS.indexOf(a) + 1 || 99) - (PRACAS.indexOf(b) + 1 || 99));
   return [
     { id: 'hoje', nome: 'Hoje', href: hrefRota('hoje') },
+    {
+      id: 'noticias',
+      nome: 'Notícias',
+      largo: true,
+      grupos: [
+        {
+          titulo: 'Notícias por editoria',
+          itens: [
+            {
+              nome: 'Todas',
+              href: hrefRota('noticias'),
+              direita: porEditoria ? <span className="dd-c">{radar!.destaques.length + radar!.noticias.length}</span> : undefined,
+            },
+            ...EDITORIAS.filter((e) => e.slug !== 'outras' || porEditoria?.outras).map((e) => {
+              const n = porEditoria?.[e.slug] ?? 0;
+              return {
+                nome: `${e.icone} ${e.rotulo}`,
+                href: hrefRota('noticias', e.slug),
+                direita: porEditoria ? <span className="dd-c">{n || '—'}</span> : undefined,
+                mudo: !!porEditoria && !n,
+              };
+            }),
+          ],
+        },
+      ],
+    },
     {
       id: 'mercado',
       nome: 'Mercado',
@@ -166,6 +196,15 @@ export function Logo({ nome }: { nome: string }) {
   );
 }
 
+/** Notícias e destaques da edição cujo título ou resumo contém o termo. */
+function buscarNoticias(radar: Radar, termo: string) {
+  const t = normalizar(termo.trim());
+  if (t.length < 3) return [];
+  return [...radar.destaques, ...radar.noticias]
+    .filter((n) => normalizar(`${n.titulo} ${'resumo' in n ? n.resumo : n.o_que}`).includes(t))
+    .slice(0, 5);
+}
+
 function Busca({ radar }: { radar: Radar | null }) {
   const [termo, setTermo] = useState('');
   const [aberta, setAberta] = useState(false);
@@ -173,6 +212,7 @@ function Busca({ radar }: { radar: Radar | null }) {
   const abrir = useAbrirHistorico();
   const setores = useMemo(() => (radar ? buscarSetores(radar, termo) : []), [radar, termo]);
   const ativos = useMemo(() => (radar ? buscarAtivos(todosPrecos(radar), termo, 12) : []), [radar, termo]);
+  const noticias = useMemo(() => (radar ? buscarNoticias(radar, termo) : []), [radar, termo]);
   const fechar = () => {
     setAberta(false);
     setTermo('');
@@ -196,8 +236,8 @@ function Busca({ radar }: { radar: Radar | null }) {
         <input
           type="search"
           value={termo}
-          placeholder="Buscar ativo, setor ou índice"
-          aria-label="Buscar ativo, setor ou índice"
+          placeholder="Buscar ativo, setor ou notícia"
+          aria-label="Buscar ativo, setor ou notícia"
           autoComplete="off"
           enterKeyHint="search"
           onChange={(e) => {
@@ -224,7 +264,9 @@ function Busca({ radar }: { radar: Radar | null }) {
       {mostrar && (
         <div className="busca-resultados" role="listbox" aria-label="Resultados da busca">
           {!radar && <p className="busca-vazio">Carregue um Radar para buscar.</p>}
-          {radar && !setores.length && !ativos.length && <p className="busca-vazio">Nada encontrado para “{termo}”.</p>}
+          {radar && !setores.length && !ativos.length && !noticias.length && (
+            <p className="busca-vazio">Nada encontrado para “{termo}”.</p>
+          )}
           {setores.map((s) => (
             <a
               key={s.setor}
@@ -239,6 +281,21 @@ function Busca({ radar }: { radar: Radar | null }) {
                 <span className="nm">{s.setor}</span>
               </span>
               <span className="z">{s.itens.length} ações</span>
+            </a>
+          ))}
+          {noticias.map((n) => (
+            <a
+              key={`n:${n.id}`}
+              role="option"
+              aria-selected="false"
+              className="busca-linha busca-noticia"
+              href={hrefRota('noticias', editoriaDe(n))}
+              onClick={fechar}
+            >
+              <span>
+                <span className="nm-noticia">{n.titulo}</span>
+                <BadgeEditoria slug={editoriaDe(n)} curto />
+              </span>
             </a>
           ))}
           {ativos.map((p) => (
@@ -361,7 +418,7 @@ export function MenuSuperior({
                     <div key={g.titulo} className="submenu-grupo">
                       <h6>{g.titulo}</h6>
                       {g.itens.map((f) => (
-                        <a key={f.href} href={f.href} onClick={() => setAberto(null)}>
+                        <a key={f.href} href={f.href} className={f.mudo ? 'dd-mudo' : undefined} onClick={() => setAberto(null)}>
                           <span>{f.nome}</span>
                           {f.direita}
                         </a>

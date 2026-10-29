@@ -1,6 +1,7 @@
 import type { Destaque, Fonte, Noticia, Radar } from '../schema/radar';
 import { compararEdicoes, horaEdicao, tipoEdicao, chaveEdicao } from './edicoes';
 import { normalizar } from './busca';
+import { editoriaDe } from '../dominio/editorias';
 
 /**
  * Fusão das notícias das edições de um dia (manhã + meio-dia).
@@ -53,6 +54,9 @@ type Comparavel = {
   id: string;
   titulo: string;
   categoria?: string | null;
+  editoria?: string | null;
+  resumo?: string;
+  o_que?: string;
   atualiza_id?: string | null;
   fontes: Fonte[];
 };
@@ -65,9 +69,10 @@ export function motivoMesma(a: Comparavel, b: Comparavel): 0 | 1 | 2 | 3 | 4 {
   if (a.id === b.id) return 2;
   const ua = urls(a);
   for (const u of urls(b)) if (ua.has(u)) return 3;
-  const ca = normalizar(a.categoria ?? '');
-  if (ca && ca === normalizar(b.categoria ?? '') && jaccard(palavrasTitulo(a.titulo), palavrasTitulo(b.titulo)) >= LIMIAR_TITULO)
-    return 4;
+  // Título parecido só conta dentro da mesma editoria (a do arquivo ou a equivalente da categoria legada).
+  const semClasse = (n: Comparavel) => !n.editoria && !n.categoria;
+  if (semClasse(a) && semClasse(b)) return 0;
+  if (editoriaDe(a) === editoriaDe(b) && jaccard(palavrasTitulo(a.titulo), palavrasTitulo(b.titulo)) >= LIMIAR_TITULO) return 4;
   return 0;
 }
 
@@ -173,9 +178,29 @@ export function fundirNoticias(edicoes: Radar[]): NoticiaFundida[] {
 
 export type FiltroNoticias = 'todas' | 'manha' | 'meio_dia' | 'novas';
 
-export function filtrarNoticias(lista: NoticiaFundida[], f: FiltroNoticias): NoticiaFundida[] {
+export function filtrarNoticias<T extends NoticiaFundida>(lista: T[], f: FiltroNoticias): T[] {
   if (f === 'manha') return lista.filter((n) => n.edicoes.includes('manha'));
   if (f === 'meio_dia') return lista.filter((n) => n.edicoes.includes('atualizacao_meio_dia'));
   if (f === 'novas') return lista.filter((n) => n.status !== 'original');
+  return lista;
+}
+
+/** Notícia de uma lista com a data da edição em que apareceu por último. */
+export type NoticiaListada = NoticiaFundida & { data: string };
+
+/**
+ * Notícias de vários dias (filtro "Últimos 7/30 dias"): junta as edições de cada dia e, entre dias,
+ * a mesma notícia (regra de `mesmaNoticia`) aparece uma vez só, na versão mais recente.
+ */
+export function noticiasDoPeriodo(dias: { data: string; edicoes: Radar[] }[]): NoticiaListada[] {
+  const lista: NoticiaListada[] = [];
+  for (const d of [...dias].sort((a, b) => a.data.localeCompare(b.data))) {
+    for (const n of fundirNoticias(d.edicoes)) {
+      const i = lista.findIndex((x) => mesmaNoticia(x.item, n.item));
+      const novo = { ...n, data: d.data };
+      if (i >= 0) lista[i] = novo;
+      else lista.push(novo);
+    }
+  }
   return lista;
 }

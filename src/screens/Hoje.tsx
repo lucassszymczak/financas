@@ -1,7 +1,8 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { useRadar, type Edicao } from '../state';
 import type { Radar } from '../schema/radar';
-import { fundirNoticias, filtrarNoticias, type FiltroNoticias, type NoticiaFundida } from '../lib/noticias';
+import { filtrarNoticias, noticiasDoPeriodo, type FiltroNoticias, type NoticiaListada } from '../lib/noticias';
+import { RadarPorEditoria, SeloFusao } from '../components/NoticiasEditoria';
 import { horaBR, horaEdicao, rotuloTipo } from '../lib/edicoes';
 import { CardNoticia } from '../components/CardNoticia';
 import { FaixaAlertas } from '../components/FaixaAlertas';
@@ -146,26 +147,25 @@ const FILTROS: [FiltroNoticias, string][] = [
   ['novas', 'Só novas/atualizadas'],
 ];
 
-function SeloFusao({ n }: { n: NoticiaFundida }) {
-  if (n.status === 'nova') return <span className="selo selo-destaque">Nova · {horaBR(n.horaSelo)}</span>;
-  if (n.status === 'atualizada') return <span className="selo selo-info">Atualizada às {horaBR(n.horaSelo)}</span>;
-  return null;
-}
-
-function Cartao({ n }: { n: NoticiaFundida }) {
+function Cartao({ n }: { n: NoticiaListada }) {
   const extras = { selo: <SeloFusao n={n} />, anteriores: n.anteriores };
   return n.tipo === 'noticia' ? <CardNoticia item={n.item} noticia {...extras} /> : <CardNoticia item={n.item} {...extras} />;
 }
 
-/** Destaques e notícias do dia: lista única das edições (manhã + meio-dia), com selos e filtros. */
+/**
+ * Destaques e notícias do dia: lista única das edições (manhã + meio-dia), com selos e filtros.
+ * Destaques primeiro; depois o "Radar por editoria", um bloco por editoria na ordem fixa.
+ */
 function NoticiasDoDia() {
-  const { vista } = useRadar();
+  const { vista, radar } = useRadar();
   const varias = vista.doDia.length > 1;
   const [filtro, setFiltro] = useState<FiltroNoticias>('todas');
-  const todas = useMemo(() => fundirNoticias(vista.doDia.map((e) => e.radar)), [vista.doDia]);
+  const todas = useMemo(
+    () => noticiasDoPeriodo([{ data: vista.data, edicoes: vista.doDia.map((e) => e.radar) }]),
+    [vista.data, vista.doDia],
+  );
   const lista = varias ? filtrarNoticias(todas, filtro) : todas;
   const destaques = lista.filter((n) => n.tipo === 'destaque');
-  const outras = lista.filter((n) => n.tipo === 'noticia');
   if (!todas.length) return null;
   return (
     <>
@@ -187,15 +187,7 @@ function NoticiasDoDia() {
           </div>
         </Secao>
       )}
-      {outras.length > 0 && (
-        <Secao titulo="Outras notícias" id="sec-noticias">
-          <div className="lista-cards">
-            {outras.map((n) => (
-              <Cartao key={n.chave} n={n} />
-            ))}
-          </div>
-        </Secao>
-      )}
+      <RadarPorEditoria itens={lista} semDestaque={radar.editorias_sem_destaque} />
       {varias && !lista.length && <p className="mudo">Nenhuma notícia neste filtro.</p>}
     </>
   );
@@ -240,6 +232,11 @@ export function Hoje() {
 
   return (
     <div className="tela">
+      {radar.edicao.exemplo && (
+        <p className="aviso-exemplo" role="note">
+          Edição de exemplo: notícias e números fictícios, só para demonstração.
+        </p>
+      )}
       {t && (
         <section className="termometro" aria-label="Termômetro do dia">
           <div className="termometro-topo">

@@ -34,6 +34,23 @@ const PARES: [string, string][] = [
   ['acento-texto', 'superficie'],
   ['destaque-texto', 'destaque'],
   ...['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'n0'].map((n): [string, string] => [`mapa-${n}-texto`, `mapa-${n}`]),
+  // Selo e filete das editorias sobre o fundo, o cartão e a superfície secundária.
+  ...[
+    'bancos-cooperativas',
+    'mercados',
+    'economia',
+    'business',
+    'financas-produtos',
+    'agro',
+    'tecnologia-energia',
+    'mundo',
+    'politica-regulacao',
+    'outras',
+  ].flatMap((e): [string, string][] => [
+    [`ed-${e}`, 'fundo'],
+    [`ed-${e}`, 'superficie'],
+    [`ed-${e}`, 'superficie-2'],
+  ]),
 ];
 
 describe('contraste WCAG AA (4,5:1) nos dois temas', () => {

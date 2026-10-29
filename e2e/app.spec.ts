@@ -326,7 +326,7 @@ test('menu superior, busca do topo, setores e fita', async ({ page }, info) => {
   await semRolagemHorizontal(page);
 
   // Busca do topo: ativos (inclusive do bloco amplo) e setores.
-  const busca = page.getByLabel('Buscar ativo, setor ou índice');
+  const busca = page.getByLabel('Buscar ativo, setor ou notícia');
   await busca.fill('financ');
   await expect(page.getByRole('listbox').getByRole('option', { name: /SETOR.*Financeiro/ })).toBeVisible();
   await busca.fill('wege');

@@ -61,6 +61,17 @@
   --mapa-b3-texto: #ffffff;
   --mapa-n0: #eceff3;
   --mapa-n0-texto: #4a5263;
+  /* Editorias das notícias: acento neutro (nunca verde/vermelho, que indicam alta/baixa). */
+  --ed-bancos-cooperativas: #33478f;
+  --ed-mercados: #1d5f7c;
+  --ed-economia: #5a4592;
+  --ed-business: #6b4f2e;
+  --ed-financas-produtos: #7f5c10;
+  --ed-agro: #6a5a1c;
+  --ed-tecnologia-energia: #215f6b;
+  --ed-mundo: #3d5875;
+  --ed-politica-regulacao: #6c3f6a;
+  --ed-outras: #545e6e;
 }
 
 :root[data-theme='dark'] {
@@ -112,6 +123,17 @@
   --mapa-b3-texto: #ffffff;
   --mapa-n0: #17243f;
   --mapa-n0-texto: #b4bdcf;
+  /* Editorias das notícias: acento neutro (nunca verde/vermelho, que indicam alta/baixa). */
+  --ed-bancos-cooperativas: #a9b9f0;
+  --ed-mercados: #8ccbe6;
+  --ed-economia: #c5b5ef;
+  --ed-business: #dbbf98;
+  --ed-financas-produtos: #e5c477;
+  --ed-agro: #d6c98a;
+  --ed-tecnologia-energia: #8fd3dc;
+  --ed-mundo: #a9bfd9;
+  --ed-politica-regulacao: #e2b4dd;
+  --ed-outras: #b9c1cf;
 }
 
 /* Faixa navy do topo (igual nos dois temas), fontes e escala tipográfica do manual. */
