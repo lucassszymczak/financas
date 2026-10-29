@@ -53,7 +53,15 @@ export function IndicadorRelevancia({ relevancia }: { relevancia?: Relevancia | 
 }
 
 /** Conteúdo completo de uma notícia ou destaque (usado no pop-up e no card da página Notícias). */
-export function DetalheNoticia({ item, anteriores, semVisivel = false }: { item: ItemNoticia; anteriores?: VersaoAnterior[]; semVisivel?: boolean }) {
+export function DetalheNoticia({
+  item,
+  anteriores,
+  semVisivel = false,
+}: {
+  item: ItemNoticia;
+  anteriores?: VersaoAnterior[];
+  semVisivel?: boolean;
+}) {
   const blocos: [string, string | null | undefined][] = ehNoticia(item)
     ? [['Por que importa', item.por_que_importa]]
     : [

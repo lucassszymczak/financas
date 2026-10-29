@@ -1,0 +1,644 @@
+{
+  "schema_version": "1.0",
+  "edicao": {
+    "data": "2026-01-15",
+    "dia_semana": "quinta",
+    "gerado_em": "2026-01-15T07:15:00-03:00",
+    "referencia_mercado": "Edição fictícia de demonstração",
+    "titulo": "Radar · EXEMPLO de notícias por editoria",
+    "exemplo": true
+  },
+  "termometro": {
+    "tom": "neutro",
+    "texto": "EXEMPLO FICTÍCIO: edição para demonstrar as notícias por editoria. Nada aqui é real."
+  },
+  "leitura_do_dia": "EXEMPLO FICTÍCIO. As notícias abaixo existem só para mostrar como o app organiza as editorias.",
+  "destaques": [
+    {
+      "id": "ex-dest-1",
+      "emoji": "📈",
+      "titulo": "Fluxo estrangeiro sustenta a bolsa",
+      "editoria": "mercados",
+      "categoria": "mercado",
+      "o_que": "Investidores de fora compram ações brasileiras pelo terceiro dia (exemplo fictício).",
+      "por_que": "Diferencial de juros atrai capital.",
+      "o_que_muda": "Câmbio tende a ficar mais comportado no curto prazo.",
+      "ativos_afetados": [
+        "Ibovespa",
+        "Dólar"
+      ],
+      "impacto": "positivo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/destaque/1",
+          "nota": 4
+        }
+      ],
+      "hora": "07:15",
+      "relevancia": {
+        "mercado": 3,
+        "sistema_financeiro": 2,
+        "regiao_agro": 0,
+        "novidade": 2,
+        "total": 7
+      }
+    },
+    {
+      "id": "ex-dest-2",
+      "emoji": "🌾",
+      "titulo": "Chuvas favorecem o plantio no Sul",
+      "editoria": "agro",
+      "o_que": "Volumes regulares de chuva melhoram a umidade do solo (exemplo fictício).",
+      "por_que": "Frente fria trouxe chuva bem distribuída.",
+      "o_que_muda": "Plantio de soja deve ganhar ritmo.",
+      "ativos_afetados": [
+        "Soja",
+        "Milho"
+      ],
+      "impacto": "positivo",
+      "horizonte": "semanas",
+      "confianca": "alta",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/destaque/2",
+          "nota": 4
+        }
+      ],
+      "hora": "07:15",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 0,
+        "regiao_agro": 3,
+        "novidade": 2,
+        "total": 6
+      }
+    },
+    {
+      "id": "ex-dest-3",
+      "emoji": "🏛️",
+      "titulo": "Regra fiscal volta ao centro do debate",
+      "editoria": "politica_regulacao",
+      "o_que": "Proposta fictícia muda o limite de gastos e divide o Congresso.",
+      "por_que": "Pressão por mais despesas em ano eleitoral.",
+      "o_que_muda": "Prêmio de risco pode subir na curva de juros.",
+      "ativos_afetados": [
+        "Juros"
+      ],
+      "impacto": "negativo",
+      "horizonte": "meses",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/destaque/3",
+          "nota": 4
+        }
+      ],
+      "hora": "07:15",
+      "relevancia": {
+        "mercado": 3,
+        "sistema_financeiro": 2,
+        "regiao_agro": 1,
+        "novidade": 2,
+        "total": 8
+      },
+      "canal_transmissao": "fiscal → prêmio de risco"
+    }
+  ],
+  "noticias": [
+    {
+      "id": "ex-bancos_cooperativas-1",
+      "emoji": "🏦",
+      "titulo": "Cooperativas de crédito ampliam linhas para capital de giro",
+      "editoria": "bancos_cooperativas",
+      "resumo": "Sistema cooperativo anuncia mais recursos para pequenas empresas no trimestre (exemplo fictício).",
+      "por_que_importa": "Mais crédito para PMEs tende a sustentar a atividade regional.",
+      "ativos_afetados": [
+        "Cooperativas",
+        "Crédito"
+      ],
+      "impacto": "positivo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/bancos_cooperativas/1",
+          "nota": 4
+        }
+      ],
+      "hora": "07:05",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 3,
+        "regiao_agro": 2,
+        "novidade": 2,
+        "total": 8
+      }
+    },
+    {
+      "id": "ex-bancos_cooperativas-2",
+      "emoji": "🏛️",
+      "titulo": "Banco Central publica nova regra de provisão para inadimplência",
+      "editoria": "bancos_cooperativas",
+      "resumo": "Norma fictícia muda o cálculo de provisões a partir do próximo ano.",
+      "por_que_importa": "Pode reduzir a volatilidade do lucro dos bancos.",
+      "ativos_afetados": [
+        "Bancos"
+      ],
+      "impacto": "misto",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/bancos_cooperativas/2",
+          "nota": 4
+        }
+      ],
+      "hora": "06:40",
+      "relevancia": {
+        "mercado": 2,
+        "sistema_financeiro": 3,
+        "regiao_agro": 0,
+        "novidade": 2,
+        "total": 7
+      }
+    },
+    {
+      "id": "ex-bancos_cooperativas-3",
+      "emoji": "💳",
+      "titulo": "Inadimplência das famílias fica estável no mês",
+      "editoria": "bancos_cooperativas",
+      "resumo": "Indicador de atraso acima de 90 dias não muda em relação ao mês anterior (exemplo).",
+      "por_que_importa": "Estabilidade alivia a pressão sobre o crédito ao consumo.",
+      "ativos_afetados": [
+        "Bancos"
+      ],
+      "impacto": "neutro",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/bancos_cooperativas/3",
+          "nota": 4
+        }
+      ],
+      "hora": "06:55",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 2,
+        "regiao_agro": 0,
+        "novidade": 1,
+        "total": 4
+      }
+    },
+    {
+      "id": "ex-mercados-1",
+      "emoji": "📈",
+      "titulo": "Bolsa abre em alta com fluxo estrangeiro",
+      "editoria": "mercados",
+      "resumo": "Índice doméstico sobe na abertura puxado por papéis de commodities (exemplo fictício).",
+      "por_que_importa": "Fluxo externo positivo costuma sustentar o câmbio.",
+      "ativos_afetados": [
+        "Ibovespa",
+        "Dólar"
+      ],
+      "impacto": "positivo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/mercados/1",
+          "nota": 4
+        }
+      ],
+      "hora": "10:20",
+      "relevancia": {
+        "mercado": 3,
+        "sistema_financeiro": 1,
+        "regiao_agro": 0,
+        "novidade": 2,
+        "total": 6
+      }
+    },
+    {
+      "id": "ex-mercados-2",
+      "emoji": "💵",
+      "titulo": "Dólar recua com apetite por risco",
+      "editoria": "mercados",
+      "resumo": "Moeda americana cai frente às emergentes em dia de agenda fraca (exemplo).",
+      "por_que_importa": "Câmbio mais baixo alivia custos de importação.",
+      "ativos_afetados": [
+        "Dólar"
+      ],
+      "impacto": "positivo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/mercados/2",
+          "nota": 4
+        }
+      ],
+      "hora": "09:45",
+      "relevancia": {
+        "mercado": 3,
+        "sistema_financeiro": 1,
+        "regiao_agro": 1,
+        "novidade": 1,
+        "total": 6
+      }
+    },
+    {
+      "id": "ex-mercados-3",
+      "emoji": "📉",
+      "titulo": "Juros futuros sobem na ponta longa",
+      "editoria": "mercados",
+      "resumo": "Taxas de vencimentos longos avançam com cautela fiscal (exemplo fictício).",
+      "por_que_importa": "Encarece o crédito de prazo longo e pesa sobre ações de crescimento.",
+      "ativos_afetados": [
+        "DI futuro"
+      ],
+      "impacto": "negativo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/mercados/3",
+          "nota": 4
+        }
+      ],
+      "hora": "10:05",
+      "relevancia": {
+        "mercado": 3,
+        "sistema_financeiro": 2,
+        "regiao_agro": 0,
+        "novidade": 1,
+        "total": 6
+      }
+    },
+    {
+      "id": "ex-economia-1",
+      "emoji": "🧮",
+      "titulo": "Prévia da inflação desacelera no mês",
+      "editoria": "economia",
+      "resumo": "Índice fictício de preços mostra alta menor que a do mês anterior.",
+      "por_que_importa": "Abre espaço para juros menores mais à frente.",
+      "ativos_afetados": [
+        "Juros"
+      ],
+      "impacto": "positivo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/economia/1",
+          "nota": 4
+        }
+      ],
+      "hora": "08:30",
+      "relevancia": {
+        "mercado": 2,
+        "sistema_financeiro": 2,
+        "regiao_agro": 0,
+        "novidade": 2,
+        "total": 6
+      }
+    },
+    {
+      "id": "ex-economia-2",
+      "emoji": "🏭",
+      "titulo": "Produção industrial recua no trimestre",
+      "editoria": "economia",
+      "resumo": "Dados de exemplo apontam queda em bens de capital.",
+      "por_que_importa": "Sinaliza investimento mais fraco.",
+      "ativos_afetados": [],
+      "impacto": "negativo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/economia/2",
+          "nota": 4
+        }
+      ],
+      "hora": "08:10",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 1,
+        "regiao_agro": 0,
+        "novidade": 1,
+        "total": 3
+      }
+    },
+    {
+      "id": "ex-business-1",
+      "emoji": "🏢",
+      "titulo": "Varejista anuncia fechamento de lojas deficitárias",
+      "editoria": "business",
+      "resumo": "Empresa fictícia vai concentrar operações no comércio on-line.",
+      "por_que_importa": "Reestruturação pode melhorar margens no médio prazo.",
+      "ativos_afetados": [],
+      "impacto": "misto",
+      "horizonte": "meses",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/business/1",
+          "nota": 4
+        }
+      ],
+      "hora": "07:40",
+      "relevancia": {
+        "mercado": 2,
+        "sistema_financeiro": 0,
+        "regiao_agro": 0,
+        "novidade": 2,
+        "total": 4
+      }
+    },
+    {
+      "id": "ex-business-2",
+      "emoji": "🤝",
+      "titulo": "Fusão entre duas empresas de logística é aprovada",
+      "editoria": "business",
+      "resumo": "Negócio fictício cria um dos maiores grupos do setor.",
+      "por_que_importa": "Mais escala pode reduzir fretes para o agro.",
+      "ativos_afetados": [
+        "Logística"
+      ],
+      "impacto": "positivo",
+      "horizonte": "meses",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/business/2",
+          "nota": 4
+        }
+      ],
+      "hora": "07:20",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 0,
+        "regiao_agro": 2,
+        "novidade": 2,
+        "total": 5
+      }
+    },
+    {
+      "id": "ex-financas_produtos-1",
+      "emoji": "💰",
+      "titulo": "Procura por títulos isentos cresce entre pessoas físicas",
+      "editoria": "financas_produtos",
+      "resumo": "Captação fictícia de LCA e LCI sobe no ano.",
+      "por_que_importa": "Mostra demanda por renda fixa com isenção.",
+      "ativos_afetados": [
+        "LCA",
+        "LCI"
+      ],
+      "impacto": "neutro",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/financas_produtos/1",
+          "nota": 4
+        }
+      ],
+      "hora": "06:50",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 2,
+        "regiao_agro": 1,
+        "novidade": 1,
+        "total": 5
+      }
+    },
+    {
+      "id": "ex-financas_produtos-2",
+      "emoji": "🛡️",
+      "titulo": "Seguradoras lançam planos para o produtor rural",
+      "editoria": "financas_produtos",
+      "resumo": "Produtos fictícios cobrem quebra de safra por clima.",
+      "por_que_importa": "Reduz o risco de renda no campo.",
+      "ativos_afetados": [
+        "Seguro rural"
+      ],
+      "impacto": "positivo",
+      "horizonte": "meses",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/financas_produtos/2",
+          "nota": 4
+        }
+      ],
+      "hora": "06:30",
+      "relevancia": {
+        "mercado": 0,
+        "sistema_financeiro": 1,
+        "regiao_agro": 3,
+        "novidade": 2,
+        "total": 6
+      }
+    },
+    {
+      "id": "ex-agro-1",
+      "emoji": "🌾",
+      "titulo": "Plantio de soja avança no Paraná",
+      "editoria": "agro",
+      "resumo": "Levantamento fictício indica ritmo acima da média de cinco anos.",
+      "por_que_importa": "Plantio no prazo reduz risco para a segunda safra.",
+      "ativos_afetados": [
+        "Soja"
+      ],
+      "impacto": "positivo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/agro/1",
+          "nota": 4
+        }
+      ],
+      "hora": "07:10",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 0,
+        "regiao_agro": 3,
+        "novidade": 2,
+        "total": 6
+      }
+    },
+    {
+      "id": "ex-agro-2",
+      "emoji": "🌽",
+      "titulo": "Milho tem demanda firme para etanol",
+      "editoria": "agro",
+      "resumo": "Usinas fictícias ampliam compras no mercado físico.",
+      "por_que_importa": "Sustenta preços regionais do grão.",
+      "ativos_afetados": [
+        "Milho"
+      ],
+      "impacto": "positivo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/agro/2",
+          "nota": 4
+        }
+      ],
+      "hora": "07:30",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 0,
+        "regiao_agro": 3,
+        "novidade": 1,
+        "total": 5
+      }
+    },
+    {
+      "id": "ex-agro-3",
+      "emoji": "🐂",
+      "titulo": "Arroba do boi estável nas praças paulistas",
+      "editoria": "agro",
+      "resumo": "Escalas de abate confortáveis seguram as cotações (exemplo).",
+      "por_que_importa": "Margem do confinamento segue apertada.",
+      "ativos_afetados": [
+        "Boi gordo"
+      ],
+      "impacto": "neutro",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/agro/3",
+          "nota": 4
+        }
+      ],
+      "hora": "06:45",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 0,
+        "regiao_agro": 2,
+        "novidade": 1,
+        "total": 4
+      }
+    },
+    {
+      "id": "ex-mundo-1",
+      "emoji": "🌍",
+      "titulo": "Banco central europeu mantém juros e sinaliza cautela",
+      "editoria": "mundo",
+      "resumo": "Comunicado fictício indica decisões reunião a reunião.",
+      "por_que_importa": "Juros externos estáveis reduzem pressão sobre emergentes.",
+      "ativos_afetados": [
+        "Euro"
+      ],
+      "impacto": "neutro",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/mundo/1",
+          "nota": 4
+        }
+      ],
+      "hora": "05:50",
+      "relevancia": {
+        "mercado": 2,
+        "sistema_financeiro": 2,
+        "regiao_agro": 0,
+        "novidade": 1,
+        "total": 5
+      }
+    },
+    {
+      "id": "ex-mundo-2",
+      "emoji": "🚢",
+      "titulo": "Frete marítimo sobe com congestionamento em portos asiáticos",
+      "editoria": "mundo",
+      "resumo": "Índice fictício de fretes avança na semana.",
+      "por_que_importa": "Encarece importação de fertilizantes.",
+      "ativos_afetados": [
+        "Fertilizantes"
+      ],
+      "impacto": "negativo",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/mundo/2",
+          "nota": 4
+        }
+      ],
+      "hora": "06:15",
+      "relevancia": {
+        "mercado": 1,
+        "sistema_financeiro": 0,
+        "regiao_agro": 2,
+        "novidade": 2,
+        "total": 5
+      }
+    },
+    {
+      "id": "ex-politica_regulacao-1",
+      "emoji": "🏛️",
+      "titulo": "Câmara aprova projeto de lei que altera regras fiscais",
+      "editoria": "politica_regulacao",
+      "resumo": "Texto fictício segue para o Senado com mudanças no limite de gastos.",
+      "por_que_importa": "Mudança fiscal mexe com a percepção de risco do país.",
+      "ativos_afetados": [
+        "Juros",
+        "Dólar"
+      ],
+      "impacto": "misto",
+      "horizonte": "dias",
+      "confianca": "media",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/politica_regulacao/1",
+          "nota": 4
+        }
+      ],
+      "hora": "11:00",
+      "relevancia": {
+        "mercado": 3,
+        "sistema_financeiro": 2,
+        "regiao_agro": 1,
+        "novidade": 3,
+        "total": 9
+      },
+      "canal_transmissao": "fiscal → curva de juros"
+    }
+  ],
+  "editorias_sem_destaque": [
+    "tecnologia_energia"
+  ],
+  "limitacoes": [
+    "Edição fictícia: notícias, fontes e números inventados para demonstração."
+  ],
+  "aviso": "Material de demonstração. Não é recomendação de investimento."
+}

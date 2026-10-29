@@ -9,6 +9,7 @@ import {
   LIMIAR_TITULO,
   mesmaNoticia,
   motivoMesma,
+  noticiasDoPeriodo,
   normalizarUrl,
   palavrasTitulo,
 } from './noticias';
@@ -54,7 +55,9 @@ describe('mesmaNoticia (regra de fusão)', () => {
     expect(mesmaNoticia(brasil, { ...politica, editoria: 'economia' })).toBe(false);
   });
   it('4: sem editoria nem categoria, título parecido não basta', () => {
-    expect(mesmaNoticia(n({ id: 'a', titulo: 'Copom mantém a Selic' }), n({ id: 'b', titulo: 'Copom mantém a Selic' }))).toBe(false);
+    expect(mesmaNoticia(n({ id: 'a', titulo: 'Copom mantém a Selic' }), n({ id: 'b', titulo: 'Copom mantém a Selic' }))).toBe(
+      false,
+    );
   });
   it('títulos diferentes não fundem', () => {
     expect(
@@ -109,5 +112,20 @@ describe('fusão das notícias do dia', () => {
     ).toEqual(['atualizada', 'nova']);
     expect(filtrarNoticias(lista, 'meio_dia')).toHaveLength(2);
     expect(filtrarNoticias(lista, 'manha').some((x) => x.item.id === 'exemplo-nova-1230')).toBe(false);
+  });
+});
+
+describe('notícias de vários dias', () => {
+  it('a mesma notícia em dias diferentes aparece uma vez, na versão mais recente', () => {
+    const d1 = radarSchema.parse({
+      ...manha,
+      edicao: { ...manha.edicao, data: '2026-10-20', gerado_em: '2026-10-20T07:15:00-03:00' },
+    });
+    const l = noticiasDoPeriodo([
+      { data: '2026-10-21', edicoes: [rM] },
+      { data: '2026-10-20', edicoes: [d1] },
+    ]);
+    expect(l).toHaveLength(fundirNoticias([rM]).length);
+    expect(l.every((n) => n.data === '2026-10-21')).toBe(true);
   });
 });

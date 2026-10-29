@@ -36,7 +36,9 @@ export function Noticias({ sub }: { sub: string | null }) {
     if (periodo <= 1) return noticiasDoPeriodo([{ data: vista.data, edicoes: vista.doDia.map((e) => e.radar) }]);
     const inicio = somaDias(vista.data, -(periodo - 1));
     return noticiasDoPeriodo(
-      dias.filter((d) => d.data >= inicio && d.data <= vista.data).map((d) => ({ data: d.data, edicoes: d.edicoes.map((e) => e.radar) })),
+      dias
+        .filter((d) => d.data >= inicio && d.data <= vista.data)
+        .map((d) => ({ data: d.data, edicoes: d.edicoes.map((e) => e.radar) })),
     );
   }, [periodo, vista, dias]);
 

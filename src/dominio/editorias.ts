@@ -185,7 +185,10 @@ export type GrupoEditoria<T> = { editoria: Editoria; itens: T[]; semDestaque: bo
  * Agrupa por editoria na ordem fixa. As 9 editorias aparecem sempre (vazias também: a ausência é informação);
  * `outras` só quando tiver itens. Em desenvolvimento, avisa quando uma editoria passa de 4 itens (sem cortar).
  */
-export function agruparPorEditoria<T extends { item: ComEditoria }>(itens: T[], semDestaque: readonly string[] = []): GrupoEditoria<T>[] {
+export function agruparPorEditoria<T extends { item: ComEditoria }>(
+  itens: T[],
+  semDestaque: readonly string[] = [],
+): GrupoEditoria<T>[] {
   const mapa = new Map<EditoriaSlug, T[]>(EDITORIAS.map((e) => [e.slug, []]));
   for (const x of itens) mapa.get(editoriaDe(x.item))!.push(x);
   if (import.meta.env.DEV) {

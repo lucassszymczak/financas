@@ -37,7 +37,8 @@ const editoria = z
   .optional();
 
 /** Nota de relevância de 0 a 3 (total de 0 a 12). */
-const notaRelevancia = (max: number) => z.number().int('nota inteira').min(0).max(max, `nota máxima é ${max}`).nullable().optional();
+const notaRelevancia = (max: number) =>
+  z.number().int('nota inteira').min(0).max(max, `nota máxima é ${max}`).nullable().optional();
 
 export const relevanciaSchema = z.object({
   mercado: notaRelevancia(3),

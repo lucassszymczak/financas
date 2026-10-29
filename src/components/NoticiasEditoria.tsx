@@ -13,14 +13,7 @@ import { diaMes } from '../lib/formato';
 import { gravarLocal, lerLocal } from '../lib/local';
 import { hrefRota } from '../router';
 import { Selo } from './Basicos';
-import {
-  BadgeEditoria,
-  DetalheNoticia,
-  estiloEditoria,
-  IndicadorRelevancia,
-  textoVisivel,
-  TituloNoticia,
-} from './CardNoticia';
+import { BadgeEditoria, DetalheNoticia, estiloEditoria, IndicadorRelevancia, textoVisivel, TituloNoticia } from './CardNoticia';
 import { Modal } from './Modal';
 
 /** Selo da fusão do dia ("Nova · 12h05", "Atualizada às 12h20"). */

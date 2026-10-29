@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0",
+  "edicao": {
+    "data": "2026-01-14",
+    "dia_semana": "quarta",
+    "gerado_em": "2026-01-14T07:15:00-03:00",
+    "referencia_mercado": "Edição fictícia no formato antigo",
+    "titulo": "Radar · EXEMPLO no formato antigo (só categoria)"
+  },
+  "termometro": {
+    "tom": "neutro",
+    "texto": "EXEMPLO FICTÍCIO no formato antigo: as notícias têm só a categoria, e o app deduz a editoria."
+  },
+  "destaques": [
+    {
+      "id": "leg-dest-1",
+      "emoji": "📈",
+      "titulo": "Bolsa renova máxima do ano",
+      "categoria": "mercado",
+      "o_que": "Índice fictício sobe pelo quinto pregão seguido.",
+      "por_que": "Fluxo estrangeiro e juros externos em queda.",
+      "o_que_muda": "Melhora o humor para ofertas de ações.",
+      "ativos_afetados": [
+        "Ibovespa"
+      ],
+      "impacto": "positivo",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/legado-dest/1",
+          "nota": 4
+        }
+      ]
+    }
+  ],
+  "noticias": [
+    {
+      "id": "leg-1",
+      "emoji": "📈",
+      "titulo": "Bolsa fecha em alta com bancos",
+      "data": "2026-01-13",
+      "categoria": "mercado",
+      "resumo": "Ações de bancos lideram os ganhos do dia (exemplo fictício).",
+      "por_que_importa": "Setor tem grande peso no índice.",
+      "ativos_afetados": [
+        "Ibovespa"
+      ],
+      "impacto": "positivo",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/legado/1",
+          "nota": 4
+        }
+      ]
+    },
+    {
+      "id": "leg-2",
+      "emoji": "🌍",
+      "titulo": "Juros longos americanos recuam",
+      "data": "2026-01-13",
+      "categoria": "mundo",
+      "resumo": "Rendimento dos títulos de prazo longo cai com dados fracos (exemplo).",
+      "por_que_importa": "Alivia a pressão sobre emergentes.",
+      "impacto": "positivo",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/legado/2",
+          "nota": 4
+        }
+      ]
+    },
+    {
+      "id": "leg-3",
+      "emoji": "🌾",
+      "titulo": "Colheita de trigo chega ao fim no Paraná",
+      "data": "2026-01-13",
+      "categoria": "agro",
+      "resumo": "Produtividade fictícia fica acima da média.",
+      "por_que_importa": "Oferta maior pressiona preços regionais.",
+      "impacto": "misto",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/legado/3",
+          "nota": 4
+        }
+      ]
+    },
+    {
+      "id": "leg-4",
+      "emoji": "🏛️",
+      "titulo": "Senado aprova PEC que muda regra de precatórios",
+      "data": "2026-01-13",
+      "categoria": "brasil",
+      "resumo": "Texto fictício segue para promulgação no Congresso.",
+      "por_que_importa": "Mexe com o espaço fiscal do governo.",
+      "impacto": "misto",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/legado/4",
+          "nota": 4
+        }
+      ]
+    },
+    {
+      "id": "leg-5",
+      "emoji": "🧮",
+      "titulo": "Varejo cresce acima do esperado",
+      "data": "2026-01-13",
+      "categoria": "brasil",
+      "resumo": "Vendas fictícias sobem puxadas por supermercados.",
+      "por_que_importa": "Atividade mais forte pode atrasar cortes de juros.",
+      "impacto": "misto",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/legado/5",
+          "nota": 4
+        }
+      ]
+    },
+    {
+      "id": "leg-6",
+      "emoji": "🗞️",
+      "titulo": "Feira de tecnologia reúne startups do agro",
+      "data": "2026-01-13",
+      "categoria": "eventos",
+      "resumo": "Evento fictício apresenta soluções de monitoramento de lavouras.",
+      "impacto": "neutro",
+      "fontes": [
+        {
+          "nome": "Agência Exemplo",
+          "url": "https://exemplo.com.br/legado/6",
+          "nota": 4
+        }
+      ]
+    }
+  ],
+  "limitacoes": [
+    "Edição fictícia no formato antigo, para testar a compatibilidade."
+  ]
+}

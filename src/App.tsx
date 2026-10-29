@@ -58,7 +58,10 @@ export function tituloRota(r: Rota, radar: Radar | null): { caminho: string; tit
     case 'hoje':
       return { caminho: 'Hoje', titulo: radar ? `Radar de ${diaMes(radar.edicao.data)}` : 'Hoje' };
     case 'noticias':
-      return { caminho: 'Notícias', titulo: ehEditoria(r.sub) ? `${editoria(r.sub).icone} ${editoria(r.sub).rotulo}` : 'Todas as notícias' };
+      return {
+        caminho: 'Notícias',
+        titulo: ehEditoria(r.sub) ? `${editoria(r.sub).icone} ${editoria(r.sub).rotulo}` : 'Todas as notícias',
+      };
     case 'mercado':
       if (r.sub === 'setores') return { caminho: 'Mercado › Setores', titulo: r.arg ?? 'Mapa setorial' };
       return { caminho: 'Mercado', titulo: cat?.nome ?? 'Visão geral' };
