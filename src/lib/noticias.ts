@@ -178,7 +178,7 @@ export function fundirNoticias(edicoes: Radar[]): NoticiaFundida[] {
 
 export type FiltroNoticias = 'todas' | 'manha' | 'meio_dia' | 'novas';
 
-export function filtrarNoticias(lista: NoticiaFundida[], f: FiltroNoticias): NoticiaFundida[] {
+export function filtrarNoticias<T extends NoticiaFundida>(lista: T[], f: FiltroNoticias): T[] {
   if (f === 'manha') return lista.filter((n) => n.edicoes.includes('manha'));
   if (f === 'meio_dia') return lista.filter((n) => n.edicoes.includes('atualizacao_meio_dia'));
   if (f === 'novas') return lista.filter((n) => n.status !== 'original');

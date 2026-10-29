@@ -123,9 +123,12 @@ export function RadarPorEditoria({
   };
   return (
     <section className="secao radar-editorias" aria-labelledby="titulo-radar-editorias">
-      <h2 id="titulo-radar-editorias" className="secao-titulo">
-        Radar por editoria
-      </h2>
+      <div className="secao-topo">
+        <h2 id="titulo-radar-editorias">Radar por editoria</h2>
+        <a className="painel-mais" href={hrefRota('noticias')}>
+          Todas as notícias →
+        </a>
+      </div>
       <div className="blocos-editoria">
         {grupos.map(({ editoria: e, itens: doGrupo }) => {
           const lista = ordenarNoticias(doGrupo.filter((x) => x.tipo !== 'destaque')).slice(0, MAX_NO_BLOCO);
