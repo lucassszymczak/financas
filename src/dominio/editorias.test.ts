@@ -25,6 +25,7 @@ describe('editoriaDe', () => {
     expect(editoriaDe({ categoria: 'mercado' })).toBe('mercados');
     expect(editoriaDe({ categoria: 'Mundo' })).toBe('mundo');
     expect(editoriaDe({ categoria: 'agro' })).toBe('agro');
+    expect(editoriaDe({ categoria: 'politica' })).toBe('politica_regulacao');
     expect(editoriaDe({ categoria: 'eventos' })).toBe('outras');
     expect(editoriaDe({})).toBe('outras');
   });

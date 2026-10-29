@@ -112,7 +112,7 @@ A partir da edição de 29/10/2026, cada notícia traz a **editoria**: Bancos e 
 - **Tela Hoje:** os Destaques continuam primeiro. Depois vem o **Radar por editoria**, com um bloco por editoria trazendo até 2 notícias e "Ver todas (N) →".
   - Os blocos recolhem com um toque e o aparelho lembra a escolha.
   - Editoria sem notícia aparece como uma linha cinza, porque a ausência também é informação.
-- **Edições antigas** (só `categoria`) continuam funcionando: o app deduz a editoria (mercado → Mercados, mundo → Mundo, agro → Agro, brasil → Economia ou Política e regulação). A regra está em [docs/schema.md](docs/schema.md#editorias).
+- **Edições antigas** (só `categoria`) continuam funcionando: o app deduz a editoria (mercado → Mercados, mundo → Mundo, agro → Agro, politica → Política e regulação, brasil → Economia ou Política e regulação). A regra está em [docs/schema.md](docs/schema.md#editorias).
 - **Para testar:** carregue `public/exemplos/radar_exemplo_editorias.json` (formato novo, fictício, com uma editoria sem destaque) e `public/exemplos/radar_exemplo_legado.json` (formato antigo). Elas têm datas de janeiro de 2026: abra pelo **Histórico** se já houver edições mais recentes.
 
 ### Logos e bandeiras

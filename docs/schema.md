@@ -302,6 +302,7 @@ A partir de 29/10/2026, cada notícia (e cada destaque, quando houver) traz `edi
 | `mercado` | `mercados` |
 | `mundo` | `mundo` |
 | `agro` | `agro` |
+| `politica` | `politica_regulacao` |
 | `brasil` | `politica_regulacao` se o título ou o resumo falar de Câmara, Senado, STF, PEC, projeto de lei, Congresso, eleição, ministro, Planalto, MP ou decreto; senão `economia` |
 | qualquer outra | `outras` |
 

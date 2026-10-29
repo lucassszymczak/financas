@@ -127,6 +127,9 @@ export function editoriaDe(item: ComEditoria): EditoriaSlug {
       return 'mundo';
     case 'agro':
       return 'agro';
+    // As edições antigas também usam "politica" (não estava na lista original de categorias).
+    case 'politica':
+      return 'politica_regulacao';
     case 'brasil': {
       const t = normalizar(`${item.titulo ?? ''} ${item.resumo ?? item.o_que ?? ''}`);
       return POLITICA.test(t) ? 'politica_regulacao' : 'economia';
