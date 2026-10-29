@@ -280,7 +280,7 @@ Viram os ativos `SELIC`, `CDI` e `IPCA12M` no Mercado e pré-preenchem as calcul
 
 ## Editorias
 
-A partir de 29/10/2026, cada notícia (e cada destaque, quando houver) traz `editoria`. A ordem abaixo é a de exibição no menu **Notícias**, na página `/noticias` e no bloco "Radar por editoria" da tela Hoje.
+A partir de 29/10/2026, cada notícia (e cada destaque, quando houver) traz `editoria`. A ordem abaixo é a de exibição no menu **Notícias**, na página `/noticias` e no bloco "Radar por assunto" da tela Hoje.
 
 | Ordem | Slug | Rótulo | Ícone |
 |---|---|---|---|

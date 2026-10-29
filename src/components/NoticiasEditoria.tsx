@@ -25,9 +25,9 @@ export function SeloFusao({ n }: { n: NoticiaListada }) {
 
 /** Texto do estado vazio de uma editoria. */
 export function textoVazio(slug: EditoriaSlug, semDestaque: readonly string[] | null | undefined): string {
-  if (semDestaque?.includes(slug)) return 'Sem destaques relevantes hoje nesta editoria.';
-  if (!semDestaque) return 'Nenhuma notícia classificada nesta editoria nesta edição.';
-  return 'Nenhuma notícia nesta editoria no período.';
+  if (semDestaque?.includes(slug)) return 'Sem destaques relevantes hoje neste assunto.';
+  if (!semDestaque) return 'Nenhuma notícia classificada neste assunto nesta edição.';
+  return 'Nenhuma notícia neste assunto no período.';
 }
 
 /** Card completo da página Notícias: tudo visível, sem precisar abrir. */
@@ -91,7 +91,7 @@ const CHAVE_ABERTAS = 'radar.editorias.abertas';
 const MAX_NO_BLOCO = 2;
 
 /**
- * "Radar por editoria" da tela Hoje: um bloco por editoria, na ordem fixa, com até 2 notícias (as mais
+ * "Radar por assunto" da tela Hoje: um bloco por assunto, na ordem fixa, com até 2 notícias (as mais
  * relevantes, sem repetir os destaques) e o link "Ver todas". Editoria vazia vira uma linha cinza.
  * Blocos recolhíveis; o estado de cada um fica lembrado neste aparelho.
  */
@@ -117,7 +117,7 @@ export function RadarPorEditoria({
   return (
     <section className="secao radar-editorias" aria-labelledby="titulo-radar-editorias">
       <div className="secao-topo">
-        <h2 id="titulo-radar-editorias">Radar por editoria</h2>
+        <h2 id="titulo-radar-editorias">Radar por assunto</h2>
         <a className="painel-mais" href={hrefRota('noticias')}>
           Todas as notícias →
         </a>
