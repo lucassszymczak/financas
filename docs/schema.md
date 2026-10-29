@@ -29,7 +29,8 @@ Legenda das tabelas: **Obrig.** = obrigatório. "Pode ser null" = aceita `null`.
 | `edicao` | objeto | sim | ver [edicao](#edicao) |
 | `termometro` | objeto | não, pode ser null | ver [termometro](#termometro) |
 | `destaques` | lista de [destaque](#destaques) | não | 3 a 5 itens costuma funcionar bem |
-| `noticias` | lista de [noticia](#noticias) | não | |
+| `noticias` | lista de [noticia](#noticias) | não | A partir de 29/10/2026: de 15 a 25 itens, no máximo 4 por editoria. |
+| `editorias_sem_destaque` | lista de texto | não, pode ser null | Slugs das [editorias](#editorias) sem notícia relevante no dia (ex.: `["tecnologia_energia"]`). Slugs desconhecidos são descartados. |
 | `leitura_do_dia` | texto | não, pode ser null | Parágrafo curto, aparece como "🧠 Leitura do dia". |
 | `leituras_secao` | objeto texto→texto | não, pode ser null | ver [leituras_secao](#leituras_secao) |
 | `cotacoes` | lista de [cotação](#cotacoes) | não | |
@@ -80,6 +81,9 @@ Cada item vira um card expansível. Visível: `titulo` + `o_que`. Ao expandir: `
 | `hora` | hora | não, pode ser null | `"12:05"`: hora da notícia. Sem ela, o app usa a hora do `gerado_em` da edição (em Brasília) e, sem isso, 07h15. |
 | `atualiza_id` | texto | não, pode ser null | Numa edição posterior, o `id` do item da manhã que este atualiza. Normalmente o item mantém o mesmo `id` e traz também `atualiza_id`. |
 | `atualizado_em` | hora | não, pode ser null | `"12:20"`: hora da atualização, mostrada no selo "Atualizada às 12h20". |
+| `editoria` | texto | não, pode ser null | Slug da [editoria](#editorias) (ex.: `"mercados"`). Valor desconhecido não invalida o arquivo: vira `outras`. Sem ele, a editoria sai da `categoria`. |
+| `relevancia` | objeto | não, pode ser null | `{ "mercado": 3, "sistema_financeiro": 2, "regiao_agro": 0, "novidade": 3, "total": 8 }`: notas inteiras de 0 a 3 e `total` de 0 a 12. Ordena as notícias; sem ela, o app não mostra nota nenhuma. |
+| `canal_transmissao` | texto | não, pode ser null | Só em `politica_regulacao`: por onde a notícia chega ao mercado (ex.: `"fiscal → curva de juros"`). |
 
 ## `noticias`
 
@@ -96,6 +100,7 @@ Mesmo card dos destaques, com outros nomes de campo.
 | `por_que_importa` | texto | não, pode ser null | Aparece ao expandir. |
 | `ativos_afetados`, `impacto`, `horizonte`, `confianca`, `fontes` | | não | Iguais aos de `destaques`. |
 | `hora`, `atualiza_id`, `atualizado_em` | | não | Iguais aos de `destaques`. |
+| `editoria`, `relevancia`, `canal_transmissao` | | não | Iguais aos de `destaques` (ver [Editorias](#editorias)). |
 
 ### `fonte`
 
@@ -273,6 +278,35 @@ Viram os ativos `SELIC`, `CDI` e `IPCA12M` no Mercado e pré-preenchem as calcul
 | `relevancia` | texto | não, pode ser null | `"alta"`, `"media"`, `"baixa"` |
 | `fonte`, `url` | texto | não, pode ser null | |
 
+## Editorias
+
+A partir de 29/10/2026, cada notícia (e cada destaque, quando houver) traz `editoria`. A ordem abaixo é a de exibição no menu **Notícias**, na página `/noticias` e no bloco "Radar por editoria" da tela Hoje.
+
+| Ordem | Slug | Rótulo | Ícone |
+|---|---|---|---|
+| 1 | `bancos_cooperativas` | Bancos e cooperativas | 🏦 |
+| 2 | `mercados` | Mercados | 📈 |
+| 3 | `economia` | Economia | 🧮 |
+| 4 | `business` | Business e empresas | 🏢 |
+| 5 | `financas_produtos` | Finanças e produtos | 💰 |
+| 6 | `agro` | Agro | 🌾 |
+| 7 | `tecnologia_energia` | Tecnologia, IA e energia | 🤖 |
+| 8 | `mundo` | Mundo | 🌍 |
+| 9 | `politica_regulacao` | Política e regulação | 🏛️ |
+| — | `outras` | Outras | 🗞️ (interna: legado sem mapeamento ou slug desconhecido) |
+
+**Edições antigas (sem `editoria`).** O app deduz a editoria pela `categoria` (função `editoriaDe` em `src/dominio/editorias.ts`), na leitura, sem regravar o arquivo salvo:
+
+| `categoria` | Editoria |
+|---|---|
+| `mercado` | `mercados` |
+| `mundo` | `mundo` |
+| `agro` | `agro` |
+| `brasil` | `politica_regulacao` se o título ou o resumo falar de Câmara, Senado, STF, PEC, projeto de lei, Congresso, eleição, ministro, Planalto, MP ou decreto; senão `economia` |
+| qualquer outra | `outras` |
+
+`categoria` continua aceita em todas as edições.
+
 ## Várias edições no mesmo dia
 
 Cada dia útil pode ter a edição da **manhã** (07h15, `radar_AAAA-MM-DD.json`) e a **atualização do meio-dia** (12h30, `radar_AAAA-MM-DD_1230.json`, com `edicao.tipo: "atualizacao_meio_dia"`). As duas ficam salvas. A tela Hoje mostra o **dia completo**, que junta as edições em ordem de `gerado_em`. No Histórico dá para abrir cada edição sozinha, sem fusão.
@@ -282,7 +316,7 @@ Cada dia útil pode ter a edição da **manhã** (07h15, `radar_AAAA-MM-DD.json`
 1. o `atualiza_id` de um é o `id` do outro;
 2. os dois têm o mesmo `id`;
 3. têm alguma URL em comum nas `fontes`. A URL é comparada normalizada: minúsculas, sem `http(s)://`, sem `www.`, sem `?…` nem `#…` e sem barra final;
-4. os títulos são muito parecidos **e** a `categoria` é a mesma. A semelhança é o índice de Jaccard ≥ 0,6 sobre as palavras do título, comparadas em minúsculas, sem acento, sem palavras vazias do português (de, a, o, para…) e mantendo os números. O limiar fica na constante `LIMIAR_TITULO` em `src/lib/noticias.ts`.
+4. os títulos são muito parecidos **e** a editoria é a mesma (a do campo `editoria` ou a deduzida da `categoria`; uma notícia nova em `mercados` casa com a mesma notícia antiga de categoria `mercado`). A semelhança é o índice de Jaccard ≥ 0,6 sobre as palavras do título, comparadas em minúsculas, sem acento, sem palavras vazias do português (de, a, o, para…) e mantendo os números. O limiar fica na constante `LIMIAR_TITULO` em `src/lib/noticias.ts`.
 
 Quando é a mesma notícia:
 

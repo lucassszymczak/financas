@@ -17,7 +17,7 @@ test('duas edições no dia: fusão das notícias, intradiário, histórico e di
   await expect(page.getByText('Atualizada às 12h20').first()).toBeVisible();
   await expect(page.getByText('Nova · 12h05').first()).toBeVisible();
   await page.getByRole('button', { name: 'Só novas/atualizadas' }).click();
-  await expect(page.locator('.card-noticia')).toHaveCount(2);
+  await expect(page.locator('.radar-editorias .item-compacto, .card-noticia')).toHaveCount(2);
   await page.getByRole('button', { name: 'Todas' }).click();
 
   // Cotação intradiária no KPI do dólar.
@@ -93,4 +93,33 @@ test('FIIs por tipo: cartões, tabela do tipo e coluna Tipo', async ({ page }) =
   await expect(page.locator('.painel-setor').getByText('MXRF11')).toBeVisible();
   await page.getByRole('link', { name: 'Ver todos os FIIs' }).click();
   await expect(page.getByRole('heading', { name: /Todos os FIIs/ })).toBeVisible();
+});
+
+test('notícias por editoria: menu, página da editoria, estado vazio e blocos na tela Hoje', async ({ page, isMobile }) => {
+  await page.goto('./');
+  await page.getByTestId('input-arquivo').first().setInputFiles('public/exemplos/radar_exemplo_editorias.json');
+  await expect(page.getByText('Edição de exemplo: notícias e números fictícios')).toBeVisible();
+
+  // Hoje: destaques e "Radar por editoria" com o link para a página da editoria.
+  await expect(page.getByRole('heading', { name: 'Radar por editoria' })).toBeVisible();
+  await expect(page.getByText(/Tecnologia, IA e energia · sem destaques relevantes hoje/)).toBeVisible();
+  await page.locator('.bloco-editoria-todas[href="#/noticias/bancos_cooperativas"]').click();
+  await expect(page.getByRole('heading', { name: /Bancos e cooperativas/, level: 1 })).toBeVisible();
+  await expect(page.locator('.card-completo')).toHaveCount(3);
+
+  // Menu: "Notícias" com a contagem por editoria (no celular, dentro do menu ☰).
+  if (isMobile) await page.getByRole('button', { name: 'Abrir menu' }).click();
+  await page.getByRole('button', { name: 'Notícias' }).click();
+  const sub = page.locator('#submenu-noticias');
+  await expect(sub.getByRole('link', { name: /Política e regulação\s*2/ })).toBeVisible();
+  await expect(sub.locator('a.dd-mudo', { hasText: 'Tecnologia, IA e energia' })).toBeVisible();
+  await sub.getByRole('link', { name: /Tecnologia, IA e energia/ }).click();
+  await expect(page.getByText('Sem destaques relevantes hoje nesta editoria.')).toBeVisible();
+
+  // Política e regulação: canal de transmissão e indicador de relevância.
+  await page.locator('.chips-editoria a[href="#/noticias/politica_regulacao"]').click();
+  await expect(page.getByText('fiscal → curva de juros')).toBeVisible();
+  await expect(page.getByRole('img', { name: /Relevância: Mercado 3/ }).first()).toBeVisible();
+  const sobra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(sobra).toBeLessThanOrEqual(0);
 });
