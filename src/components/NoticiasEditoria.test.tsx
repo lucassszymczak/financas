@@ -13,7 +13,7 @@ const rNovo = radarSchema.parse(novo);
 const rLegado = radarSchema.parse(legado);
 const itens = (r: typeof rNovo) => noticiasDoPeriodo([{ data: r.edicao.data, edicoes: [r] }]);
 
-describe('Hoje: Radar por editoria', () => {
+describe('Hoje: Radar por assunto', () => {
   it('um bloco por editoria com até 2 notícias e "Ver todas" apontando para a rota da editoria', () => {
     render(<RadarPorEditoria itens={itens(rNovo)} semDestaque={rNovo.editorias_sem_destaque} largo />);
     const bancos = screen.getByRole('button', { name: /Bancos e cooperativas/ });
@@ -58,7 +58,7 @@ describe('Página /noticias/:editoria', () => {
         comData={false}
       />,
     );
-    expect(screen.getByText('Sem destaques relevantes hoje nesta editoria.')).toBeTruthy();
+    expect(screen.getByText('Sem destaques relevantes hoje neste assunto.')).toBeTruthy();
   });
   it('edição antiga sem o campo mostra o estado vazio de "não classificada"', () => {
     render(
@@ -70,7 +70,7 @@ describe('Página /noticias/:editoria', () => {
         comData={false}
       />,
     );
-    expect(screen.getByText('Nenhuma notícia classificada nesta editoria nesta edição.')).toBeTruthy();
+    expect(screen.getByText('Nenhuma notícia classificada neste assunto nesta edição.')).toBeTruthy();
   });
   it('lista da editoria em ordem de relevância, com canal de transmissão e relevância visível', () => {
     render(

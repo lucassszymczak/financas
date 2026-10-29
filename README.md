@@ -99,21 +99,21 @@ No alto fica uma barra escura com o conteúdo centralizado (até 1280 px) e o fu
 
 No computador, menu, taxas e fita ficam fixos no alto. No celular, só a barra do menu fica fixa; taxas e fita sobem junto com a página.
 
-### Notícias por editoria
+### Notícias por assunto
 
-A partir da edição de 29/10/2026, cada notícia traz a **editoria**: Bancos e cooperativas, Mercados, Economia, Business, Finanças e produtos, Agro, Tecnologia/IA/energia, Mundo e Política e regulação.
+A partir da edição de 29/10/2026, cada notícia traz o **assunto** (campo `editoria` no arquivo): Bancos e cooperativas, Mercados, Economia, Business, Finanças e produtos, Agro, Tecnologia/IA/energia, Mundo e Política e regulação.
 
-- **Menu Notícias ▾** (entre Hoje e Mercado): "Todas" e uma linha por editoria com a contagem da edição. Editoria sem notícia aparece em cinza com "—".
+- **Menu Notícias ▾** (entre Hoje e Mercado): "Todas" e uma linha por assunto com a contagem da edição. Assunto sem notícia aparece em cinza com "—".
 - **Página `/noticias`:**
-  - chips de editoria;
+  - chips de assunto;
   - período: Hoje, últimos 7 ou 30 dias, sem repetir a mesma notícia entre dias;
   - ordem: mais relevantes (nota `relevancia.total`) ou mais recentes.
 - **Card completo:** resumo, por que importa, ativos, impacto, horizonte, confiança e fontes. Em Política e regulação, também a linha **Canal** (ex.: "fiscal → curva de juros"). Quando houver nota de relevância, mostra quatro mini-barras.
-- **Tela Hoje:** os Destaques continuam primeiro. Depois vem o **Radar por editoria**, com um bloco por editoria trazendo até 2 notícias e "Ver todas (N) →".
+- **Tela Hoje:** os Destaques continuam primeiro. Depois vem o **Radar por assunto**, com um bloco por assunto trazendo até 2 notícias e "Ver todas (N) →".
   - Os blocos recolhem com um toque e o aparelho lembra a escolha.
-  - Editoria sem notícia aparece como uma linha cinza, porque a ausência também é informação.
-- **Edições antigas** (só `categoria`) continuam funcionando: o app deduz a editoria (mercado → Mercados, mundo → Mundo, agro → Agro, politica → Política e regulação, brasil → Economia ou Política e regulação). A regra está em [docs/schema.md](docs/schema.md#editorias).
-- **Para testar:** carregue `public/exemplos/radar_exemplo_editorias.json` (formato novo, fictício, com uma editoria sem destaque) e `public/exemplos/radar_exemplo_legado.json` (formato antigo). Elas têm datas de janeiro de 2026: abra pelo **Histórico** se já houver edições mais recentes.
+  - Assunto sem notícia aparece como uma linha cinza, porque a ausência também é informação.
+- **Edições antigas** (só `categoria`) continuam funcionando: o app deduz o assunto (mercado → Mercados, mundo → Mundo, agro → Agro, politica → Política e regulação, brasil → Economia ou Política e regulação). A regra está em [docs/schema.md](docs/schema.md#editorias).
+- **Para testar:** carregue `public/exemplos/radar_exemplo_editorias.json` (formato novo, fictício, com um assunto sem destaque) e `public/exemplos/radar_exemplo_legado.json` (formato antigo). Elas têm datas de janeiro de 2026: abra pelo **Histórico** se já houver edições mais recentes.
 
 ### Logos e bandeiras
 
@@ -138,7 +138,7 @@ Ao passar o mouse (ou com o gráfico em foco e as setas ← →), aparece uma li
 
 | Tela | O que mostra |
 |---|---|
-| 🏠 **Hoje** | Termômetro e, logo depois, as **Leituras do dia** em destaque (leitura geral, mercado, agro, regiões e "no campo"; toque para ir à aba). Em seguida, alertas, KPIs (itens com `kpi: true`), destaques, o **Radar por editoria** (notícias abrem em pop-up), limitações e aviso. |
+| 🏠 **Hoje** | Termômetro e, logo depois, as **Leituras do dia** em destaque (leitura geral, mercado, agro, regiões e "no campo"; toque para ir à aba). Em seguida, alertas, KPIs (itens com `kpi: true`), destaques, o **Radar por assunto** (notícias abrem em pop-up), limitações e aviso. |
 | 🗞️ **Notícias** | Todas as notícias ou as de uma editoria, com período (hoje, 7 ou 30 dias), ordenação por relevância ou hora e o card completo. |
 | 📊 **Mercado** | Abas em pílula. **Visão geral:** leitura do mercado, busca, **Minha lista** (watchlist configurável) ou **Todos** os grupos do arquivo, em grupos recolhíveis com visão **Lista** ou **Mapa**. **Setores:** um cartão por setor B3 com a variação média simples, a barra de altas x baixas e "N ações · ▲ x · ▼ y"; o fundo fica mais verde ou mais vermelho conforme a variação. Tocar num setor mostra a tabela das ações dele. **Ações, Índices, Moedas, Commodities, FIIs, Cripto:** tabela ordenável por qualquer coluna (toque no título); em Ações, chips filtram por setor. |
 | 🏦 **Renda fixa** | Taxas de referência (Selic, CDI, IPCA 12 meses) e tabelas de Curva DI, Tesouro Direto e Juros no mundo. |

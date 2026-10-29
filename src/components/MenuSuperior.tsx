@@ -56,7 +56,7 @@ function montarMenu(radar: Radar | null): ItemMenu[] {
       largo: true,
       grupos: [
         {
-          titulo: 'Notícias por editoria',
+          titulo: 'Notícias por assunto',
           itens: [
             {
               nome: 'Todas',

@@ -53,13 +53,13 @@ export function Noticias({ sub }: { sub: string | null }) {
   return (
     <div className="tela tela-noticias">
       <div className="noticias-cab">
-        <p className="mudo">{atual ? atual.descricao : 'Todas as editorias, na ordem do Radar.'}</p>
+        <p className="mudo">{atual ? atual.descricao : 'Todos os assuntos, na ordem do Radar.'}</p>
         <p className="noticias-conta num">
           {total} {total === 1 ? 'notícia' : 'notícias'}
         </p>
       </div>
 
-      <nav className="chips chips-editoria" aria-label="Editorias">
+      <nav className="chips chips-editoria" aria-label="Assuntos">
         <a href={hrefRota('noticias')} className="chip-filtro" aria-current={!slug ? 'page' : undefined}>
           Todas <span className="num">{itens.length}</span>
         </a>

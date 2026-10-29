@@ -154,7 +154,7 @@ function Cartao({ n }: { n: NoticiaListada }) {
 
 /**
  * Destaques e notícias do dia: lista única das edições (manhã + meio-dia), com selos e filtros.
- * Destaques primeiro; depois o "Radar por editoria", um bloco por editoria na ordem fixa.
+ * Destaques primeiro; depois o "Radar por assunto", um bloco por assunto na ordem fixa.
  */
 function NoticiasDoDia() {
   const { vista, radar } = useRadar();

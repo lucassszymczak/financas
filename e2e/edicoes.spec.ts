@@ -100,8 +100,8 @@ test('notícias por editoria: menu, página da editoria, estado vazio e blocos n
   await page.getByTestId('input-arquivo').first().setInputFiles('public/exemplos/radar_exemplo_editorias.json');
   await expect(page.getByText('Edição de exemplo: notícias e números fictícios')).toBeVisible();
 
-  // Hoje: destaques e "Radar por editoria" com o link para a página da editoria.
-  await expect(page.getByRole('heading', { name: 'Radar por editoria' })).toBeVisible();
+  // Hoje: destaques e "Radar por assunto" com o link para a página do assunto.
+  await expect(page.getByRole('heading', { name: 'Radar por assunto' })).toBeVisible();
   await expect(page.getByText(/Tecnologia, IA e energia · sem destaques relevantes hoje/)).toBeVisible();
   await page.locator('.bloco-editoria-todas[href="#/noticias/bancos_cooperativas"]').click();
   await expect(page.getByRole('heading', { name: /Bancos e cooperativas/, level: 1 })).toBeVisible();
@@ -114,7 +114,7 @@ test('notícias por editoria: menu, página da editoria, estado vazio e blocos n
   await expect(sub.getByRole('link', { name: /Política e regulação\s*2/ })).toBeVisible();
   await expect(sub.locator('a.dd-mudo', { hasText: 'Tecnologia, IA e energia' })).toBeVisible();
   await sub.getByRole('link', { name: /Tecnologia, IA e energia/ }).click();
-  await expect(page.getByText('Sem destaques relevantes hoje nesta editoria.')).toBeVisible();
+  await expect(page.getByText('Sem destaques relevantes hoje neste assunto.')).toBeVisible();
 
   // Política e regulação: canal de transmissão e indicador de relevância.
   await page.locator('.chips-editoria a[href="#/noticias/politica_regulacao"]').click();
