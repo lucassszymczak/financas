@@ -36,18 +36,31 @@ describe('mesmaNoticia (regra de fusão)', () => {
     expect(motivoMesma(a, b)).toBe(3);
     expect(normalizarUrl('https://www.Site.com/a/b/?q=1#x')).toBe('site.com/a/b');
   });
-  it('4: título parecido e mesma categoria funde; categoria diferente não', () => {
-    const a = n({ id: 'a', titulo: 'Copom mantém a Selic em 13,75% ao ano', categoria: 'juros' });
-    const b = n({ id: 'b', titulo: 'Copom mantém Selic em 13,75% ao ano, diz BC', categoria: 'juros' });
+  it('4: título parecido e mesma editoria funde; editoria diferente não', () => {
+    const a = n({ id: 'a', titulo: 'Copom mantém a Selic em 13,75% ao ano', categoria: 'mercado' });
+    const b = n({ id: 'b', titulo: 'Copom mantém Selic em 13,75% ao ano, diz BC', categoria: 'mercado' });
     expect(jaccard(palavrasTitulo(a.titulo), palavrasTitulo(b.titulo))).toBeGreaterThanOrEqual(LIMIAR_TITULO);
     expect(motivoMesma(a, b)).toBe(4);
-    expect(mesmaNoticia(a, { ...b, categoria: 'politica' })).toBe(false);
+    expect(mesmaNoticia(a, { ...b, categoria: 'mundo' })).toBe(false);
+    expect(mesmaNoticia(a, { ...b, categoria: null, editoria: 'bancos_cooperativas' })).toBe(false);
+  });
+  it('4: editoria nova casa com a categoria legada equivalente da mesma notícia', () => {
+    const legado = n({ id: 'a', titulo: 'Copom mantém a Selic em 13,75% ao ano', categoria: 'mercado' });
+    const nova = n({ id: 'b', titulo: 'Copom mantém Selic em 13,75% ao ano, diz BC', editoria: 'mercados' });
+    expect(motivoMesma(legado, nova)).toBe(4);
+    const brasil = n({ id: 'c', titulo: 'Senado aprova PEC do teto de gastos', categoria: 'brasil' });
+    const politica = n({ id: 'd', titulo: 'Senado aprova a PEC do teto de gastos em 2º turno', editoria: 'politica_regulacao' });
+    expect(mesmaNoticia(brasil, politica)).toBe(true);
+    expect(mesmaNoticia(brasil, { ...politica, editoria: 'economia' })).toBe(false);
+  });
+  it('4: sem editoria nem categoria, título parecido não basta', () => {
+    expect(mesmaNoticia(n({ id: 'a', titulo: 'Copom mantém a Selic' }), n({ id: 'b', titulo: 'Copom mantém a Selic' }))).toBe(false);
   });
   it('títulos diferentes não fundem', () => {
     expect(
       mesmaNoticia(
-        n({ id: 'a', titulo: 'Dólar sobe', categoria: 'c' }),
-        n({ id: 'b', titulo: 'Soja cai em Chicago', categoria: 'c' }),
+        n({ id: 'a', titulo: 'Dólar sobe', categoria: 'mercado' }),
+        n({ id: 'b', titulo: 'Soja cai em Chicago', categoria: 'mercado' }),
       ),
     ).toBe(false);
   });

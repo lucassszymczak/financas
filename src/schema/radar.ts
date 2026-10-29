@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ehEditoria, SLUGS_EDITORIA, type EditoriaSlug } from '../dominio/editorias';
 
 /**
  * Contrato de dados do arquivo diário `radar_AAAA-MM-DD.json`.
@@ -24,6 +25,28 @@ const hora = z
 /** Tipos de edição conhecidos; outros valores são aceitos e guardados separadamente. */
 export const TIPOS_EDICAO = ['manha', 'atualizacao_meio_dia'] as const;
 
+/** Slug de editoria; um valor desconhecido não invalida o arquivo: vira `outras`, com aviso no console. */
+const editoria = z
+  .string()
+  .nullable()
+  .transform((v): EditoriaSlug | null => {
+    if (v === null || ehEditoria(v)) return v;
+    console.warn(`[Radar] Editoria desconhecida "${v}": tratada como "outras". Conhecidas: ${SLUGS_EDITORIA.join(', ')}.`);
+    return 'outras';
+  })
+  .optional();
+
+/** Nota de relevância de 0 a 3 (total de 0 a 12). */
+const notaRelevancia = (max: number) => z.number().int('nota inteira').min(0).max(max, `nota máxima é ${max}`).nullable().optional();
+
+export const relevanciaSchema = z.object({
+  mercado: notaRelevancia(3),
+  sistema_financeiro: notaRelevancia(3),
+  regiao_agro: notaRelevancia(3),
+  novidade: notaRelevancia(3),
+  total: notaRelevancia(12),
+});
+
 export const fonteSchema = z.object({
   nome: z.string(),
   url: texto,
@@ -40,6 +63,11 @@ const comuns = {
   hora,
   atualiza_id: texto,
   atualizado_em: hora,
+  // Notícias por editoria (a partir de 29/10/2026); edições antigas usam só `categoria`.
+  editoria,
+  relevancia: relevanciaSchema.nullable().optional(),
+  /** Só em `politica_regulacao`: por onde a notícia chega ao mercado (ex.: "fiscal → curva de juros"). */
+  canal_transmissao: texto,
 };
 
 export const destaqueSchema = z.object({
@@ -191,10 +219,18 @@ export const radarSchema = z.object({
     tipo: texto,
     referencia_mercado: texto,
     titulo: texto,
+    /** Edição fictícia de demonstração. */
+    exemplo: z.boolean().nullable().optional(),
   }),
   termometro: z.object({ tom: texto, texto: z.string() }).nullable().optional(),
   destaques: z.array(destaqueSchema).default([]),
   noticias: z.array(noticiaSchema).default([]),
+  /** Editorias sem notícia relevante no dia (slugs desconhecidos são descartados). */
+  editorias_sem_destaque: z
+    .array(z.string())
+    .nullable()
+    .transform((l) => (l ? l.filter(ehEditoria) : l))
+    .optional(),
   leitura_do_dia: texto,
   leituras_secao: z.record(z.string(), z.string().nullable()).nullable().optional(),
   cotacoes: z.array(cotacaoSchema).default([]),

@@ -109,6 +109,7 @@ export function fundirDia(edicoes: Radar[]): Radar {
           return r as typeof acc;
         })
       : null,
+    editorias_sem_destaque: ultimoDefinido(ord, (r) => r.editorias_sem_destaque),
     clima: ultimoDefinido(ord, (r) => r.clima),
     agenda: ultimoDefinido(ord, (r) => (r.agenda.length ? r.agenda : null)) ?? [],
     limitacoes: [...new Set(ord.flatMap((r) => r.limitacoes))],
