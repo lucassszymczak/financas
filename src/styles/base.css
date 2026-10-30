@@ -209,7 +209,7 @@ label {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   height: 60px;
   max-width: 1280px;
   margin: 0 auto;
@@ -268,7 +268,7 @@ label {
   align-items: center;
   gap: 5px;
   height: 100%;
-  padding: 0 10px;
+  padding: 0 8px;
   background: none;
   border: 0;
   border-bottom: 2px solid transparent;
@@ -384,7 +384,7 @@ label {
 .busca-topo {
   position: relative;
   flex: none;
-  width: 240px;
+  width: 200px;
 }
 .busca-campo {
   display: flex;
@@ -814,12 +814,12 @@ label {
   font-weight: 600;
 }
 
-@media (max-width: 1180px) and (min-width: 1021px) {
+@media (max-width: 1260px) and (min-width: 1021px) {
   .logo-textos {
     display: none;
   }
 }
-@media (max-width: 1180px) {
+@media (max-width: 1260px) {
   .busca-topo {
     width: 180px;
   }
