@@ -1,27 +1,70 @@
 import { useEffect, useState } from 'react';
 
-export const ROUTES = ['capturar', 'mes', 'controle', 'plano', 'respostas', 'ir', 'config'] as const;
-export type Route = (typeof ROUTES)[number];
+export const ABAS = [
+  { id: 'hoje', icone: '🏠', nome: 'Hoje' },
+  { id: 'noticias', icone: '🗞️', nome: 'Notícias' },
+  { id: 'mercado', icone: '📊', nome: 'Mercado' },
+  { id: 'renda-fixa', icone: '🏦', nome: 'Renda fixa' },
+  { id: 'agro', icone: '🌾', nome: 'Agro' },
+  { id: 'clima', icone: '🌦️', nome: 'Clima' },
+  { id: 'agenda', icone: '📅', nome: 'Agenda' },
+  { id: 'calculadoras', icone: '🧮', nome: 'Calculadoras' },
+  { id: 'historico', icone: '🗂️', nome: 'Histórico' },
+  { id: 'config', icone: '⚙️', nome: 'Configurações' },
+] as const;
 
-function parse(hash: string): Route {
-  const name = hash.replace(/^#\/?/, '').split('/')[0] ?? '';
-  return (ROUTES as readonly string[]).includes(name) ? (name as Route) : 'capturar';
+export type AbaId = (typeof ABAS)[number]['id'];
+
+/** Rota completa: aba + até dois níveis (ex.: #/mercado/setores/Financeiro). */
+export type Rota = { aba: AbaId; sub: string | null; arg: string | null };
+
+export function lerRota(hash: string = window.location.hash): Rota {
+  const partes = hash
+    .replace(/^#\/?/, '')
+    .split('?')[0]!
+    .split('/')
+    .map((p) => {
+      try {
+        return decodeURIComponent(p);
+      } catch {
+        return p;
+      }
+    });
+  const aba = (ABAS.find((a) => a.id === partes[0])?.id ?? 'hoje') as AbaId;
+  return { aba, sub: partes[1] || null, arg: partes[2] || null };
 }
 
-/** Navegação por hash: funciona em qualquer hospedagem estática, sem configuração. */
-export function useRoute(): Route {
-  const [route, setRoute] = useState<Route>(() => parse(window.location.hash));
+export const hrefRota = (aba: AbaId, sub?: string | null, arg?: string | null) =>
+  `#/${[aba, sub, arg]
+    .filter(Boolean)
+    .map((p) => encodeURIComponent(p!))
+    .join('/')}`;
+
+export function useRota(): Rota {
+  const [rota, setRota] = useState<Rota>(() => lerRota());
   useEffect(() => {
-    const on = () => {
-      setRoute(parse(window.location.hash));
-      window.scrollTo(0, 0);
+    let antes = lerRota();
+    const f = () => {
+      const r = lerRota();
+      // Trocar só o último nível (ex.: escolher um setor) não volta ao topo.
+      if (r.aba !== antes.aba || r.sub !== antes.sub) window.scrollTo(0, 0);
+      antes = r;
+      setRota(r);
     };
-    window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
+    window.addEventListener('hashchange', f);
+    return () => window.removeEventListener('hashchange', f);
   }, []);
-  return route;
+  return rota;
 }
 
-export function go(route: Route) {
-  window.location.hash = `#/${route}`;
+export function useAba(): AbaId {
+  return useRota().aba;
 }
+
+export function ir(aba: AbaId, sub?: string | null, arg?: string | null) {
+  window.location.hash = hrefRota(aba, sub, arg).slice(1);
+}
+
+export const irPara = (aba: AbaId) => {
+  window.location.hash = `/${aba}`;
+};
