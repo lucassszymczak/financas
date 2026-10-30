@@ -236,7 +236,7 @@ function Busca({ radar }: { radar: Radar | null }) {
         <input
           type="search"
           value={termo}
-          placeholder="Buscar ativo, setor ou notícia"
+          placeholder="Buscar ativo ou notícia"
           aria-label="Buscar ativo, setor ou notícia"
           autoComplete="off"
           enterKeyHint="search"

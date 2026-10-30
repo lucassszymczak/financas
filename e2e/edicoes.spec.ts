@@ -123,3 +123,20 @@ test('notícias por editoria: menu, página da editoria, estado vazio e blocos n
   const sobra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(sobra).toBeLessThanOrEqual(0);
 });
+
+test('computador: nenhum item do menu fica atrás da busca e Configurações abre pelo "Mais"', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'no celular o menu abre pelo ☰');
+  await page.goto('./');
+  await page.getByRole('button', { name: /Ver exemplo/ }).click();
+  for (const largura of [1021, 1200, 1261, 1280, 1440, 1920]) {
+    await page.setViewportSize({ width: largura, height: 800 });
+    const sobra = await page.evaluate(() => {
+      const itens = [...document.querySelectorAll('.menu-itens .menu-lnk')].map((e) => e.getBoundingClientRect().right);
+      return document.querySelector('.busca-topo')!.getBoundingClientRect().left - Math.max(...itens);
+    });
+    expect(sobra, `largura ${largura}`).toBeGreaterThanOrEqual(0);
+  }
+  await page.getByRole('button', { name: 'Mais' }).click();
+  await page.locator('#submenu-mais').getByRole('link', { name: 'Configurações' }).click();
+  await expect(page).toHaveURL(/#\/config$/);
+});
