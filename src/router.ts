@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 export const ABAS = [
   { id: 'hoje', icone: '🏠', nome: 'Hoje' },
   { id: 'noticias', icone: '🗞️', nome: 'Notícias' },
+  { id: 'visao-cresol', icone: '🔭', nome: 'Visão Cresol' },
   { id: 'mercado', icone: '📊', nome: 'Mercado' },
   { id: 'renda-fixa', icone: '🏦', nome: 'Renda fixa' },
   { id: 'agro', icone: '🌾', nome: 'Agro' },

@@ -110,6 +110,7 @@ export function fundirDia(edicoes: Radar[]): Radar {
         })
       : null,
     editorias_sem_destaque: ultimoDefinido(ord, (r) => r.editorias_sem_destaque),
+    visao_cresol: ultimoDefinido(ord, (r) => r.visao_cresol),
     clima: ultimoDefinido(ord, (r) => r.clima),
     agenda: ultimoDefinido(ord, (r) => (r.agenda.length ? r.agenda : null)) ?? [],
     limitacoes: [...new Set(ord.flatMap((r) => r.limitacoes))],

@@ -23,7 +23,7 @@ const PRACAS = ['chicago', 'brasil', 'guarapuava', 'noroeste_paulista'];
 export function itemAtivo(r: Rota): string {
   if (r.aba === 'mercado') return r.sub === 'setores' || (r.sub === 'fiis' && r.arg) ? 'setores' : 'mercado';
   if (r.aba === 'historico' || r.aba === 'config') return 'mais';
-  if (r.aba === 'noticias') return 'noticias';
+  if (r.aba === 'noticias' || r.aba === 'visao-cresol') return 'noticias';
   return r.aba;
 }
 
@@ -74,6 +74,7 @@ function montarMenu(radar: Radar | null): ItemMenu[] {
             }),
           ],
         },
+        { titulo: 'Análises', itens: [{ nome: '🔭 Visão Cresol', href: hrefRota('visao-cresol') }] },
       ],
     },
     {
