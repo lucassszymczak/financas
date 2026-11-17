@@ -210,6 +210,33 @@ export const eventoAgendaSchema = z.object({
   url: texto,
 });
 
+/** Visão Cresol: análise mensal da economista da Cresol (projeções comparadas com o Focus e pontos por tema). */
+export const visaoCresolSchema = z.object({
+  titulo: z.string(),
+  autora: texto,
+  data_base: dataISO.nullable().optional(),
+  recebido_em: dataISO.nullable().optional(),
+  resumo: texto,
+  projecoes: z
+    .array(
+      z.object({
+        indicador: z.string(),
+        ano: z.number().int(),
+        valor: numero,
+        unidade: texto,
+        /** "alta", "baixa" ou null. */
+        vies: texto,
+        focus: numero,
+      }),
+    )
+    .default([]),
+  focus_data_ref: dataISO.nullable().optional(),
+  pontos: z.array(z.object({ tema: z.string(), texto: z.string() })).default([]),
+  comparacao_mercado: texto,
+  fonte: texto,
+  aviso: texto,
+});
+
 export const radarSchema = z.object({
   schema_version: z.string(),
   edicao: z.object({
@@ -242,8 +269,10 @@ export const radarSchema = z.object({
   agenda: z.array(eventoAgendaSchema).default([]),
   limitacoes: z.array(z.string()).default([]),
   aviso: texto,
+  visao_cresol: visaoCresolSchema.nullable().optional(),
 });
 
+export type VisaoCresol = z.infer<typeof visaoCresolSchema>;
 export type Radar = z.infer<typeof radarSchema>;
 export type Fonte = z.infer<typeof fonteSchema>;
 export type Destaque = z.infer<typeof destaqueSchema>;

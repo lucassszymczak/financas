@@ -140,3 +140,27 @@ test('computador: nenhum item do menu fica atrás da busca e Configurações abr
   await page.locator('#submenu-mais').getByRole('link', { name: 'Configurações' }).click();
   await expect(page).toHaveURL(/#\/config$/);
 });
+
+test('Visão Cresol: cartão na tela Hoje e página completa em Notícias › Análises', async ({ page }) => {
+  const fs = await import('node:fs');
+  const base = JSON.parse(fs.readFileSync('e2e/fixtures/radar_2026-10-20.json', 'utf8'));
+  const visao = JSON.parse(fs.readFileSync('e2e/fixtures/visao_cresol.json', 'utf8'));
+  await page.goto('./');
+  await page
+    .getByTestId('input-arquivo')
+    .first()
+    .setInputFiles({
+      name: 'radar_2026-10-20.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ ...base, visao_cresol: visao })),
+    });
+  const cartao = page.locator('section.visao-cresol');
+  await expect(cartao.getByRole('heading', { name: 'Radar Econômico Cresol · novembro de 2026' })).toBeVisible();
+  await expect(cartao.getByText('13,75% a.a.')).toBeVisible();
+  await cartao.getByRole('link', { name: 'Ler a análise completa →' }).click();
+  await expect(page).toHaveURL(/#\/visao-cresol$/);
+  await expect(page.getByRole('heading', { name: 'Crédito' })).toBeVisible();
+  await expect(page.getByText(/não é relatório de análise para os fins da Resolução CVM nº 20/)).toBeVisible();
+  const sobra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(sobra).toBeLessThanOrEqual(0);
+});

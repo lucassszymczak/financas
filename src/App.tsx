@@ -14,6 +14,7 @@ import type { Radar } from './schema/radar';
 import { BoasVindas } from './screens/BoasVindas';
 import { Hoje } from './screens/Hoje';
 import { Noticias } from './screens/Noticias';
+import { PaginaVisaoCresol } from './components/VisaoCresol';
 import { Mercado } from './screens/Mercado';
 import { RendaFixa } from './screens/RendaFixa';
 import { Agro } from './screens/Agro';
@@ -31,6 +32,8 @@ function Tela({ rota }: { rota: Rota }): ReactNode {
       return <Hoje />;
     case 'noticias':
       return <Noticias sub={rota.sub} />;
+    case 'visao-cresol':
+      return <PaginaVisaoCresol />;
     case 'mercado':
       return <Mercado sub={rota.sub} arg={rota.arg} />;
     case 'renda-fixa':
@@ -57,6 +60,8 @@ export function tituloRota(r: Rota, radar: Radar | null): { caminho: string; tit
   switch (r.aba) {
     case 'hoje':
       return { caminho: 'Hoje', titulo: radar ? `Radar de ${diaMes(radar.edicao.data)}` : 'Hoje' };
+    case 'visao-cresol':
+      return { caminho: 'Notícias › Análises', titulo: 'Visão Cresol' };
     case 'noticias':
       return {
         caminho: 'Notícias',

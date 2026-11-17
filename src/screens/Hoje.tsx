@@ -3,6 +3,7 @@ import { useRadar, type Edicao } from '../state';
 import type { Radar } from '../schema/radar';
 import { filtrarNoticias, noticiasDoPeriodo, type FiltroNoticias, type NoticiaListada } from '../lib/noticias';
 import { RadarPorEditoria, SeloFusao } from '../components/NoticiasEditoria';
+import { CartaoVisaoCresol } from '../components/VisaoCresol';
 import { horaBR, horaEdicao, rotuloTipo } from '../lib/edicoes';
 import { CardNoticia } from '../components/CardNoticia';
 import { FaixaAlertas } from '../components/FaixaAlertas';
@@ -250,6 +251,8 @@ export function Hoje() {
       )}
 
       <PainelLeituras />
+
+      <CartaoVisaoCresol />
 
       <FaixaAlertas alertas={alertas} />
 

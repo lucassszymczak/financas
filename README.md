@@ -115,6 +115,10 @@ A partir da edição de 29/10/2026, cada notícia traz o **assunto** (campo `edi
 - **Edições antigas** (só `categoria`) continuam funcionando: o app deduz o assunto (mercado → Mercados, mundo → Mundo, agro → Agro, politica → Política e regulação, brasil → Economia ou Política e regulação). A regra está em [docs/schema.md](docs/schema.md#editorias).
 - **Para testar:** carregue `public/exemplos/radar_exemplo_editorias.json` (formato novo, fictício, com um assunto sem destaque) e `public/exemplos/radar_exemplo_legado.json` (formato antigo). Elas têm datas de janeiro de 2026: abra pelo **Histórico** se já houver edições mais recentes.
 
+### Visão Cresol
+
+Quando o arquivo traz o campo `visao_cresol` (análise mensal da economista da Cresol), a tela Hoje mostra um cartão com o resumo e as projeções (IPCA, Selic, PIB e câmbio), cada uma com o viés e a comparação com o Focus. "Ler a análise completa →" abre a página **Notícias › Análises › Visão Cresol**, com os temas, a comparação com o mercado, a fonte e o aviso completos. Vale sempre a última análise recebida, mesmo nos dias em que o arquivo não a repete. Detalhes em [docs/schema.md](docs/schema.md#visao_cresol).
+
 ### Logos e bandeiras
 
 Ao lado de cada ativo (fita, KPIs, tabelas, busca, watchlist e detalhe) aparece um ícone de 20 a 24 px, sempre de arquivos do próprio app (funciona sem internet):

@@ -2561,7 +2561,7 @@ body.com-modal {
 .leitura-destaque {
   border-left: 0;
   border: 1px solid var(--borda);
-  border-top: 3px solid var(--acento);
+  border-top: 3px solid var(--destaque);
   background: var(--superficie);
   padding: 0.8rem 0.95rem;
   font-size: 1.02rem;
@@ -3341,4 +3341,104 @@ td > .ativo-icone {
   color: var(--aviso-texto);
   font-weight: 600;
   font-size: var(--t-sm);
+}
+
+/* ---------- Visão Cresol ---------- */
+.visao-cresol {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-top: 3px solid var(--destaque);
+  box-shadow: var(--sombra);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+}
+.vc-cab h2 {
+  margin: 0.15rem 0 0;
+  font-size: 1.25rem;
+}
+.vc-rotulo {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--destaque);
+}
+.vc-assinatura {
+  margin: 0.2rem 0 0;
+}
+.vc-resumo {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+.vc-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.vc-tabela th,
+.vc-tabela td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--borda);
+  text-align: left;
+  vertical-align: top;
+}
+.vc-tabela thead th {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto-mudo);
+}
+.vc-tabela .dir {
+  text-align: right;
+}
+.vc-tabela tbody th {
+  font-weight: 600;
+}
+.vc-valor {
+  display: block;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.vc-vies,
+.vc-focus {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--texto-mudo);
+}
+.vc-focus-dif {
+  color: var(--texto);
+}
+.vc-mais {
+  align-self: flex-start;
+  font-weight: 600;
+  font-size: var(--t-sm);
+}
+.vc-pontos {
+  display: grid;
+  gap: 0.6rem;
+}
+@media (min-width: 1100px) {
+  .vc-pontos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.vc-ponto {
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--destaque);
+  padding: 0.75rem 0.9rem;
+}
+.vc-ponto h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+}
+.vc-ponto p {
+  margin: 0;
+}
+.vc-rodape p {
+  margin: 0.2rem 0;
 }

@@ -41,6 +41,7 @@ Legenda das tabelas: **Obrig.** = obrigatório. "Pode ser null" = aceita `null`.
 | `agenda` | lista de [evento](#agenda) | não | |
 | `limitacoes` | lista de texto | não | O que não foi verificado nesta edição. Aparece recolhido na tela Hoje. |
 | `aviso` | texto | não, pode ser null | Se faltar, o app mostra "Material informativo de uso interno, não é recomendação de investimento." |
+| `visao_cresol` | objeto | não, pode ser null | Análise mensal da economista da Cresol; ver [visao_cresol](#visao_cresol). |
 
 ## `edicao`
 
@@ -277,6 +278,23 @@ Viram os ativos `SELIC`, `CDI` e `IPCA12M` no Mercado e pré-preenchem as calcul
 | `expectativa` | texto | não, pode ser null | |
 | `relevancia` | texto | não, pode ser null | `"alta"`, `"media"`, `"baixa"` |
 | `fonte`, `url` | texto | não, pode ser null | |
+
+## `visao_cresol`
+
+Análise mensal do Radar Econômico Cresol. Como é mensal, o app mostra **a última recebida** (pela `data_base`) até a data aberta, mesmo nos dias em que o arquivo não a repete. Aparece num cartão na tela Hoje (resumo e projeções) e na página **Notícias › Análises › Visão Cresol** (tudo).
+
+| Campo | Tipo | Obrig. | Exemplo / observação |
+|---|---|---|---|
+| `titulo` | texto | **sim** | `"Radar Econômico Cresol · novembro de 2026"` |
+| `autora` | texto | não, pode ser null | `"Nome, economista da Cresol"` |
+| `data_base` | data | não, pode ser null | Informações até essa data; decide qual análise é a mais recente. |
+| `recebido_em` | data | não, pode ser null | |
+| `resumo` | texto | não, pode ser null | Parágrafo do cartão da tela Hoje. |
+| `projecoes` | lista | não | Cada item: `indicador` (texto), `ano` (inteiro), `valor` (número ou null), `unidade` (`"%"`, `"% a.a."`, `"R$/US$"`…), `vies` (`"alta"`, `"baixa"` ou null) e `focus` (número ou null). A tabela tem um indicador por linha e os anos nas colunas. |
+| `focus_data_ref` | data | não, pode ser null | Data do boletim Focus usado na comparação. |
+| `pontos` | lista | não | `{ "tema": "Juros", "texto": "…" }`, um cartão por tema na página. |
+| `comparacao_mercado` | texto | não, pode ser null | |
+| `fonte`, `aviso` | texto | não, pode ser null | Mostrados por inteiro no rodapé da página (citação integral da fonte). |
 
 ## Editorias
 

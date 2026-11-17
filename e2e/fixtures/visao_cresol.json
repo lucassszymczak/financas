@@ -1,0 +1,99 @@
+{
+  "titulo": "Radar Econômico Cresol · novembro de 2026",
+  "autora": "Patrícia Palermo, economista da Cresol",
+  "data_base": "2026-11-14",
+  "recebido_em": "2026-11-17",
+  "resumo": "Ela vê a atividade perdendo força com juros altos, inflação acima do teto da meta em 2026 e 2027 e dólar pressionado por fatores domésticos, em especial a dúvida sobre um ajuste fiscal crível. A Selic deve ficar em 13,75% até o fim de 2026 e cair para 12,75% em 2027, com viés de alta.",
+  "projecoes": [
+    {
+      "indicador": "IPCA",
+      "ano": 2026,
+      "valor": 5.1,
+      "unidade": "%",
+      "vies": null,
+      "focus": 5.11
+    },
+    {
+      "indicador": "IPCA",
+      "ano": 2027,
+      "valor": 5.1,
+      "unidade": "%",
+      "vies": "alta",
+      "focus": 5.0
+    },
+    {
+      "indicador": "Selic (fim de ano)",
+      "ano": 2026,
+      "valor": 13.75,
+      "unidade": "% a.a.",
+      "vies": null,
+      "focus": 13.75
+    },
+    {
+      "indicador": "Selic (fim de ano)",
+      "ano": 2027,
+      "valor": 12.75,
+      "unidade": "% a.a.",
+      "vies": "alta",
+      "focus": 12.75
+    },
+    {
+      "indicador": "PIB",
+      "ano": 2026,
+      "valor": 1.7,
+      "unidade": "%",
+      "vies": "baixa",
+      "focus": 1.72
+    },
+    {
+      "indicador": "PIB",
+      "ano": 2027,
+      "valor": 0.9,
+      "unidade": "%",
+      "vies": "baixa",
+      "focus": 1.02
+    },
+    {
+      "indicador": "Câmbio (fim de ano)",
+      "ano": 2026,
+      "valor": 5.5,
+      "unidade": "R$/US$",
+      "vies": null,
+      "focus": 5.4
+    },
+    {
+      "indicador": "Câmbio (fim de ano)",
+      "ano": 2027,
+      "valor": 5.5,
+      "unidade": "R$/US$",
+      "vies": null,
+      "focus": 5.45
+    }
+  ],
+  "focus_data_ref": "2026-11-16",
+  "pontos": [
+    {
+      "tema": "Juros",
+      "texto": "A avaliação é que o Copom mantém a Selic em 13,75% em dezembro. Para o fim de 2027, os modelos apontam 12,75%, com viés de alta. A economista destaca os riscos de inflação mais persistente, a ata do Copom cita petróleo, El Niño, possível mudança na escala 6x1 e câmbio, e seis dos nove membros do Copom podem ser trocados ao longo de 2027."
+    },
+    {
+      "tema": "Inflação",
+      "texto": "O IPCA de outubro (0,14%) teve núcleos e serviços mais fracos, mas difusão maior, de 61%, e de 68% nos alimentos. Para novembro, a projeção é de aceleração. A Black Friday pode aliviar bens industriais; alimentos seguem pressionados por clima e El Niño."
+    },
+    {
+      "tema": "Atividade e emprego",
+      "texto": "Indústria (-0,8%), serviços (-0,1%) e varejo (+0,2%) em setembro confirmam a desaceleração do 2º semestre. O emprego segue firme, com desocupação de 5,2%, mas o Caged de setembro (121,3 mil vagas) foi o menor para o mês desde 2020. No agro, houve fechamento de 4,4 mil vagas."
+    },
+    {
+      "tema": "Crédito",
+      "texto": "O saldo do sistema financeiro chegou a R$ 7,4 trilhões em setembro, com alta de 8,6% em 12 meses, ante 9,4% em agosto. Os juros com recursos livres foram a 49,0% ao ano, a inadimplência das pessoas físicas está em 6,0% e o endividamento das famílias, em 50,1% da renda. A leitura é que esse quadro tende a frear novas contratações."
+    },
+    {
+      "tema": "Câmbio e exterior",
+      "texto": "A desvalorização do real nos últimos 30 dias é atribuída principalmente a fatores domésticos, como a dúvida sobre um ajuste fiscal crível. Nos EUA, a inflação ao consumidor foi a 3,7% em 12 meses (setembro) e o Fed manteve os juros entre 3,75% e 4,00%, sinalizando que pode voltar a subir."
+    }
+  ],
+  "comparacao_mercado": "O dólar fechou a R$ 5,7777 em 16/11, acima da projeção de R$ 5,50 para o fim de 2026. As projeções de Selic coincidem com o Focus; a de PIB de 2027 está abaixo.",
+  "fonte": "Radar Econômico Cresol, novembro de 2026, por Patrícia Palermo (informações até 14/11/2026)",
+  "aviso": "Opiniões e projeções da economista da Cresol, reproduzidas com citação integral da fonte. O Radar Econômico da Cresol não é relatório de análise para os fins da Resolução CVM nº 20."
+}
