@@ -63,12 +63,6 @@ describe('contraste WCAG AA (4,5:1) nos dois temas', () => {
       expect(contraste(ca!, cb!)).toBeGreaterThanOrEqual(4.5);
     });
   }
-  it('tema escuro (Drácula): faixa do topo com texto e altas/baixas legíveis', () => {
-    const d = t.dark;
-    for (const c of ['nav-muted', 'nav-up', 'nav-down'])
-      for (const f of ['nav', 'nav-2']) expect(contraste(d[c]!, d[f]!), `${c}/${f}`).toBeGreaterThanOrEqual(4.5);
-    expect(contraste('#ffffff', d.nav!)).toBeGreaterThanOrEqual(4.5);
-  });
   it('faixa do topo: texto e altas/baixas legíveis sobre o navy', () => {
     for (const c of ['#ffffff', '#d9dee8', '#a9c2ff', '#f5b27a']) {
       expect(contraste(c, '#14213d')).toBeGreaterThanOrEqual(4.5);

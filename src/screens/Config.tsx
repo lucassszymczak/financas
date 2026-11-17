@@ -64,7 +64,7 @@ function Aparencia({ config, salvar }: { config: Config; salvar: (c: Config) => 
           <label htmlFor="cfg-tema">Tema</label>
           <select id="cfg-tema" value={config.tema} onChange={(e) => salvar({ ...config, tema: e.target.value as Tema })}>
             <option value="sistema">Igual ao do aparelho</option>
-            <option value="escuro">Escuro (Drácula)</option>
+            <option value="escuro">Escuro (homebroker)</option>
             <option value="claro">Claro (institucional)</option>
           </select>
         </div>

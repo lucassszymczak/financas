@@ -76,73 +76,64 @@
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  /* Tema escuro no estilo Drácula (draculatheme.com): fundo #282a36, texto #f8f8f2, roxo, ciano, rosa e
-     laranja. Altas em ciano e baixas em laranja (como no tema claro, nunca verde/vermelho). Tons mudos e
-     cores de texto clareados onde o original não chega a 4,5:1. */
-  --fundo: #282a36;
-  --superficie: #21222c;
-  --superficie-2: #343746;
-  --borda: #44475a;
-  --texto: #f8f8f2;
-  --texto-mudo: #c3c8de;
-  --alta: #8be9fd;
-  --baixa: #ffb86c;
-  --estavel: #c3c8de;
-  --acento: #bd93f9;
-  --acento-texto: #d6bcfa;
-  --navy: #f8f8f2;
-  --aviso-fundo: #3b3a26;
-  --aviso-texto: #f1fa8c;
-  --info-fundo: #343746;
-  --info-texto: #e6e7ef;
-  --perigo-fundo: #3f2230;
-  --perigo-texto: #ffb3c7;
-  --positivo-fundo: #1f3c4a;
-  --negativo-fundo: #40311f;
-  --misto-fundo: #343746;
-  --misto-texto: #f8f8f2;
+  /* Derivado do navy; fundo um pouco mais claro que os cards para eles se destacarem */
+  --fundo: #1b2843;
+  --superficie: #101b31;
+  --superficie-2: #17243f;
+  --borda: #2a3a5c;
+  --texto: #f2f4f8;
+  --texto-mudo: #b4bdcf;
+  --alta: #93b4ff;
+  --baixa: #f2a65e;
+  --estavel: #b4bdcf;
+  --acento: #c49a4a;
+  --acento-texto: #e3c48a;
+  --navy: #d9dee8;
+  --aviso-fundo: #3a2410;
+  --aviso-texto: #f5c896;
+  --info-fundo: #1b2a4a;
+  --info-texto: #d9dee8;
+  --perigo-fundo: #3d1d0c;
+  --perigo-texto: #ffc4a0;
+  --positivo-fundo: #142a55;
+  --negativo-fundo: #3a2410;
+  --misto-fundo: #1b2a4a;
+  --misto-texto: #d9dee8;
   --sombra: none;
   --sombra-menu: none;
-  --serie-1: #bd93f9;
-  --serie-2: #ff79c6;
-  --serie-3: #8be9fd;
-  --grade: #343746;
-  --faixa: #44475a;
-  --destaque: #bd93f9;
-  --destaque-texto: #21222c;
-  --destaque-suave: #3b3552;
-  --mapa-a3: #1d6f86;
+  --serie-1: #d9dee8;
+  --serie-2: #c49a4a;
+  --serie-3: #7f9ee0;
+  --grade: #1b2a4a;
+  --faixa: #2a3a5c;
+  --destaque: #d9dee8;
+  --destaque-texto: #0b1426;
+  --destaque-suave: #1b2a4a;
+  --mapa-a3: #2f5fe0;
   --mapa-a3-texto: #ffffff;
-  --mapa-a2: #1a4d5c;
-  --mapa-a2-texto: #e3fafe;
-  --mapa-a1: #1f3c4a;
-  --mapa-a1-texto: #cdf6fe;
-  --mapa-b1: #40311f;
-  --mapa-b1-texto: #ffe4c7;
-  --mapa-b2: #5e4220;
+  --mapa-a2: #1f3c7a;
+  --mapa-a2-texto: #e6edfb;
+  --mapa-a1: #162c58;
+  --mapa-a1-texto: #d9e3fb;
+  --mapa-b1: #3a2410;
+  --mapa-b1-texto: #fbe3cc;
+  --mapa-b2: #5a3210;
   --mapa-b2-texto: #fff0e0;
-  --mapa-b3: #8a5414;
+  --mapa-b3: #9a4a0a;
   --mapa-b3-texto: #ffffff;
-  --mapa-n0: #343746;
-  --mapa-n0-texto: #c3c8de;
-  /* Assuntos das notícias: tons pastel do Drácula (nunca verde/vermelho, que indicam alta/baixa). */
-  --ed-bancos-cooperativas: #c9a9fb;
-  --ed-mercados: #8be9fd;
-  --ed-economia: #b9c4ff;
-  --ed-business: #e4c59c;
-  --ed-financas-produtos: #f1fa8c;
-  --ed-agro: #e6d88a;
-  --ed-tecnologia-energia: #9fe6ee;
-  --ed-mundo: #b3c7e6;
-  --ed-politica-regulacao: #ff92d0;
-  --ed-outras: #c3c8de;
-  /* Faixa do topo no Drácula: um tom abaixo do fundo, com altas e baixas nas mesmas cores. */
-  --nav: #191a21;
-  --nav-2: #21222c;
-  --nav-line: #44475a;
-  --nav-muted: #e6e7ef;
-  --nav-up: #8be9fd;
-  --nav-down: #ffb86c;
+  --mapa-n0: #17243f;
+  --mapa-n0-texto: #b4bdcf;
+  /* Editorias das notícias: acento neutro (nunca verde/vermelho, que indicam alta/baixa). */
+  --ed-bancos-cooperativas: #a9b9f0;
+  --ed-mercados: #8ccbe6;
+  --ed-economia: #c5b5ef;
+  --ed-business: #dbbf98;
+  --ed-financas-produtos: #e5c477;
+  --ed-agro: #d6c98a;
+  --ed-tecnologia-energia: #8fd3dc;
+  --ed-mundo: #a9bfd9;
+  --ed-politica-regulacao: #e2b4dd;
+  --ed-outras: #b9c1cf;
 }
 
 /* Faixa navy do topo (igual nos dois temas), fontes e escala tipográfica do manual. */
