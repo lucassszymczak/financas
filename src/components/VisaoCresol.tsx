@@ -1,4 +1,4 @@
-import type { VisaoCresol } from '../schema/radar';
+import type { Radar, VisaoCresol } from '../schema/radar';
 import { dataCurta, diaMes, numero } from '../lib/formato';
 import { hrefRota } from '../router';
 import { useEstado } from '../state';
@@ -9,17 +9,20 @@ type Projecao = VisaoCresol['projecoes'][number];
  * A Visão Cresol mais recente até a data em exibição. Ela é mensal: vale a última que chegou num arquivo,
  * mesmo que as edições seguintes não a repitam.
  */
-export function useVisaoCresol(): VisaoCresol | null {
-  const { edicoes, atual } = useEstado();
-  const ate = atual?.data ?? '9999-12-31';
+export function visaoMaisRecente(edicoes: { data: string; radar: Radar }[], ate: string): VisaoCresol | null {
+  const chave = (x: VisaoCresol) => x.data_base ?? x.recebido_em ?? '';
   let melhor: VisaoCresol | null = null;
   for (const e of edicoes) {
     const v = e.radar.visao_cresol;
     if (!v || e.data > ate) continue;
-    const chave = (x: VisaoCresol) => x.data_base ?? x.recebido_em ?? '';
     if (!melhor || chave(v) > chave(melhor)) melhor = v;
   }
   return melhor;
+}
+
+export function useVisaoCresol(): VisaoCresol | null {
+  const { edicoes, atual } = useEstado();
+  return visaoMaisRecente(edicoes, atual?.data ?? '9999-12-31');
 }
 
 /** "5,10%", "13,75% a.a.", "R$ 5,50". */
